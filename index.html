@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<div id="thumbnailContainer" class="thumbnail-container"></div>
+	<div id="apiKeyInputSection">
+		<h1 id="novaTitle">Nova</h1>
+		<p>Input your TMDB API key (pretty please?)</p>
+		<input type="text" id="tmdbApiKeyInput" placeholder="right here :3">
+		<small style="margin-top: 15px;">Note: Nova requires your TMDB API key to fetch movies and shows and our video player won't work without it. Your key is not stored anywhere public for anyone, in fact it's not stored at all.</small>
+		<button onclick="validateApiKey()" class="rounded-button"><i class="fa-solid fa-door-open"></i> Submit</button>
+	</div>
+
+	<label for="genreSelect">Filter by Genre:</label>
+	<select id="genreSelect" onchange="filterByGenre()">
+	    <option value="">All Genres</option>
+	    <option value="28">Action</option>
+	    <option value="12">Adventure</option>
+	    <option value="16">Animation</option>
+	    <option value="35">Comedy</option>
+	    <option value="80">Crime</option>
+	    <option value="99">Documentary</option>
+	    <option value="18">Drama</option>
+	    <option value="10751">Family</option>
+	    <option value="14">Fantasy</option>
+	    <option value="36">History</option>
+	    <option value="27">Horror</option>
+	    <option value="10402">Music</option>
+	    <option value="9648">Mystery</option>
+	    <option value="10749">Romance</option>
+	    <option value="878">Science Fiction</option>
+	    <option value="10770">TV Movie</option>
+	    <option value="53">Thriller</option>
+	    <option value="10752">War</option>
+	    <option value="37">Western</option>
+	</select>
+
+	<div id="mainContent" style="display: none;">
+		<div id="loadingSpinner" style="display: none;">
+		    Loading...
+		</div>
+		<h1 id="novaTitle">Nova</h1>
+		<input type="text" id="searchInput" placeholder="Search for a movie">
+		<button onclick="searchMovies()" class="rounded-button"><i class="fas fa-search"></i> Search</button>
+		<button onclick="generateRandomMovie()" class="rounded-button"><i class="fa-solid fa-dice"></i> Random Movie</button>
+
+		<h2>Popular Movies</h2>
+		<div id="popularMovies"></div>
+
+		<h2>Selected Movie</h2>
+		<div id="videoPlayer"></div>
+	</div>
+
+	<button onclick="showAbout()" id="aboutButton" class="small-rounded-button">❔ About</button>
+
+	<div id="aboutSection" style="display: none; text-align: left;">
+		<div style="margin: 0 auto; max-width: 600px;">
+			<button onclick="returnToMain()" id="returnButton" class="small-rounded-button">&#9665; Return</button>
+			<h1 style="text-align: center;">Hey there!</h1>
+		<p>
+		I've always been a believer in freedom, especially when it comes to streaming/cracking and all that stuff. Isn't the whole idea of the Internet about sharing and accessing information freely? Now, don't get me wrong, I understand the importance of supporting creators and the industry. But let's face it, not everyone can just drop those big bucks for subscriptions to legal platforms like Netflix.</p>
+		<p>
+		To be honest, I've always felt a bit conflicted about these streaming services, especially that they're practically all charging a monthly fee. I get it, they have tons of content, high production values, and all that stuff. But here's the thing: what about people who just can't afford it? Why should entertainment be a luxury only for those with deep pockets?</p>
+		<p>
+		I remember that when I was a kid, around 8 years old, I was at the mall with my parents and thought it was unfair to pay for things, and told myself that I wanted to open a shop where everything was free. Now, yeah, I didn't understand how money and economy worked back then, of course, but the thing I want to say here is that it's always been a big no-no between me and prices.</p>
+		<p>
+		I mean, I'm kinda addicted to the Internet, just like the next person. It's my go-to for everything - information, entertainment, connecting with people.. But when these platforms start charging an arm and a leg, it feels like they're excluding a chunk of the population.</p>
+		<p>
+		I've dreamt of a world where quality content is accessible to everyone, regardless of their financial situation. Sure, there are those free trials, but they're like a teaser, a taste of what you could have if you had the cash. It's like they're saying "You can window-shop, but to really enjoy the goods, you gotta pay up."</p>
+		<p>
+		Now, I get it, content creators need their fair share. But isn't there a middle ground. A way to support the industry without making it a privilege? That's where the idea of a platform like Nova comes in - breaking down the paywall, offering a space for everyone to enjoy watching content without burning a hole in their pocket.</p>
+		<p>
+		Let's be real, not everyone can afford to drop 20 bucks a month on Netflix. And honestly, I think everyone deserves a chance to escape into the world of movies and shows. So yeah, call me a dreamer, but I believe in a world where watching content is as free as sharing your thoughts on the Internet. After all, isn't freedom what the digital age is all about?</p>
+		</p>
+		<p>
+		Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone.
+		</p>
+	</div>
+
+	<script>
+		let apiKeyValidated = false;
+
+		function validateApiKey() {
+			const apiKey = document.getElementById('tmdbApiKeyInput').value;
+			if (apiKey && apiKey.length > 0) {
+				apiKeyValidated = true;
+				document.getElementById('apiKeyInputSection').style.display = 'none';
+				document.getElementById('mainContent').style.display = 'block';
+				getPopularMovies();
+			} else {
+				alert('nova is no dumdum!!');
+			}
+		}
+
+		function showAbout() {
+			if (apiKeyValidated) {
+				document.getElementById('mainContent').style.display = 'none';
+				document.getElementById('aboutSection').style.display = 'block';
+			} else {
+				alert("For stupid reasons, you can only access this page if you're connected.");
+			}
+		}
+
+		function returnToMain() {
+			document.getElementById('aboutSection').style.display = 'none';
+			document.getElementById('mainContent').style.display = 'block';
+		}
+
+		let movies = [];
+
+		function filterByGenre() {
+		    const selectedGenre = document.getElementById('genreSelect').value;
+		    if (selectedGenre) {
+		        const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${document.getElementById('tmdbApiKeyInput').value}&with_genres=${selectedGenre}`;
+
+		        document.getElementById('loadingSpinner').style.display = 'block';
+
+		        fetch(apiUrl)
+		            .then(response => response.json())
+		            .then(data => {
+		                const filteredMovies = data.results;
+		                displayMovies(filteredMovies);
+		            })
+		            .finally(() => {
+		                document.getElementById('loadingSpinner').style.display = 'none';
+		            });
+		    } else {
+		        displayMovies(movies);
+		    }
+		}
+
+		function getPopularMovies() {
+		    const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${document.getElementById('tmdbApiKeyInput').value}`;
+		    
+		    document.getElementById('loadingSpinner').style.display = 'block';
+
+		    fetch(apiUrl)
+		        .then(response => response.json())
+		        .then(data => {
+		            movies = data.results;
+		            displayMovies(movies);
+		        })
+		        .finally(() => {
+		            document.getElementById('loadingSpinner').style.display = 'none';
+		        });
+		}
+
+		function searchMovies() {
+		    const query = document.getElementById('searchInput').value;
+		    const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${document.getElementById('tmdbApiKeyInput').value}&query=${query}`;
+		    
+		    document.getElementById('loadingSpinner').style.display = 'block';
+
+		    fetch(apiUrl)
+		        .then(response => response.json())
+		        .then(data => {
+		            movies = data.results;
+		            displayMovies(movies);
+		        })
+		        .finally(() => {
+		            document.getElementById('loadingSpinner').style.display = 'none';
+		        });
+		}
+
+		function displayMovies(movies) {
+		    const popularMoviesContainer = document.getElementById('popularMovies');
+		    const thumbnailContainer = document.getElementById('thumbnailContainer');
+		    
+		    popularMoviesContainer.innerHTML = '';
+		    thumbnailContainer.innerHTML = '';
+
+		    movies.forEach(movie => {
+		        const card = document.createElement('div');
+		        card.className = 'card';
+
+		        const thumbnail = document.createElement('img');
+		        thumbnail.src = `https://image.tmdb.org/t/p/w154${movie.poster_path}`;
+		        thumbnail.alt = movie.title;
+
+		        const button = document.createElement('button');
+		        button.textContent = `Watch ${movie.title}`;
+
+		        button.onmouseover = function() {
+		            thumbnailContainer.innerHTML = '';
+		            thumbnailContainer.appendChild(thumbnail);
+		            thumbnailContainer.style.display = 'block';
+		        };
+
+		        button.onmouseout = function() {
+		            thumbnailContainer.innerHTML = '';
+		            thumbnailContainer.style.display = 'none';
+		        };
+
+		        button.onclick = function() {
+		            playMovie(movie.id);
+		        };
+
+		        card.appendChild(button);
+
+		        popularMoviesContainer.appendChild(card);
+		    });
+		}
+
+		function playMovie(tmdbId) {
+			const embedUrl = `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
+			document.getElementById('videoPlayer').innerHTML = `<iframe src="${embedUrl}" width="800" height="450" frameborder="0" allowfullscreen></iframe>`;
+		}
+
+		function generateRandomMovie() {
+		    const apiKey = document.getElementById('tmdbApiKeyInput').value;
+		    const maxPages = 50;
+
+		    const randomPage = Math.floor(Math.random() * maxPages) + 1;
+
+		    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${randomPage}`)
+		        .then(response => response.json())
+		        .then(data => {
+		            if (data.results && data.results.length > 0) {
+		                const randomMovies = data.results;
+		                const randomMovie = randomMovies[Math.floor(Math.random() * randomMovies.length)];
+		                playMovie(randomMovie.id);
+		            } else {
+		                console.error('No results found on the random page:', randomPage);
+		            }
+		        })
+		        .catch(error => {
+		            console.error('Error fetching random movie:', error);
+		        });
+		}
+	</script>
+
+</body>
+</html>
