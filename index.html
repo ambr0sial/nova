@@ -83,7 +83,10 @@
 		Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone.
 		</p>
 	</div>
-
+	</div>
+	<footer>
+        <p style="text-align: center; margin-top: 20px;">Made with ❤ by Ambrosial. Latest version: 10/01/24</p>
+    </footer>
 	<script>
 		let apiKeyValidated = false;
 
@@ -172,7 +175,7 @@
 		function displayMovies(movies) {
 		    const popularMoviesContainer = document.getElementById('popularMovies');
 		    const thumbnailContainer = document.getElementById('thumbnailContainer');
-		    
+
 		    popularMoviesContainer.innerHTML = '';
 		    thumbnailContainer.innerHTML = '';
 
@@ -187,18 +190,12 @@
 		        const button = document.createElement('button');
 		        button.textContent = `Watch ${movie.title}`;
 
-		        button.onmouseover = function() {
-		            thumbnailContainer.innerHTML = '';
-		            thumbnailContainer.appendChild(thumbnail);
-		            thumbnailContainer.style.display = 'block';
-		        };
+		        button.addEventListener('contextmenu', (event) => {
+		            event.preventDefault();
+		            showContextMenu(event, movie.id);
+		        });
 
-		        button.onmouseout = function() {
-		            thumbnailContainer.innerHTML = '';
-		            thumbnailContainer.style.display = 'none';
-		        };
-
-		        button.onclick = function() {
+		        button.onclick = function () {
 		            playMovie(movie.id);
 		        };
 
@@ -208,10 +205,48 @@
 		    });
 		}
 
-		function playMovie(tmdbId) {
-			const embedUrl = `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
-			document.getElementById('videoPlayer').innerHTML = `<iframe src="${embedUrl}" width="800" height="450" frameborder="0" allowfullscreen></iframe>`;
+		let openContextMenu = null;
+
+		function showContextMenu(event, tmdbId) {
+		    if (openContextMenu) {
+		        openContextMenu.remove();
+		        openContextMenu = null;
+		    }
+
+		    const contextMenuCard = document.createElement('div');
+		    contextMenuCard.className = 'context-menu-card';
+		    contextMenuCard.style.left = `${event.pageX}px`;
+		    contextMenuCard.style.top = `${event.pageY}px`;
+
+		    const watchMovieButton = document.createElement('button');
+		    watchMovieButton.textContent = 'Watch Movie';
+		    watchMovieButton.onclick = function () {
+		        playMovie(tmdbId);
+		        contextMenuCard.remove();
+		        openContextMenu = null;
+		    };
+
+		    const watchTrailerButton = document.createElement('button');
+		    watchTrailerButton.textContent = 'Watch Trailer';
+		    watchTrailerButton.onclick = function () {
+		        playTrailer(tmdbId);
+		        contextMenuCard.remove();
+		        openContextMenu = null;
+		    };
+
+		    contextMenuCard.appendChild(watchMovieButton);
+		    contextMenuCard.appendChild(watchTrailerButton);
+
+		    document.body.appendChild(contextMenuCard);
+		    openContextMenu = contextMenuCard;
 		}
+
+		document.addEventListener('click', function (event) {
+		    if (openContextMenu && !openContextMenu.contains(event.target)) {
+		        openContextMenu.remove();
+		        openContextMenu = null;
+		    }
+		});
 
 		function generateRandomMovie() {
 		    const apiKey = document.getElementById('tmdbApiKeyInput').value;
@@ -233,6 +268,35 @@
 		        .catch(error => {
 		            console.error('Error fetching random movie:', error);
 		        });
+		}
+
+		function playTrailer(tmdbId) {
+		    const apiKey = document.getElementById('tmdbApiKeyInput').value;
+
+		    fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/videos?api_key=${apiKey}`)
+		        .then(response => response.json())
+		        .then(data => {
+		            if (data.results && data.results.length > 0) {
+		                const trailer = data.results.find(video => video.type === 'Trailer');
+
+		                if (trailer) {
+		                    const embedUrl = `https://www.youtube.com/embed/${trailer.key}`;
+		                    document.getElementById('videoPlayer').innerHTML = `<iframe width="800" height="450" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
+		                } else {
+		                    console.error('No trailer found for the selected movie.');
+		                }
+		            } else {
+		                console.error('No video results for the selected movie.');
+		            }
+		        })
+		        .catch(error => {
+		            console.error('Error fetching trailer:', error);
+		        });
+		}
+
+		function playMovie(tmdbId) {
+		    const embedUrl = `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
+		    document.getElementById('videoPlayer').innerHTML = `<iframe src="${embedUrl}" width="800" height="450" frameborder="0" allowfullscreen></iframe>`;
 		}
 	</script>
 

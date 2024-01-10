@@ -191,20 +191,31 @@ iframe {
     background-color: #553b8c;
 }
 
-footer {
-    text-align: center;
-    padding: 5px;
-    background-color: #1a1a1a;
-    color: #ffffff;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-size: 12px;
+.context-menu-card {
+    position: absolute;
     z-index: 1000;
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-footer:hover {
-    opacity: 0.25;
+.context-menu-card button {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 3px;
+    border: none;
+    background-color: #6e40c9;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.context-menu-card button:hover {
+    background-color: #553b8c;
 }
