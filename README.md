@@ -17,7 +17,13 @@ Before you begin, ensure you have the following:
 
 - [TMDb API Key](https://www.themoviedb.org/documentation/api)
 
-### Installation 💾
+### Online Usage 🎉
+
+1. Open the [Nova website](https://novastream.top/).
+2. Put your TMDb API key where it asks you.
+3. Enjoy!
+
+### Offline Usage 💾
 
 1. Clone the repository:
 
