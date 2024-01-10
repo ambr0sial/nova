@@ -37,6 +37,13 @@ Before you begin, ensure you have the following:
 3. Open the `index.html` file and put your TMDb API key where it asks you.
 4. Enjoy!
 
+## Alternative Domains ⚙️
+
+If https://novastream.top/ is down, here's a few other domains you could try:
+
+- https://novastream.vercel.app/
+- https://novastream-alt.netlify.app/
+
 ## Hosting 🌐
 
 You can freely host this website yourself if you want to. The only thing I'll ask from you is to give me proper credits (just the link to this repository or even my username is enough)!
