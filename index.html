@@ -9,6 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+	<div id="stickyBanner" class="sticky-banner">
+        <span>Welcome to Nova! Below, you can find our <strong>only</strong> official domains:</span>
+        <br>
+        <span>novastream.top</span>
+        <br>
+        <span>novastream.vercel.app</span>
+        <br>
+        <span>novastream-alt.netlify.app</span>
+        <span class="close-button" onclick="closeBanner()">×</span>
+    </div>
 	<div id="thumbnailContainer" class="thumbnail-container"></div>
 	<div id="apiKeyInputSection">
 		<h1 id="novaTitle">Nova</h1>
@@ -86,7 +96,7 @@
 	</div>
 	<footer>
         <p style="text-align: center; margin-top: 20px;">Made with ❤ by Ambrosial. Latest version: 10/01/24</p>
-	<p style="text-align: center; margin-top: 20px;">Nova doesn't store any files on our servers, we only link to the medias which are hosted on 3rd party services.</p>
+        <p style="text-align: center; margin-top: 20px;">Nova doesn't store any files on our servers, we only link to the medias which are hosted on 3rd party services.</p>
     </footer>
 	<script>
 		let apiKeyValidated = false;
@@ -196,7 +206,7 @@
 		            showContextMenu(event, movie.id);
 		        });
 
-		        button.onclick = function () {
+		        button.onclick = function() {
 		            playMovie(movie.id);
 		        };
 
@@ -299,6 +309,10 @@
 		    const embedUrl = `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
 		    document.getElementById('videoPlayer').innerHTML = `<iframe src="${embedUrl}" width="800" height="450" frameborder="0" allowfullscreen></iframe>`;
 		}
+
+		function closeBanner() {
+            document.getElementById("stickyBanner").style.display = "none";
+        }
 	</script>
 
 </body>
