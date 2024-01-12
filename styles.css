@@ -221,21 +221,24 @@ iframe {
 }
 
 .sticky-banner {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
-    top: 0;
-    width: calc(100% - 20px);
+    bottom: 0;
+    width: 100%;
     background-color: #0d0c0c;
     padding: 10px;
     text-align: center;
-    z-index: 2000;
+    z-index: 1001;
+}
+
+.sticky-banner span {
+    margin: 0 10px;
 }
 
 .close-button {
     color: #555;
-    position: absolute;
-    top: 5px;
-    right: 10px;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;

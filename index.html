@@ -1,59 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nova</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 	<div id="stickyBanner" class="sticky-banner">
-        <span>Welcome to Nova! Here are our <strong>only</strong> official domains:</span>
-        <span>novastream.top</span>
-        <span>novastream.vercel.app</span>
-        <span>novastream-alt.netlify.app</span>
-        <span>novastream.glitch.me</span>
-        <span>novastream.onrender.com</span>
-        <span class="close-button" onclick="closeBanner()">×</span>
-    </div>
+		<span>Welcome to Nova! Here are our <strong>only</strong> official domains:</span>
+		<span>novastream.top</span>
+		<span>novastream.vercel.app</span>
+		<span>novastream-alt.netlify.app</span>
+		<span>novastream.glitch.me</span>
+		<span>novastream.onrender.com</span>
+		<span class="close-button" onclick="closeBanner()">×</span>
+	</div>
 	<div id="thumbnailContainer" class="thumbnail-container"></div>
 	<div id="apiKeyInputSection">
 		<h1 id="novaTitle">Nova</h1>
 		<p id="askTMDB">Input your TMDB API key (pretty please?)</p>
 		<input type="text" id="tmdbApiKeyInput" placeholder="right here :3">
 		<small id="noteTMDB" style="margin-top: 15px;">Note: Nova requires your TMDB API key to fetch movies and shows and our video player won't work without it. Your key is not stored anywhere public for anyone, in fact it's not stored at all.</small>
+		<p>TV Shows are slowly being implemented, but extremely unstable for now. Try not to use it.</p>
 		<button onclick="validateApiKey()" class="rounded-button"><i class="fa-solid fa-door-open"></i> Submit</button>
 	</div>
 
+	<label for="contentTypeSelect">Content Type:</label>
+	<select id="contentTypeSelect" onchange="changeContentType()">
+		<option value="movie">Movies</option>
+		<option value="tv">TV Shows</option>
+	</select>
+
 	<label for="genreSelect">Filter by Genre:</label>
 	<select id="genreSelect" onchange="filterByGenre()">
-	    <option value="">All Genres</option>
-	    <option value="28">Action</option>
-	    <option value="12">Adventure</option>
-	    <option value="16">Animation</option>
-	    <option value="35">Comedy</option>
-	    <option value="80">Crime</option>
-	    <option value="99">Documentary</option>
-	    <option value="18">Drama</option>
-	    <option value="10751">Family</option>
-	    <option value="14">Fantasy</option>
-	    <option value="36">History</option>
-	    <option value="27">Horror</option>
-	    <option value="10402">Music</option>
-	    <option value="9648">Mystery</option>
-	    <option value="10749">Romance</option>
-	    <option value="878">Science Fiction</option>
-	    <option value="10770">TV Movie</option>
-	    <option value="53">Thriller</option>
-	    <option value="10752">War</option>
-	    <option value="37">Western</option>
+		<option value="">All Genres</option>
+		<option value="28">Action</option>
+		<option value="12">Adventure</option>
+		<option value="16">Animation</option>
+		<option value="35">Comedy</option>
+		<option value="80">Crime</option>
+		<option value="99">Documentary</option>
+		<option value="18">Drama</option>
+		<option value="10751">Family</option>
+		<option value="14">Fantasy</option>
+		<option value="36">History</option>
+		<option value="27">Horror</option>
+		<option value="10402">Music</option>
+		<option value="9648">Mystery</option>
+		<option value="10749">Romance</option>
+		<option value="878">Science Fiction</option>
+		<option value="10770">TV Movie</option>
+		<option value="53">Thriller</option>
+		<option value="10752">War</option>
+		<option value="37">Western</option>
 	</select>
 
 	<div id="mainContent" style="display: none;">
 		<div id="loadingSpinner" style="display: none;">
-		    Loading...
+			Loading...
 		</div>
 		<h1 id="novaTitle">Nova</h1>
 		<input type="text" id="searchInput" placeholder="Search for a movie">
@@ -65,6 +72,16 @@
 
 		<h2>Selected Movie</h2>
 		<div id="videoPlayer"></div>
+
+		<div id="tvShowSwitcher" style="display: none;">
+			<label for="seasonSelect">Season:</label>
+			<select id="seasonSelect" onchange="updateEpisodeSelect(getSelectedTVShow().id, this.value)">
+			</select>
+
+			<label for="episodeSelect">Episode:</label>
+			<select id="episodeSelect">
+			</select>
+		</div>
 	</div>
 
 	<button onclick="showAbout()" id="aboutButton" class="small-rounded-button">❔ About</button>
@@ -94,259 +111,9 @@
 	</div>
 	</div>
 	<footer>
-        <p style="text-align: center; margin-top: 20px;">Made with ❤ by Ambrosial. Latest version: 10/01/24</p>
-        <p style="text-align: center; margin-top: 20px;">Nova doesn't store any files on our servers, we only link to the medias which are hosted on 3rd party services.</p>
-    </footer>
-	<script>
-		let apiKeyValidated = false;
-		let clickCount = 0;
-
-		function handleNovaTitleClick() {
-		    clickCount++;
-
-		    if (clickCount === 5) {
-		        document.getElementById('novaTitle').textContent = "👁";
-		    }
-
-		    if (clickCount === 10) {
-		        document.getElementById('novaTitle').textContent = "▲";
-		        document.getElementById('novaTitle').style.color = "yellow";
-		        document.getElementById('askTMDB').textContent = "DO NOT SUMMON AT ALL COSTS!";
-		        document.getElementById('askTMDB').style.color = "red";
-		        document.getElementById('noteTMDB').textContent = "Note: Remember! Reality is an illusion, the universe is a hologram, buy gold, bye!";
-		    }
-		}
-
-		document.getElementById('novaTitle').addEventListener('click', handleNovaTitleClick);
-
-		function validateApiKey() {
-            		const apiKey = document.getElementById('tmdbApiKeyInput').value;
-            		if (apiKey && apiKey.length > 0) {
-                		const url = `https://api.themoviedb.org/3/configuration?api_key=${apiKey}`;
-
-		                fetch(url)
-                		.then(response => {
-                    		if (response.ok) {
-                        		// API key is valid
-					apiKeyValidated = true;
-                        		document.getElementById('apiKeyInputSection').style.display = 'none';
-                        		document.getElementById('mainContent').style.display = 'block';
-                        		getPopularMovies();
-                    		} else {
-                        		// Invalid API key
-                        		alert('Invalid API key!! qwq');
-                    		}
-                		})
-                		.catch(error => {
-                    		// Error occurred during API request
-                    		alert('An error occurred while validating the API key! 3:');
-		                });
-            		} else {
-                		alert('nova is no dumdum!!');
-            		}
-        	}
-
-		function showAbout() {
-			if (apiKeyValidated) {
-				document.getElementById('mainContent').style.display = 'none';
-				document.getElementById('aboutSection').style.display = 'block';
-			} else {
-				alert("For stupid reasons, you can only access this page if you're connected.");
-			}
-		}
-
-		function returnToMain() {
-			document.getElementById('aboutSection').style.display = 'none';
-			document.getElementById('mainContent').style.display = 'block';
-		}
-
-		let movies = [];
-
-		function filterByGenre() {
-		    const selectedGenre = document.getElementById('genreSelect').value;
-		    if (selectedGenre) {
-		        const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${document.getElementById('tmdbApiKeyInput').value}&with_genres=${selectedGenre}`;
-
-		        document.getElementById('loadingSpinner').style.display = 'block';
-
-		        fetch(apiUrl)
-		            .then(response => response.json())
-		            .then(data => {
-		                const filteredMovies = data.results;
-		                displayMovies(filteredMovies);
-		            })
-		            .finally(() => {
-		                document.getElementById('loadingSpinner').style.display = 'none';
-		            });
-		    } else {
-		        displayMovies(movies);
-		    }
-		}
-
-		function getPopularMovies() {
-		    const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${document.getElementById('tmdbApiKeyInput').value}`;
-		    
-		    document.getElementById('loadingSpinner').style.display = 'block';
-
-		    fetch(apiUrl)
-		        .then(response => response.json())
-		        .then(data => {
-		            movies = data.results;
-		            displayMovies(movies);
-		        })
-		        .finally(() => {
-		            document.getElementById('loadingSpinner').style.display = 'none';
-		        });
-		}
-
-		function searchMovies() {
-		    const query = document.getElementById('searchInput').value;
-		    const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${document.getElementById('tmdbApiKeyInput').value}&query=${query}`;
-		    
-		    document.getElementById('loadingSpinner').style.display = 'block';
-
-		    fetch(apiUrl)
-		        .then(response => response.json())
-		        .then(data => {
-		            movies = data.results;
-		            displayMovies(movies);
-		        })
-		        .finally(() => {
-		            document.getElementById('loadingSpinner').style.display = 'none';
-		        });
-		}
-
-		function displayMovies(movies) {
-		    const popularMoviesContainer = document.getElementById('popularMovies');
-		    const thumbnailContainer = document.getElementById('thumbnailContainer');
-
-		    popularMoviesContainer.innerHTML = '';
-		    thumbnailContainer.innerHTML = '';
-
-		    movies.forEach(movie => {
-		        const card = document.createElement('div');
-		        card.className = 'card';
-
-		        const thumbnail = document.createElement('img');
-		        thumbnail.src = `https://image.tmdb.org/t/p/w154${movie.poster_path}`;
-		        thumbnail.alt = movie.title;
-
-		        const button = document.createElement('button');
-		        button.textContent = `Watch ${movie.title}`;
-
-		        button.addEventListener('contextmenu', (event) => {
-		            event.preventDefault();
-		            showContextMenu(event, movie.id);
-		        });
-
-		        button.onclick = function() {
-		            playMovie(movie.id);
-		        };
-
-		        card.appendChild(button);
-
-		        popularMoviesContainer.appendChild(card);
-		    });
-		}
-
-		let openContextMenu = null;
-
-		function showContextMenu(event, tmdbId) {
-		    if (openContextMenu) {
-		        openContextMenu.remove();
-		        openContextMenu = null;
-		    }
-
-		    const contextMenuCard = document.createElement('div');
-		    contextMenuCard.className = 'context-menu-card';
-		    contextMenuCard.style.left = `${event.pageX}px`;
-		    contextMenuCard.style.top = `${event.pageY}px`;
-
-		    const watchMovieButton = document.createElement('button');
-		    watchMovieButton.textContent = 'Watch Movie';
-		    watchMovieButton.onclick = function () {
-		        playMovie(tmdbId);
-		        contextMenuCard.remove();
-		        openContextMenu = null;
-		    };
-
-		    const watchTrailerButton = document.createElement('button');
-		    watchTrailerButton.textContent = 'Watch Trailer';
-		    watchTrailerButton.onclick = function () {
-		        playTrailer(tmdbId);
-		        contextMenuCard.remove();
-		        openContextMenu = null;
-		    };
-
-		    contextMenuCard.appendChild(watchMovieButton);
-		    contextMenuCard.appendChild(watchTrailerButton);
-
-		    document.body.appendChild(contextMenuCard);
-		    openContextMenu = contextMenuCard;
-		}
-
-		document.addEventListener('click', function (event) {
-		    if (openContextMenu && !openContextMenu.contains(event.target)) {
-		        openContextMenu.remove();
-		        openContextMenu = null;
-		    }
-		});
-
-		function generateRandomMovie() {
-		    const apiKey = document.getElementById('tmdbApiKeyInput').value;
-		    const maxPages = 50;
-
-		    const randomPage = Math.floor(Math.random() * maxPages) + 1;
-
-		    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${randomPage}`)
-		        .then(response => response.json())
-		        .then(data => {
-		            if (data.results && data.results.length > 0) {
-		                const randomMovies = data.results;
-		                const randomMovie = randomMovies[Math.floor(Math.random() * randomMovies.length)];
-		                playMovie(randomMovie.id);
-		            } else {
-		                console.error('No results found on the random page:', randomPage);
-		            }
-		        })
-		        .catch(error => {
-		            console.error('Error fetching random movie:', error);
-		        });
-		}
-
-		function playTrailer(tmdbId) {
-		    const apiKey = document.getElementById('tmdbApiKeyInput').value;
-
-		    fetch(`https://api.themoviedb.org/3/movie/${tmdbId}/videos?api_key=${apiKey}`)
-		        .then(response => response.json())
-		        .then(data => {
-		            if (data.results && data.results.length > 0) {
-		                const trailer = data.results.find(video => video.type === 'Trailer');
-
-		                if (trailer) {
-		                    const embedUrl = `https://www.youtube.com/embed/${trailer.key}`;
-		                    document.getElementById('videoPlayer').innerHTML = `<iframe width="800" height="450" src="${embedUrl}" frameborder="0" allowfullscreen></iframe>`;
-		                } else {
-		                    console.error('No trailer found for the selected movie.');
-		                }
-		            } else {
-		                console.error('No video results for the selected movie.');
-		            }
-		        })
-		        .catch(error => {
-		            console.error('Error fetching trailer:', error);
-		        });
-		}
-
-		function playMovie(tmdbId) {
-		    const embedUrl = `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`;
-		    document.getElementById('videoPlayer').innerHTML = `<iframe src="${embedUrl}" width="800" height="450" frameborder="0" allowfullscreen></iframe>`;
-		}
-
-		function closeBanner() {
-            document.getElementById("stickyBanner").style.display = "none";
-        }
-	</script>
-
+		<p style="text-align: center; margin-top: 20px;">Made with ❤ by Ambrosial. Latest version: 12/01/24</p>
+		<p style="text-align: center; margin-top: 20px;">Nova doesn't store any files on our servers, we only link to the medias which are hosted on 3rd party services.</p>
+	</footer>
+	<script src="script.js"></script>
 </body>
 </html>
