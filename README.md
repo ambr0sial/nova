@@ -43,7 +43,6 @@ If https://novastream.top/ is down, here's a few other domains you could try:
 
 - https://novastream.vercel.app/
 - https://novastream-alt.netlify.app/
-- https://novastream.glitch.me/
 - https://novastream.onrender.com/
 
 ## Hosting 🌐
