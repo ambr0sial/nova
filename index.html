@@ -120,16 +120,30 @@
 		document.getElementById('novaTitle').addEventListener('click', handleNovaTitleClick);
 
 		function validateApiKey() {
-			const apiKey = document.getElementById('tmdbApiKeyInput').value;
-			if (apiKey && apiKey.length > 0) {
-				apiKeyValidated = true;
-				document.getElementById('apiKeyInputSection').style.display = 'none';
-				document.getElementById('mainContent').style.display = 'block';
-				getPopularMovies();
-			} else {
-				alert('nova is no dumdum!!');
-			}
-		}
+            const apiKey = document.getElementById('tmdbApiKeyInput').value;
+            if (apiKey && apiKey.length > 0) {
+                const url = `https://api.themoviedb.org/3/configuration?api_key=${apiKey}`;
+
+                fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        // API key is valid
+                        document.getElementById('apiKeyInputSection').style.display = 'none';
+                        document.getElementById('mainContent').style.display = 'block';
+                        getPopularMovies();
+                    } else {
+                        // Invalid API key
+                        alert('Invalid API key!! qwq');
+                    }
+                })
+                .catch(error => {
+                    // Error occurred during API request
+                    alert('An error occurred while validating the API key! 3:');
+                });
+            } else {
+                alert('nova is no dumdum!!');
+            }
+        }
 
 		function showAbout() {
 			if (apiKeyValidated) {
