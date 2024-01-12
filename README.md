@@ -7,7 +7,7 @@
 
 # Nova ☄
 
-Nova is a streaming platform that allows users to explore and watch a variety of movies. It uses The Movie Database (TMDb) API and the SuperEmbed API to fetch movie information and offers a user-friendly interface for everyone.
+Nova is a streaming platform that allows users to explore and watch a variety of movies. It uses The Movie Database (TMDb) API and the SuperEmbed/FREmbed API to fetch movie information and offers a user-friendly interface for everyone.
 
 ## Getting Started ✨
 
