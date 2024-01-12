@@ -99,6 +99,25 @@
     </footer>
 	<script>
 		let apiKeyValidated = false;
+		let clickCount = 0;
+
+		function handleNovaTitleClick() {
+		    clickCount++;
+
+		    if (clickCount === 5) {
+		        document.getElementById('novaTitle').textContent = "👁";
+		    }
+
+		    if (clickCount === 10) {
+		        document.getElementById('novaTitle').textContent = "▲";
+		        document.getElementById('novaTitle').style.color = "yellow";
+		        document.getElementById('askTMDB').textContent = "DO NOT SUMMON AT ALL COSTS!";
+		        document.getElementById('askTMDB').style.color = "red";
+		        document.getElementById('noteTMDB').textContent = "Note: Remember! Reality is an illusion, the universe is a hologram, buy gold, bye!";
+		    }
+		}
+
+		document.getElementById('novaTitle').addEventListener('click', handleNovaTitleClick);
 
 		function validateApiKey() {
 			const apiKey = document.getElementById('tmdbApiKeyInput').value;
