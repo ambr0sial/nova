@@ -229,6 +229,7 @@ function fetchEpisodes(tvShowId, seasonNumber) {
 				option.textContent = `Episode ${episode.episode_number}: ${episode.name}`;
 				episodeSelect.appendChild(option);
 			});
+			episodeSelect.dispatchEvent(new Event('change'));
 		})
 		.catch(error => {
 			console.error('Error fetching TV show episodes:', error);
@@ -236,11 +237,9 @@ function fetchEpisodes(tvShowId, seasonNumber) {
 }
 
 function updateEpisodeSelect() {
-	const apiKey = document.getElementById('tmdbApiKeyInput').value;
-	const selectedSeason = document.getElementById('seasonSelect').value;
-	const selectedTVShow = getSelectedTVShow();
-	fetchEpisodes(selectedTVShow.id, selectedSeason);
-	playTVShowEpisode(selectedTVShow.id, selectedSeason, 1);
+    const selectedSeason = document.getElementById('seasonSelect').value;
+    const selectedTVShow = getSelectedTVShow();
+    fetchEpisodes(selectedTVShow.id, selectedSeason);
 }
 
 function searchMovies() {
@@ -311,12 +310,18 @@ function displayMovies(movies) {
 		card.appendChild(movieInfoContainer);
 
 		popularMoviesContainer.appendChild(card);
+
+		card.addEventListener('contextmenu', function (event) {
+		    showContextMenu(event, movie.id);
+		});
 	});
 }
 
 let openContextMenu = null;
 
 function showContextMenu(event, tmdbId) {
+	event.preventDefault();
+
 	if (openContextMenu) {
 		openContextMenu.remove();
 		openContextMenu = null;
@@ -328,9 +333,9 @@ function showContextMenu(event, tmdbId) {
 	contextMenuCard.style.top = `${event.pageY}px`;
 
 	const watchMovieButton = document.createElement('button');
-	watchMovieButton.textContent = 'Watch Movie';
+	watchMovieButton.textContent = 'Watch Content';
 	watchMovieButton.onclick = function () {
-		playMovie(tmdbId);
+		playMovieOrTVShow(tmdbId);
 		contextMenuCard.remove();
 		openContextMenu = null;
 	};
@@ -446,8 +451,8 @@ document.getElementById('episodeSelect').addEventListener('change', function () 
 });
 
 function getSelectedTVShow() {
-	const selectedTVShowIndex = document.getElementById('popularMoviesContainer').selectedIndex;
-	return movies[selectedTVShowIndex];
+    const selectedTVShowIndex = document.getElementById('popularMovies').selectedIndex;
+    return movies[selectedTVShowIndex];
 }
 
 function usePublicApiKey() {

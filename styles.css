@@ -234,7 +234,7 @@ iframe {
 .context-menu-card {
 	position: absolute;
 	z-index: 1000;
-	background-color: #fff;
+	background-color: #141414;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 	border-radius: 5px;
 	padding: 16px;
