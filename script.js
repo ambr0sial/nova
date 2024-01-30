@@ -1,6 +1,7 @@
 let apiKeyValidated = false;
 let contentType = 'movie';
 let clickCount = 0;
+let currentThemeColor = "#6e40c9";
 
 document.addEventListener('DOMContentLoaded', function () {
 	document.getElementById('contentTypeSelect').value = 'movie';
@@ -273,6 +274,8 @@ function displayMovies(movies) {
 		const thumbnail = document.createElement('img');
 		thumbnail.src = movie.poster_path ? `https://image.tmdb.org/t/p/w154${movie.poster_path}` : 'https://via.placeholder.com/154x231.png?text=No+Image';
 		thumbnail.alt = movie.title;
+		thumbnail.style.borderRadius = '10px';
+		thumbnail.style.cursor = 'pointer';
 
 		const titleButton = document.createElement('button');
 		titleButton.textContent = contentType === 'tv' ? movie.original_name : movie.title;
@@ -283,6 +286,13 @@ function displayMovies(movies) {
 			}
 			playMovie(movie.id);
 		});
+
+		thumbnail.addEventListener('click', function () {
+            if (contentType === 'tv') {
+                populateSeasonsAndEpisodes(movie);
+            }
+            playMovie(movie.id);
+        });
 
 		const movieInfoContainer = document.createElement('div');
 		movieInfoContainer.className = 'movie-info';
@@ -438,4 +448,10 @@ document.getElementById('episodeSelect').addEventListener('change', function () 
 function getSelectedTVShow() {
 	const selectedTVShowIndex = document.getElementById('popularMoviesContainer').selectedIndex;
 	return movies[selectedTVShowIndex];
+}
+
+function usePublicApiKey() {
+    const publicApiKey = "1070730380f5fee0d87cf0382670b255";
+    document.getElementById('tmdbApiKeyInput').value = publicApiKey;
+    validateApiKey();
 }
