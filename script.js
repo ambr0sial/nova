@@ -3,6 +3,10 @@ let contentType = 'movie';
 let clickCount = 0;
 let currentThemeColor = "#6e40c9";
 
+document.getElementById('mainContent').addEventListener('animationend', function() {
+    document.getElementById('novaTitle').classList.add('colorShift');
+});
+
 document.addEventListener('DOMContentLoaded', function () {
 	document.getElementById('contentTypeSelect').value = 'movie';
 	changeContentType();
@@ -28,17 +32,33 @@ function handleNovaTitleClick() {
 		document.getElementById('askTMDB').style.color = "red";
 		document.getElementById('noteTMDB').textContent = "Note: Remember! Reality is an illusion, the universe is a hologram, buy gold, bye!";
 	}
+
 }
 
 document.getElementById('novaTitle').addEventListener('click', handleNovaTitleClick);
 
 function changeContentType() {
-	contentType = document.getElementById('contentTypeSelect').value;
-	if (contentType === 'tv') {
-		getPopularTVShows();
-	} else {
-		getPopularMovies();
-	}
+    contentType = document.getElementById('contentTypeSelect').value;
+    if (contentType === 'tv') {
+        getPopularTVShows();
+        const warningMessage = document.createElement('div');
+        warningMessage.textContent = "TV Shows are currently in development and may not work as expected. This message will disappear in 10 seconds.";
+        warningMessage.style.backgroundColor = "red";
+        warningMessage.style.color = "white";
+        warningMessage.style.padding = "20px";
+        warningMessage.style.position = "fixed";
+        warningMessage.style.top = "50%";
+        warningMessage.style.left = "50%";
+        warningMessage.style.transform = "translate(-50%, -50%)";
+        warningMessage.style.width = "80%";
+        warningMessage.style.textAlign = "center";
+        warningMessage.style.zIndex = "1000";
+        warningMessage.style.borderRadius = "10px";
+        document.body.appendChild(warningMessage);
+        setTimeout(() => { warningMessage.remove(); }, 10000);
+    } else {
+        getPopularMovies();
+    }
 }
 
 function validateApiKey() {
@@ -236,10 +256,17 @@ function fetchEpisodes(tvShowId, seasonNumber) {
 		});
 }
 
-function updateEpisodeSelect() {
-    const selectedSeason = document.getElementById('seasonSelect').value;
-    const selectedTVShow = getSelectedTVShow();
-    fetchEpisodes(selectedTVShow.id, selectedSeason);
+function updateEpisodeSelect(tvShowId, seasonNumber) {
+    if (!tvShowId) {
+        console.error('No TV show selected.');
+        return;
+    }
+
+    fetchEpisodes(tvShowId, seasonNumber)
+        .then(episodes => populateEpisodeSelect(episodes))
+        .catch(error => {
+            console.error('Error fetching TV show episodes:', error);
+        });
 }
 
 function searchMovies() {
@@ -459,4 +486,16 @@ function usePublicApiKey() {
     const publicApiKey = "1070730380f5fee0d87cf0382670b255";
     document.getElementById('tmdbApiKeyInput').value = publicApiKey;
     validateApiKey();
+}
+
+function populateEpisodeSelect(episodes) {
+    const episodeSelect = document.getElementById('episodeSelect');
+    episodeSelect.innerHTML = '';
+
+    episodes.forEach(episode => {
+        const option = document.createElement('option');
+        option.value = episode.episode_number;
+        option.textContent = `Episode ${episode.episode_number}: ${episode.name}`;
+        episodeSelect.appendChild(option);
+    });
 }
