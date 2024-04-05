@@ -11,16 +11,10 @@ Nova is a streaming platform that allows users to explore and watch a variety of
 
 ## Getting Started ✨
 
-### Prerequisites 📜
-
-Before you begin, ensure you have the following:
-
-- [TMDb API Key](https://www.themoviedb.org/documentation/api)
-
 ### Online Usage 🎉
 
 1. Open the [Nova website](https://novastream.top/).
-2. Put your TMDb API key where it asks you.
+2. Put your TMDb API key where it asks you ([get one here](https://www.themoviedb.org/documentation/api)) or click on the public API key button.
 3. Enjoy!
 
 ### Offline Usage 💾
@@ -34,7 +28,7 @@ Before you begin, ensure you have the following:
    ```bash
    cd nova
    ```
-3. Open the `index.html` file and put your TMDb API key where it asks you.
+3. Open the `index.html` file and put your TMDb API key where it asks you ([get one here](https://www.themoviedb.org/documentation/api)) or click on the public API key button.
 4. Enjoy!
 
 ## Alternative Domains ⚙️
