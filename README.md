@@ -1,14 +1,12 @@
 <p align="center">
-  <a href="https://github.com/ambr0sial/nova"><img src="https://media.tenor.com/zaSpqiXC8s8AAAAi/comet.gif" alt="Nova" width="128" /></a> 
+  <a href="https://github.com/ambr0sial/nova"><img src="logo.png" alt="Nova" width="128" /></a> 
 </p>
 <p align="center">
   Nova is a free streaming platform.
 </p>
 
 > [!IMPORTANT]
-> I will take a break from developing Nova as I've figured out it might be the best for me. Sometimes, I can't find a way to implement something I want on the website, and that makes me both nervous and tired. I don't think it's a good idea for my sanity to continue working on a project with unreadable code (yes, even for me) where every idea is another struggle to get through. It doesn't mean it's the complete end of Nova: it will still be publicly available using official URLs or self-hosting. Next time this repository will update will be the time where TV shows will be fully implemented, as it's my biggest problem on the website yet (I'm working on it for multiple months now).
->
-> For now, enjoy the movies. Farewell for now, but not forever!
+> NEW UPDATEE <33
 
 # Nova ☄
 
