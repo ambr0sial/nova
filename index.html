@@ -3,12 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova</title>
-	<meta content="Nova" property="og:title"/>
-	<meta content="Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone." property="og:description"/>
-	<meta content="https://novastream.top" property="og:url"/>
-	<meta content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png" property="og:image"/>
-	<meta content="#A17FC0" data-react-helmet="true" name="theme-color"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -68,6 +62,9 @@
         <div class="container mx-auto px-4 py-8">
             <header class="flex justify-between items-center py-4">
                 <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
+                <div class="text-center text-sm text-zinc-400 mt-4">
+                    This website is not affiliated with novastream.to
+                </div>
                 <nav>
                     <a href="https://pastebin.com/raw/5kqU1Up8" class="text-zinc-300 hover:text-white px-3 py-2 rounded">About</a>
                 </nav>
@@ -79,7 +76,9 @@
                     <button id="searchButton" class="absolute inset-y-0 right-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-r">
                         Search
                     </button>
+                    <div id="searchSuggestions" class="absolute w-full bg-zinc-800 text-white rounded-b-lg mt-1 hidden"></div>
                 </div>
+
                 <button id="randomButton" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded">
                     Random Movie
                 </button>
@@ -94,7 +93,7 @@
             </div>
 
             <footer class="text-center text-gray-400 mt-8">
-                Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 20/06/24
+                Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 21/06/24
             </footer>
 
             <div id="welcomeBanner" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center">
