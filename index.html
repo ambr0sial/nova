@@ -334,10 +334,10 @@
                         const seasonNumber = seasonSelect.value;
                         const episodeNumber = episodeSelect.value;
                         const endpoint = language === 'fr' ? `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}` : `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`;
-                        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;"></iframe>`;
+                        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;" allowfullscreen></iframe>`;
                     } else {
                         const endpoint = language === 'fr' ? `https://frembed.pro/api/film.php?id=${media.id}` : `https://multiembed.mov/?video_id=${media.id}&tmdb=1`;
-                        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;"></iframe>`;
+                        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;" allowfullscreen></iframe>`;
                     }
                     videoPlayer.classList.remove('hidden');
                     movieInfo.classList.add('hidden');
