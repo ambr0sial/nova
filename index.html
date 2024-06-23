@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -19,27 +19,59 @@
             color: white;
             font-family: 'Poppins', sans-serif;
         }
+
         .rounded {
             border-radius: 0.5rem;
         }
+
         .hover\:scale-105:hover {
             transform: scale(1.05);
         }
+
         .focus\:outline-none:focus {
             outline: none;
         }
+
         .focus\:ring-2:focus {
             box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
         }
+
         #loginPage {
             background-color: rgba(31, 41, 55, 0.8);
         }
+
         #searchSuggestions {
             z-index: 10;
+        }
+
+        #githubButton {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        #githubButton img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        #githubButton:hover {
+            background-color: rgba(0, 0, 0, 1);
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-800 to-purple-600 text-white min-h-screen">
+    <a href="https://github.com/ambr0sial/nova" target="_blank" id="githubButton">
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="w-8 h-8">
+    </a>
     <div id="loginPage" class="min-h-screen flex items-center justify-center">
         <div class="w-full max-w-lg p-8 space-y-6 bg-zinc-800 rounded-lg shadow-lg">
             <h1 class="text-4xl font-bold text-center">Nova</h1>
@@ -102,7 +134,7 @@
             </div>
 
             <footer class="text-center text-gray-400 mt-8">
-                Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 21/06/24
+                Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 23/06/24
             </footer>
 
             <div id="welcomeBanner" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center">
@@ -154,6 +186,26 @@
             });
 
             const searchInput = document.getElementById('searchInput');
+
+            document.getElementById('searchButton').addEventListener('click', search);
+            searchInput.addEventListener('keydown', async function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    search();
+                }
+            });
+
+            async function search() {
+                const apiKey = localStorage.getItem('apiKey');
+                const searchInputValue = searchInput.value;
+                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${searchInputValue}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySearchResults(data.results);
+                    searchSuggestions.classList.add('hidden');
+                }
+            }
+
             const searchSuggestions = document.getElementById('searchSuggestions');
 
             searchInput.addEventListener('input', async function() {
