@@ -52,7 +52,7 @@
             z-index: 10;
         }
 
-        #githubButton {
+        #githubButton, #kofiButton {
             position: fixed;
             top: 10px;
             right: 10px;
@@ -65,18 +65,25 @@
             border-radius: 50%;
         }
 
-        #githubButton img {
+        #githubButton img, #kofiButton img {
             width: 32px;
             height: 32px;
             border-radius: 50%;
         }
 
-        #githubButton:hover {
+        #githubButton:hover, #kofiButton:hover {
             background-color: rgba(0, 0, 0, 1);
+        }
+
+        #kofiButton {
+            right: 60px;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-800 to-purple-600 text-white min-h-screen">
+    <a href="https://ko-fi.com/ambrosial" target="_blank" id="kofiButton">
+        <img src="https://assets-global.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-Fi" class="w-8 h-8">
+    </a>
     <a href="https://github.com/ambr0sial/nova" target="_blank" id="githubButton">
         <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="w-8 h-8">
     </a>
@@ -301,6 +308,11 @@
                                 <option value="en">English</option>
                                 <option value="fr">French</option>
                             </select>
+                            <label for="providerSelect" class="block text-sm font-medium text-zinc-300 mt-2">Select Content Provider:</label>
+                            <select id="providerSelect" class="mt-1 block w-full bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                <option value="superembed">SuperEmbed</option>
+                                <option value="embedsoap">EmbedSoap</option>
+                            </select>
                         </div>
                         ${mediaType === 'tv' ? `
                         <div class="mt-4">
@@ -326,29 +338,73 @@
                 `;
 
                 const playButton = document.getElementById('playButton');
-                playButton.addEventListener('click', () => {
+                playButton.addEventListener('click', async () => {
                     const videoPlayer = selectedMovie.querySelector('#videoPlayer');
                     const movieInfo = selectedMovie.querySelector('#movieInfo');
                     const poster = selectedMovie.querySelector('#poster');
                     const languageSelect = document.getElementById('languageSelect');
                     const language = languageSelect.value;
+
+                    const providerSelect = document.getElementById('providerSelect');
+                    const provider = providerSelect.value;
+
                     if (!videoPlayer || !movieInfo || !poster) {
                         console.error("Error: videoPlayer, movieInfo, or poster elements not found.");
                         return;
                     }
+
+                    let endpoint;
+
                     if (mediaType === 'tv') {
                         const seasonSelect = document.getElementById('seasonSelect');
                         const episodeSelect = document.getElementById('episodeSelect');
+                        
                         const seasonNumber = seasonSelect.value;
                         const episodeNumber = episodeSelect.value;
-                        const endpoint = language === 'fr' ? `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}` : `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`;
-                        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;" allowfullscreen></iframe>`;
+
+                        if (!seasonNumber || !episodeNumber) {
+                            console.error("Error: Season number or episode number not selected.");
+                            return;
+                        }
+
+                        if (language === 'fr') {
+                            endpoint = `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}`;
+                        } else {
+                            if (provider === 'superembed') {
+                                endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`;
+                            } else if (provider === 'embedsoap') {
+                                endpoint = `https://www.embedsoap.com/embed/tv/?id=${media.id}&s=${seasonNumber}&e=${episodeNumber}`;
+                            }
+                        }
                     } else {
-                        const endpoint = language === 'fr' ? `https://frembed.pro/api/film.php?id=${media.id}` : `https://multiembed.mov/?video_id=${media.id}&tmdb=1`;
-                        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;" allowfullscreen></iframe>`;
+                        if (language === 'fr') {
+                            endpoint = `https://frembed.pro/api/film.php?id=${media.id}`;
+                        } else {
+                            if (provider === 'superembed') {
+                                endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1`;
+                            } else if (provider === 'embedsoap') {
+                                endpoint = `https://www.embedsoap.com/embed/movie/${media.id}`;
+                            }
+                        }
                     }
+
+                    videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;" allowfullscreen></iframe>`;
                     videoPlayer.classList.remove('hidden');
                     movieInfo.classList.add('hidden');
+                });
+
+                languageSelect.addEventListener('change', () => {
+                    const providerSelect = document.getElementById('providerSelect');
+                    if (languageSelect.value === 'fr') {
+                        providerSelect.classList.add('hidden');
+                    } else {
+                        providerSelect.classList.remove('hidden');
+                    }
+                    playButton.click();
+                });
+
+                providerSelect.addEventListener('change', () => {
+                    playButton.click();
                 });
 
                 if (mediaType === 'tv') {
