@@ -358,6 +358,7 @@
                                 <option value="embedsoap">EmbedSoap</option>
                                 <option value="autoembed">AutoEmbed</option>
                                 <option value="smashystream">SmashyStream</option>
+                                <option value="trailer">Trailer</option>
                             </select>
                         </div>
                         ${mediaType === 'tv' ? `
@@ -424,6 +425,16 @@
                                 endpoint = `https://autoembed.co/tv/tmdb/${media.id}-${seasonNumber}-${episodeNumber}`;
                             } else if (provider === 'smashystream') {
                                 endpoint = `https://player.smashy.stream/tv/${media.id}?s=${seasonNumber}&e=${episodeNumber}`;
+                            } else if (provider === 'trailer') {
+                                const trailerResponse = await fetch(`https://api.themoviedb.org/3/${mediaType}/${media.id}/videos?api_key=${localStorage.getItem('apiKey')}`);
+                                const trailerData = await trailerResponse.json();
+                                const trailer = trailerData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                                if (trailer) {
+                                    endpoint = `https://www.youtube.com/embed/${trailer.key}`;
+                                } else {
+                                    alert('Trailer not available.');
+                                    return;
+                                }
                             }
                         }
                     } else {
@@ -438,6 +449,16 @@
                                 endpoint = `https://autoembed.co/movie/tmdb/${media.id}`;
                             } else if (provider === 'smashystream') {
                                 endpoint = `https://player.smashy.stream/movie/${media.id}`;
+                            } else if (provider === 'trailer') {
+                                const trailerResponse = await fetch(`https://api.themoviedb.org/3/${mediaType}/${media.id}/videos?api_key=${localStorage.getItem('apiKey')}`);
+                                const trailerData = await trailerResponse.json();
+                                const trailer = trailerData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                                if (trailer) {
+                                    endpoint = `https://www.youtube.com/embed/${trailer.key}`;
+                                } else {
+                                    alert('Trailer not available.');
+                                    return;
+                                }
                             }
                         }
                     }
