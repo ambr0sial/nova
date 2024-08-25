@@ -12,220 +12,84 @@
     <meta content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png" property="og:image"/>
     <meta content="#A17FC0" data-react-helmet="true" name="theme-color"/>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>/* Global Styles */
-    body {
-        background-color: #1e1e2f; /* Darker background for better contrast */
-        background-image: linear-gradient(135deg, #1e1e2f 0%, #3a2a6d 100%); /* Adjusted gradient for a smoother look */
-        color: #e0e0e0; /* Light text color for readability */
-        font-family: 'Poppins', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    a {
-        color: #9b5de5; /* Accent color for links */
-        text-decoration: none;
-    }
-
-    a:hover {
-        text-decoration: underline; /* Underline links on hover */
-    }
-
-    #selectedMovie {
-        display: flex;
-        flex-direction: column; /* Default to column layout on mobile */
-        gap: 1.5rem; /* Increased gap for better spacing */
-        padding: 1rem; /* Added padding */
-    }
-
-    .rounded {
-        border-radius: 0.75rem; /* Slightly more rounded corners */
-    }
-
-    .hover\:scale-105:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease-in-out; /* Smooth scaling transition */
-    }
-
-    .focus\:outline-none:focus {
-        outline: none;
-    }
-
-    .focus\:ring-2:focus {
-        box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.5); /* Updated ring color */
-    }
-
-    /* Header/Footer Buttons */
-    #githubButton, #kofiButton {
-        position: fixed;
-        top: 1rem;
-        right: 1rem;
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(0, 0, 0, 0.6); /* Slightly lighter background */
-        padding: 0.5rem;
-        border-radius: 50%;
-        transition: background-color 0.3s ease;
-    }
-
-    #githubButton img, #kofiButton img {
-        width: 36px; /* Slightly larger icons */
-        height: 36px;
-        border-radius: 50%;
-    }
-
-    #githubButton:hover, #kofiButton:hover {
-        background-color: rgba(0, 0, 0, 0.8); /* Darker background on hover */
-    }
-
-    #kofiButton {
-        right: 4rem; /* Adjusted position for better spacing */
-    }
-
-    /* Media Layout */
-    @media (min-width: 768px) {
-        #selectedMovie {
-            flex-direction: row;
-            gap: 2rem; /* Increased gap for larger screens */
-        }
-    }
-
-    /* Login and Suggestions */
-    #loginPage {
-        background-color: rgba(31, 41, 55, 0.9); /* Slightly lighter for contrast */
-    }
-
-    #searchSuggestions {
-        z-index: 10;
-        background-color: #2b2b3e; /* Background color for search suggestions */
-        border: 1px solid #3a3a4f; /* Border color for suggestions */
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-    }
-
-    /* Container */
-    .container {
-        max-width: 1200px; /* Added max-width for better readability */
-        padding: 0 1.5rem; /* Increased padding for better spacing */
-        margin: 0 auto;
-    }
-
-    /* Buttons */
-    button {
-        background-color: #9b5de5; /* Primary button color */
-        color: #fff;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-    button:hover {
-        background-color: #7a3cc9; /* Darker shade for hover */
-    }
-
-    button:active {
-        transform: scale(0.98); /* Slightly reduce scale on click */
-    }
-
-    </style>
+    <link rel="stylesheet" href="themes/themes.css"> <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="themes/mediacard.css"> <!-- Link to the media card CSS file -->
 </head>
-<body class="bg-gradient-to-br from-gray-800 to-purple-600 text-white min-h-screen">
-    <a href="https://ko-fi.com/ambrosial" target="_blank" id="kofiButton">
-        <img src="https://assets-global.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-Fi" class="w-8 h-8">
-    </a>
-    <a href="https://github.com/ambr0sial/nova" target="_blank" id="githubButton">
-        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="w-8 h-8">
-    </a>
-    <div id="loginPage" class="min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-lg p-8 space-y-6 bg-zinc-800 rounded-lg shadow-lg">
-            <h1 class="text-4xl font-bold text-center">Nova</h1>
-            <p class="text-sm text-zinc-400 text-center">Please input your TMDB API key to access the service.</p>
-
-            <form id="apiKeyForm" class="space-y-4">
-                <input type="text" id="apiKeyInput" placeholder="Enter your TMDB API Key here" class="w-full p-3 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Submit
-                </button>
-
-                <div class="text-center text-sm text-zinc-400">
-                    or
-                </div>
-
-                <button type="button" id="usePublicApiKey" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Use a public API key
-                </button>
-            </form>
-
-            <p class="text-xs text-zinc-400 text-center">
-                Note: If the public API key doesn't work anymore, just use your own. It will rarely be updated as it's not my main priority.
-            </p>
+<body>
+<a href="https://ko-fi.com/ambrosial" target="_blank" id="kofiButton">
+    <img src="https://assets-global.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-Fi">
+</a>
+<a href="https://github.com/ambr0sial/nova" target="_blank" id="githubButton">
+    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub">
+</a>
+<div id="loginPage" class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-lg p-8 space-y-6 bg-zinc-800 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold text-center">Nova</h1>
+        <p class="text-sm text-zinc-400 text-center">Please input your TMDB API key to access the service.</p>
+        <form id="apiKeyForm" class="space-y-4">
+            <input type="text" id="apiKeyInput" placeholder="Enter your TMDB API Key here" class="w-full p-3 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Submit
+            </button>
+            <div class="text-center text-sm text-zinc-400">or</div>
+            <button type="button" id="usePublicApiKey" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Use a public API key
+            </button>
+        </form>
+        <p class="text-xs text-zinc-400 text-center">
+            Note: If the public API key doesn't work anymore, just use your own. It will rarely be updated as it's not my main priority.
+        </p>
+    </div>
+</div>
+<div id="homePage" class="hidden">
+    <div class="container mx-auto px-4 py-8">
+        <header class="flex justify-between items-center py-4">
+            <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
+            <div class="text-center text-sm text-zinc-400 mt-4">This website is not affiliated with novastream.to</div>
+            <nav>
+                <a href="https://pastebin.com/raw/5kqU1Up8" class="text-zinc-300 hover:text-white px-3 py-2 rounded">About</a>
+            </nav>
+        </header>
+        <div class="flex gap-4 mb-8">
+            <div class="relative flex-1">
+                <input type="text" id="searchInput" placeholder="Search for something" class="w-full p-3 rounded-l bg-zinc-800 border border-zinc-700 focus:border-purple-500 focus:outline-none">
+                <button id="searchButton" class="absolute inset-y-0 right-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-r">Search</button>
+                <div id="searchSuggestions" class="absolute w-full bg-zinc-800 text-white rounded-b-lg mt-1 hidden"></div>
+            </div>
+            <button id="randomButton" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded">Random Movie</button>
+        </div>
+        <h2 class="text-xl font-semibold mb-4">Upcoming Media</h2>
+        <div id="upcomingMedia" class="mb-8 ml-0"></div>
+        <h2 class="text-xl font-semibold mb-4">Popular Media</h2>
+        <div id="popularMovies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        <div id="paginationControls" class="flex justify-center items-center mt-4">
+            <button id="prevPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Previous</button>
+            <span id="currentPage" class="text-white mx-2">1</span>
+            <button id="nextPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Next</button>
+        </div>
+        <h2 class="text-xl font-semibold mt-8 mb-4">Selected Media</h2>
+        <div id="selectedMovie" class="bg-zinc-800 p-4 rounded-lg flex">
+            <div id="videoPlayer" class="w-full h-full"></div>
+        </div>
+        <footer class="text-center text-gray-400 mt-8">
+            Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 12/08/24
+        </footer>
+        <div class="text-center text-sm text-zinc-400 mt-4">
+            Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
+        </div>
+        <div id="welcomeBanner" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center">
+            <button id="closeBanner" class="text-gray-300 hover:text-white float-right mt-1 mr-1">×</button>
+            <p>Welcome to Nova! Here are our only official domains:</p>
+            <p>novastream.top &nbsp; novastream.vercel.app &nbsp; novastream-alt.netlify.app &nbsp; novastream.onrender.com</p>
         </div>
     </div>
+</div>
+</body>
+</html>
 
-    <div id="homePage" class="hidden">
-        <div class="container mx-auto px-4 py-8">
-            <header class="flex justify-between items-center py-4">
-                <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
-                <div class="text-center text-sm text-zinc-400 mt-4">
-                    This website is not affiliated with novastream.to
-                </div>
-                <nav>
-                    <a href="https://pastebin.com/raw/5kqU1Up8" class="text-zinc-300 hover:text-white px-3 py-2 rounded">About</a>
-                </nav>
-            </header>
 
-            <div class="flex gap-4 mb-8">
-                <div class="relative flex-1">
-                    <input type="text" id="searchInput" placeholder="Search for something" class="w-full p-3 rounded-l bg-zinc-800 border border-zinc-700 focus:border-purple-500 focus:outline-none">
-                    <button id="searchButton" class="absolute inset-y-0 right-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-r">
-                        Search
-                    </button>
-                    <div id="searchSuggestions" class="absolute w-full bg-zinc-800 text-white rounded-b-lg mt-1 hidden"></div>
-                </div>
 
-                <button id="randomButton" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded">
-                    Random Movie
-                </button>
-            </div>
-
-            <h2 class="text-xl font-semibold mb-4">Upcoming Media</h2>
-            <div id="upcomingMedia" class="mb-8 ml-0"></div>
-
-            <h2 class="text-xl font-semibold mb-4">Popular Media</h2>
-            <div id="popularMovies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-            <div id="paginationControls" class="flex justify-center items-center mt-4">
-                <button id="prevPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Previous</button>
-                <span id="currentPage" class="text-white mx-2">1</span>
-                <button id="nextPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Next</button>
-            </div>
-
-            <h2 class="text-xl font-semibold mt-8 mb-4">Selected Media</h2>
-            <div id="selectedMovie" class="bg-zinc-800 p-4 rounded-lg flex">
-                <div id="videoPlayer" class="w-full h-full"></div>
-            </div>
-
-            <footer class="text-center text-gray-400 mt-8">
-                Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 12/08/24
-            </footer>
-            <div class="text-center text-sm text-zinc-400 mt-4">
-                Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
-            </div>
-
-            <div id="welcomeBanner" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center">
-                <button id="closeBanner" class="text-gray-300 hover:text-white float-right mt-1 mr-1">×</button>
-                <p>Welcome to Nova! Here are our only official domains:</p>
-                <p>novastream.top &nbsp; novastream.vercel.app &nbsp; novastream-alt.netlify.app &nbsp; novastream.onrender.com</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function () {
             const loginPage = document.getElementById('loginPage');
             const homePage = document.getElementById('homePage');
@@ -385,26 +249,26 @@
             async function displaySelectedMedia(media, mediaType) {
                 const selectedMovie = document.getElementById('selectedMovie');
                 selectedMovie.innerHTML = `
-        <div class="flex flex-col md:flex-row md:space-x-8 p-4 md:p-8 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+        <div class="flex flex-col md:flex-row md:space-x-8 p-4 md:p-8 bg-gray-900 rounded-lg shadow-lg border border-gray-800">
             <!-- Media Poster -->
-            <div class="w-full md:w-1/3 mb-6 md:mb-0 relative">
-                <img id="poster" src="https://image.tmdb.org/t/p/w500${media.poster_path}" alt="${media.title || media.name}" class="w-full h-auto rounded-lg shadow-md object-cover">
+            <div class="relative w-full md:w-1/4 mb-6 md:mb-0">
+                <img id="poster" src="https://image.tmdb.org/t/p/w500${media.poster_path}" alt="${media.title || media.name}" class="w-full h-auto rounded-lg shadow-lg object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-40 rounded-lg"></div>
             </div>
 
             <!-- Media Details & Controls -->
-            <div id="movieInfo" class="w-full md:w-2/3 space-y-6">
-                <h2 class="text-3xl md:text-4xl font-bold text-white">${media.title || media.name}</h2>
-                <p class="text-lg text-gray-300">${media.release_date || media.first_air_date}</p>
-                <p class="text-base text-gray-200">${media.overview}</p>
+            <div id="movieInfo" class="w-full md:w-3/4 flex flex-col space-y-6">
+                <h2 class="text-4xl font-bold text-white">${media.title || media.name}</h2>
+                <p class="text-lg text-gray-400">${media.release_date || media.first_air_date}</p>
+                <p class="text-base text-gray-300">${media.overview}</p>
                 <p class="text-sm text-gray-400">Type: ${mediaType === 'movie' ? 'Movie' : 'TV Show'}</p>
 
                 <!-- Media Options -->
-                <div class="bg-gray-700 p-4 rounded-lg border border-gray-600 space-y-4">
+                <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-4">
                     <!-- Language Selection -->
                     <div>
                         <label for="languageSelect" class="block text-sm font-medium text-gray-300">Language:</label>
-                        <select id="languageSelect" class="mt-1 block w-full bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <select id="languageSelect" class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                             <option value="en">English</option>
                             <option value="fr">French</option>
                         </select>
@@ -413,7 +277,7 @@
                     <!-- Content Provider Selection -->
                     <div>
                         <label for="providerSelect" class="block text-sm font-medium text-gray-300">Content Provider:</label>
-                        <select id="providerSelect" class="mt-1 block w-full bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <select id="providerSelect" class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                             <option value="superembed">SuperEmbed</option>
                             <option value="embedsoap">EmbedSoap</option>
                             <option value="autoembed">AutoEmbed</option>
@@ -426,7 +290,7 @@
                     <!-- Season Selection -->
                     <div>
                         <label for="seasonSelect" class="block text-sm font-medium text-gray-300">Season:</label>
-                        <select id="seasonSelect" class="mt-1 block w-full bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <select id="seasonSelect" class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
                             ${media.seasons.map(season => `<option value="${season.season_number}">${season.name}</option>`).join('')}
                         </select>
                     </div>
@@ -434,7 +298,7 @@
                     <!-- Episode Selection -->
                     <div>
                         <label for="episodeSelect" class="block text-sm font-medium text-gray-300">Episode:</label>
-                        <select id="episodeSelect" class="mt-1 block w-full bg-gray-800 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"></select>
+                        <select id="episodeSelect" class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"></select>
                     </div>
                     ` : ''}
                 </div>
@@ -600,7 +464,7 @@
 
                 results.forEach(media => {
                     const mediaCard = document.createElement('div');
-                    mediaCard.classList.add('bg-gray-900', 'p-6', 'rounded-lg', 'shadow-lg', 'cursor-pointer', 'transition-transform', 'hover:scale-105', 'relative', 'flex', 'flex-col', 'items-start', 'group', 'overflow-hidden');
+                    mediaCard.classList.add('media-card', 'bg-gray-900', 'p-6', 'rounded-lg', 'shadow-lg', 'cursor-pointer', 'transition-transform', 'hover:scale-105', 'relative', 'flex', 'flex-col', 'items-start', 'group', 'overflow-hidden');
 
                     // Format the release date
                     const formattedDate = media.release_date ? new Date(media.release_date).toLocaleDateString() : (media.first_air_date ? new Date(media.first_air_date).toLocaleDateString() : 'Unknown Date');
@@ -631,6 +495,7 @@
                     popularMovies.appendChild(mediaCard);
                 });
             }
+
 
 
 
