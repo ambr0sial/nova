@@ -315,15 +315,59 @@
     `;
 
                 const playButton = document.getElementById('playButton');
+                const languageSelect = document.getElementById('languageSelect');
+                const providerSelect = document.getElementById('providerSelect');
+
+                // Handle language selection change
+                languageSelect.addEventListener('change', () => {
+                    if (languageSelect.value === 'fr') {
+                        providerSelect.classList.add('hidden');
+                    } else {
+                        providerSelect.classList.remove('hidden');
+                    }
+                    playButton.click();
+                });
+
+                providerSelect.addEventListener('change', () => {
+                    playButton.click();
+                });
+
+                if (mediaType === 'tv') {
+                    const seasonSelect = document.getElementById('seasonSelect');
+                    const episodeSelect = document.getElementById('episodeSelect');
+
+                    async function updateEpisodes() {
+                        const seasonNumber = seasonSelect.value;
+                        const response = await fetch(`https://api.themoviedb.org/3/tv/${media.id}/season/${seasonNumber}?api_key=${localStorage.getItem('apiKey')}`);
+                        if (response.ok) {
+                            const season = await response.json();
+                            episodeSelect.innerHTML = season.episodes.map(episode =>
+                                `<option value="${episode.episode_number}">${episode.episode_number}: ${episode.name}</option>`
+                            ).join('');
+                        } else {
+                            console.error('Failed to fetch season details.');
+                        }
+                    }
+
+
+                    // Event listener for season change
+                    seasonSelect.addEventListener('change', async () => {
+                        await updateEpisodes();
+                    });
+
+                    // Event listener for episode change
+                    episodeSelect.addEventListener('change', () => {
+                        playButton.click();
+                    });
+
+                    // Initial call to populate episodes
+                    updateEpisodes();
+                }
+
                 playButton.addEventListener('click', async () => {
                     const videoPlayer = selectedMovie.querySelector('#videoPlayer');
                     const movieInfo = selectedMovie.querySelector('#movieInfo');
                     const poster = selectedMovie.querySelector('#poster');
-                    const languageSelect = document.getElementById('languageSelect');
-                    const language = languageSelect.value;
-
-                    const providerSelect = document.getElementById('providerSelect');
-                    const provider = providerSelect.value;
 
                     if (!videoPlayer || !movieInfo || !poster) {
                         console.error("Error: videoPlayer, movieInfo, or poster elements not found.");
@@ -344,10 +388,10 @@
                             return;
                         }
 
-                        if (language === 'fr') {
+                        if (languageSelect.value === 'fr') {
                             endpoint = `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}`;
                         } else {
-                            switch (provider) {
+                            switch (providerSelect.value) {
                                 case 'superembed':
                                     endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`;
                                     break;
@@ -374,10 +418,10 @@
                             }
                         }
                     } else {
-                        if (language === 'fr') {
+                        if (languageSelect.value === 'fr') {
                             endpoint = `https://frembed.pro/api/film.php?id=${media.id}`;
                         } else {
-                            switch (provider) {
+                            switch (providerSelect.value) {
                                 case 'superembed':
                                     endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1`;
                                     break;
@@ -411,52 +455,9 @@
                 });
 
 
-
-
-
-            languageSelect.addEventListener('change', () => {
-                    const providerSelect = document.getElementById('providerSelect');
-                    if (languageSelect.value === 'fr') {
-                        providerSelect.classList.add('hidden');
-                    } else {
-                        providerSelect.classList.remove('hidden');
-                    }
-                    playButton.click();
-                });
-
-                providerSelect.addEventListener('change', () => {
-                    playButton.click();
-                });
-
-                if (mediaType === 'tv') {
-                    const seasonSelect = document.getElementById('seasonSelect');
-                    const episodeSelect = document.getElementById('episodeSelect');
-
-                    async function updateEpisodes() {
-                        const seasonNumber = seasonSelect.value;
-                        const response = await fetch(`https://api.themoviedb.org/3/tv/${media.id}/season/${seasonNumber}?api_key=${localStorage.getItem('apiKey')}`);
-                        if (response.ok) {
-                            const season = await response.json();
-                            episodeSelect.innerHTML = season.episodes.map(episode => `<option value="${episode.episode_number}">${episode.name}</option>`).join('');
-                        } else {
-                            console.error('Failed to fetch season details.');
-                        }
-                    }
-
-                    seasonSelect.addEventListener('change', async () => {
-                        await updateEpisodes();
-                        playButton.click();
-                    });
-
-                    episodeSelect.addEventListener('change', () => {
-                        playButton.click();
-                    });
-
-                    updateEpisodes();
-                }
-
                 selectedMovie.scrollIntoView({ behavior: 'smooth' });
             }
+
 
             function displaySearchResults(results) {
                 const popularMovies = document.getElementById('popularMovies');
