@@ -168,18 +168,46 @@ button:active {
 
 /* Search suggestions styles */
 #searchSuggestions {
-    z-index: 10;
-    background-color: #2b2b3e;
-    border: 1px solid #3a3a4f;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #1e1e2a;
+    border: 1px solid #2b2b3e;
     border-radius: 0.5rem;
     padding: 0.5rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: opacity 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
 }
 
-#searchSuggestions:hover {
-    opacity: 0.95;
+#searchSuggestions .suggestion-item {
+    padding: 12px;
+    border-bottom: 1px solid #2b2b3e;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box;
 }
+
+#searchSuggestions .suggestion-item:last-child {
+    border-bottom: none;
+}
+
+#searchSuggestions .suggestion-item:hover {
+    background-color: #292940;
+    transform: scale(1.03);
+}
+
+/* Prevent horizontal overflow */
+#searchSuggestions {
+    overflow-x: hidden;
+}
+
 
 /* Container max-width */
 .container {
