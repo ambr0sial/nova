@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Nova</title>
@@ -14,6 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="themes/themes.css"> <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="themes/mediacard.css"> <!-- Link to the media card CSS file -->
+    <link rel="stylesheet" href="themes/about.css"> <!-- Link to the new About page CSS file -->
 </head>
 <body>
 <a href="https://ko-fi.com/ambrosial" target="_blank" id="kofiButton">
@@ -41,13 +42,14 @@
         </p>
     </div>
 </div>
+
 <div id="homePage" class="hidden">
     <div class="container mx-auto px-4 py-8">
         <header class="flex justify-between items-center py-4">
             <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
             <div class="text-center text-sm text-zinc-400 mt-4">This website is not affiliated with novastream.to</div>
             <nav>
-                <a href="https://pastebin.com/raw/5kqU1Up8" class="text-zinc-300 hover:text-white px-3 py-2 rounded">About</a>
+                <a href="#aboutPage" class="text-zinc-300 hover:text-white px-3 py-2 rounded" id="aboutButton">About</a>
             </nav>
         </header>
         <div class="flex gap-4 mb-8">
@@ -72,7 +74,7 @@
             <div id="videoPlayer" class="w-full h-full"></div>
         </div>
         <footer class="text-center text-gray-400 mt-8">
-            Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 12/08/24
+            Made with <span id="homeHeartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 12/08/24
         </footer>
         <div class="text-center text-sm text-zinc-400 mt-4">
             Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
@@ -84,8 +86,63 @@
         </div>
     </div>
 </div>
+
+<div id="aboutPage" class="hidden min-h-screen flex items-center justify-center bg-zinc-900 text-white">
+    <div class="w-full max-w-3xl p-8 bg-zinc-800 rounded-lg shadow-lg">
+        <header class="mb-6">
+            <h1 class="text-4xl font-bold text-center text-purple-400">About Nova</h1>
+        </header>
+        <section class="space-y-4">
+            <p class="text-sm text-zinc-400">
+                I've always been a believer in freedom, especially when it comes to streaming and accessing information. Isn't the Internet supposed to be about sharing and accessing information freely? I understand the importance of supporting creators and the industry, but not everyone can afford hefty subscription fees for services like Netflix.
+            </p>
+            <p class="text-sm text-zinc-400">
+                When I was a kid, I thought it was unfair to pay for things and dreamed of a shop where everything was free. Of course, I didn’t fully grasp how money and the economy worked back then, but my dislike for high prices has persisted. The Internet is my go-to for everything—information, entertainment, and connecting with people—but when platforms start charging exorbitant fees, it feels like they’re excluding a large portion of the population.
+            </p>
+            <p class="text-sm text-zinc-400">
+                I’ve always dreamed of a world where quality content is accessible to everyone, regardless of their financial situation. Sure, free trials are nice, but they’re just teasers. It’s like they’re saying, "You can window-shop, but to really enjoy the goods, you need to pay."
+            </p>
+            <p class="text-sm text-zinc-400">
+                I believe there’s a middle ground—a way to support the industry without making access to content a privilege. That’s where Nova comes in. By breaking down the paywall, Nova provides a space where everyone can enjoy quality content without burning a hole in their pocket.
+            </p>
+            <p class="text-sm text-zinc-400">
+                Let's face it: not everyone can afford to drop $20 a month on Netflix. But everyone deserves a chance to escape into the world of movies and shows. So yes, call me a dreamer, but I believe in a world where watching content is as free as sharing your thoughts on the Internet. After all, isn’t freedom what the digital age is all about?
+            </p>
+        </section>
+        <footer class="text-center text-sm text-zinc-400 mt-8">
+            Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone. Made with <span id="aboutHeartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 12/08/24
+        </footer>
+        <div class="text-center mt-6">
+            <button id="returnHomeButton" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Return to Home</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Example script to handle navigation between pages
+    document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            document.querySelectorAll('#homePage, #aboutPage').forEach(page => page.classList.add('hidden'));
+            document.querySelector(this.getAttribute('href')).classList.remove('hidden');
+        });
+    });
+
+    // Handle return to home button
+    document.getElementById('returnHomeButton').addEventListener('click', function() {
+        document.querySelectorAll('#homePage, #aboutPage').forEach(page => page.classList.add('hidden'));
+        document.getElementById('homePage').classList.remove('hidden');
+    });
+
+    // Optionally handle closing the welcome banner
+    document.getElementById('closeBanner').addEventListener('click', function() {
+        document.getElementById('welcomeBanner').style.display = 'none';
+    });
+</script>
 </body>
 </html>
+
+
 
 
 
@@ -349,7 +406,6 @@
                         }
                     }
 
-
                     // Event listener for season change
                     seasonSelect.addEventListener('change', async () => {
                         await updateEpisodes();
@@ -364,6 +420,7 @@
                     updateEpisodes();
                 }
 
+                // Handle play button click
                 playButton.addEventListener('click', async () => {
                     const videoPlayer = selectedMovie.querySelector('#videoPlayer');
                     const movieInfo = selectedMovie.querySelector('#movieInfo');
@@ -454,9 +511,9 @@
                     movieInfo.classList.add('hidden');
                 });
 
-
                 selectedMovie.scrollIntoView({ behavior: 'smooth' });
             }
+
 
 
             function displaySearchResults(results) {

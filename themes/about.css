@@ -22,65 +22,34 @@ a:hover {
 }
 
 /* Container styles with lighting and hover effect */
-#selectedMovie {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+#aboutPage {
+    background-color: #1a1a3c; /* Dark background color for consistency */
+    color: #e0e0e0; /* Light text color */
     padding: 1.5rem;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    background: linear-gradient(135deg, #282843, #1a1a3c);
-    box-shadow: 0 8px 16px rgba(138, 43, 226, 0.4);
-    border-radius: 0.75rem;
-    position: relative;
 }
 
-/* Hover effect for selected movie container */
-#selectedMovie:hover {
-    opacity: 0.9;
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(138, 43, 226, 0.6); /* Purple glow on hover */
+#aboutPage header {
+    margin-bottom: 2rem;
 }
 
-/* Utility classes */
-.rounded {
-    border-radius: 0.75rem;
+#aboutPage h1 {
+    color: #8a2be2; /* Purple color for headings */
+    text-align: center;
 }
 
-.hover\:scale-105:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease-in-out;
+#aboutPage section {
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
-.focus\:outline-none:focus {
-    outline: none;
+#aboutPage footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: #a0a0a0;
 }
 
-.focus\:ring-2:focus {
-    box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.6);
-}
-
-/* Dropdown styles */
-select {
-    background-color: #1a202c; /* Dark background */
-    color: #e2e8f0; /* Light text */
-    padding: 0.5rem; /* Padding */
-    border-radius: 0.375rem; /* Rounded corners */
-    border: 1px solid #4a5568; /* Border color */
-    transition: border-color 0.2s, box-shadow 0.2s; /* Transition for focus */
-}
-
-select:focus {
-    border-color: #a855f7; /* Purple border on focus */
-    outline: none; /* Remove default outline */
-    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5); /* Focus shadow */
-}
-
-/* Label styles */
-label {
-    display: block; /* Block display */
-    margin-bottom: 0.5rem; /* Space below label */
-    font-size: 0.875rem; /* Smaller text */
-    color: #e2e8f0; /* Light text */
+#aboutPage footer #aboutHeartIcon {
+    color: #e06c75;
 }
 
 /* Button styles with lighting and hover effect */
@@ -211,29 +180,45 @@ footer #heartIcon {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Home button styles */
-#homeButton {
-    position: fixed;
-    top: 1rem;
-    left: 1rem; /* Position the button at the top-left corner */
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+/* About page specific styles */
+#aboutPage {
+    padding: 2rem;
 }
 
-#homeButton:hover {
-    background-color: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+#aboutPage header {
+    margin-bottom: 2rem;
+}
+
+#aboutPage h1 {
+    font-size: 2.5rem;
+}
+
+#aboutPage section {
+    margin-bottom: 2rem;
+}
+
+#aboutPage footer {
+    margin-top: 2rem;
+}
+
+#aboutPage button {
+    background-color: #9b5de5;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#aboutPage button:hover {
+    background-color: #7a3cc9;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(155, 93, 229, 0.6); /* Adds a glow effect */
     opacity: 0.9;
 }
 
-#homeButton img {
-    width: 24px;
-    height: 24px;
+#aboutPage button:active {
+    transform: scale(0.98);
 }
