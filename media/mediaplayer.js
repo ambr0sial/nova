@@ -30,6 +30,7 @@ async function displaySelectedMedia(media, mediaType) {
                     <div>
                         <label for="providerSelect" class="block text-sm font-medium text-gray-300">Content Provider:</label>
                         <select id="providerSelect" class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <option value="vidsrc">VidSrc</option> <!-- Top Provider Option -->
                             <option value="superembed">SuperEmbed</option>
                             <option value="embedsoap">EmbedSoap</option>
                             <option value="autoembed">AutoEmbed</option>
@@ -69,6 +70,9 @@ async function displaySelectedMedia(media, mediaType) {
     const playButton = document.getElementById('playButton');
     const languageSelect = document.getElementById('languageSelect');
     const providerSelect = document.getElementById('providerSelect');
+    const videoPlayer = selectedMovie.querySelector('#videoPlayer');
+    const poster = selectedMovie.querySelector('#poster');
+    const movieInfo = selectedMovie.querySelector('#movieInfo');
 
     // Handle language selection change
     languageSelect.addEventListener('change', () => {
@@ -117,10 +121,6 @@ async function displaySelectedMedia(media, mediaType) {
 
     // Handle play button click
     playButton.addEventListener('click', async () => {
-        const videoPlayer = selectedMovie.querySelector('#videoPlayer');
-        const movieInfo = selectedMovie.querySelector('#movieInfo');
-        const poster = selectedMovie.querySelector('#poster');
-
         if (!videoPlayer || !movieInfo || !poster) {
             console.error("Error: videoPlayer, movieInfo, or poster elements not found.");
             return;
@@ -144,6 +144,9 @@ async function displaySelectedMedia(media, mediaType) {
                 endpoint = `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}`;
             } else {
                 switch (providerSelect.value) {
+                    case 'vidsrc':
+                        endpoint = `https://vidsrc.cc/v2/embed/tv/${media.id}?season=${seasonNumber}&episode=${episodeNumber}`;
+                        break;
                     case 'superembed':
                         endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`;
                         break;
@@ -174,6 +177,9 @@ async function displaySelectedMedia(media, mediaType) {
                 endpoint = `https://frembed.pro/api/film.php?id=${media.id}`;
             } else {
                 switch (providerSelect.value) {
+                    case 'vidsrc':
+                        endpoint = `https://vidsrc.cc/v2/embed/movie/${media.id}`;
+                        break;
                     case 'superembed':
                         endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1`;
                         break;
@@ -204,6 +210,7 @@ async function displaySelectedMedia(media, mediaType) {
         videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full h-full" allowfullscreen></iframe>`;
         videoPlayer.classList.remove('hidden');
         movieInfo.classList.add('hidden');
+        poster.classList.add('hidden'); // Hide the poster when video is playing
     });
 
     selectedMovie.scrollIntoView({ behavior: 'smooth' });
