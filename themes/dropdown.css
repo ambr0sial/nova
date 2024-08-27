@@ -1,0 +1,27 @@
+/* themes/dropdown.css */
+.dropdown {
+    background-color: #2d2d2d; /* Dark background for dropdown */
+    border: 1px solid #444; /* Border color */
+    color: #ddd; /* Text color */
+    padding: 8px; /* Padding */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    font-family: 'Arial', sans-serif; /* Font family */
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+}
+
+.dropdown:focus {
+    outline: none; /* Remove default outline */
+    border-color: #5c5c5c; /* Highlight border on focus */
+    background-color: #333; /* Darker background on focus */
+}
+
+.dropdown option {
+    background-color: #2d2d2d; /* Dark background for options */
+    color: #ddd; /* Text color for options */
+}
+
+.dropdown optgroup {
+    font-weight: bold; /* Bold font for optgroup */
+    padding-top: 8px; /* Space above optgroup */
+}

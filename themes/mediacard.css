@@ -2,8 +2,8 @@
 .media-card {
     background-color: rgba(30, 30, 30, 0.9); /* Darker background for better contrast */
     padding: 1.5rem;
-    border-radius: 1rem; /* Slightly increased border radius for a more rounded look */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6); /* Enhanced shadow for depth */
+    border-radius: 1.25rem; /* Slightly more rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); /* Enhanced shadow for depth */
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, filter 0.3s ease;
     position: relative;
@@ -12,14 +12,14 @@
     align-items: start;
     overflow: hidden;
     text-align: left;
-    backdrop-filter: blur(12px); /* Increased blur for a stronger glass effect */
+    backdrop-filter: blur(10px); /* Slightly less blur for subtlety */
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.9), rgba(0, 0, 0, 0.6)); /* Gradient background for depth */
 }
 
 .media-card:hover {
-    transform: scale(1.05) rotateY(5deg); /* Subtle rotation and scaling */
+    transform: scale(1.05) rotateY(2deg); /* Subtle rotation and scaling */
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7), 0 0 20px rgba(138, 43, 226, 0.6); /* Enhanced shadow and glow */
-    background-color: rgba(39, 39, 39, 0.95); /* Slightly less transparent on hover */
+    background-color: rgba(35, 35, 35, 0.95); /* Slightly less transparent on hover */
 }
 
 .media-card::before {
@@ -29,8 +29,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: 1rem; /* Adjusted to match card border radius */
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), transparent);
+    border-radius: 1.25rem; /* Adjusted to match card border radius */
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), transparent); /* Softer gradient */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -38,22 +38,22 @@
 
 .media-card:hover::before {
     opacity: 1;
-    transform: scale(1.1); /* Enlarged glowing border on hover */
-    box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.3); /* Stronger glow effect */
+    transform: scale(1.05); /* Slightly enlarged glowing border on hover */
+    box-shadow: 0 0 25px 8px rgba(255, 255, 255, 0.3); /* Subtle glow effect */
 }
 
 .media-card img {
     width: 100%;
-    height: 22rem; /* Increased height for better visuals */
+    height: 20rem; /* Adjusted height for better proportion */
     object-fit: cover;
-    border-radius: 1rem; /* Matching border radius */
+    border-radius: 1.25rem; /* Matching border radius */
     transition: transform 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
 }
 
 .media-card img:hover {
-    transform: scale(1.1) rotate(3deg); /* Increased rotation with scaling */
-    filter: brightness(1.3) contrast(1.2); /* Enhanced brightness and contrast */
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* Glow effect on image hover */
+    transform: scale(1.1) rotate(2deg); /* Slight rotation with scaling */
+    filter: brightness(1.2) contrast(1.2); /* Enhanced brightness and contrast */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); /* More pronounced glow effect on image hover */
 }
 
 .media-card .overlay {
@@ -62,17 +62,17 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent); /* Slightly lighter overlay */
     opacity: 0.6;
     transition: opacity 0.3s ease;
 }
 
 .media-card:hover .overlay {
-    opacity: 0.8; /* Darkens the overlay slightly on hover */
+    opacity: 0.75; /* Slightly darkens the overlay on hover */
 }
 
 .media-card .title {
-    font-size: 1.5rem; /* Increased font size for better readability */
+    font-size: 1.6rem; /* Increased font size for better readability */
     font-weight: 700; /* Bold text for emphasis */
     color: #ffffff;
     margin-bottom: 0.5rem;
@@ -91,7 +91,7 @@
 
 .media-card .info {
     color: #b0b0b0;
-    font-size: 0.9rem; /* Slightly larger font size for better readability */
+    font-size: 1rem; /* Increased font size for better readability */
     margin-bottom: 0.5rem;
     transition: color 0.3s ease;
 }
@@ -108,18 +108,18 @@
 }
 
 .media-card .rating span {
-    font-size: 1.25rem; /* Slightly larger rating stars */
+    font-size: 1.3rem; /* Slightly larger rating stars */
 }
 
 .media-card .rating .vote-average {
     color: #d0d0d0;
-    font-size: 0.9rem; /* Slightly larger font size */
+    font-size: 1rem; /* Increased font size */
     margin-left: 0.5rem;
 }
 
 .media-card .release-date {
     color: #d0d0d0;
-    font-size: 0.9rem; /* Slightly larger font size */
+    font-size: 1rem; /* Increased font size */
     transition: color 0.3s ease;
 }
 
