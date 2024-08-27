@@ -17,16 +17,13 @@ Nova is a dynamic streaming platform that lets you explore and watch a variety o
 
 ### Online Usage 🎉
 
-1. Visit the [Nova website](https://novastream.top/).
-2. Enter your TMDb API key when prompted ([get one here](https://www.themoviedb.org/documentation/api)) or click on the public API key button.
-3. Enjoy!
 
 ### Offline Usage 💾
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/ambr0sial/nova.git
+   git clone https://github.com/fanlimgames/sussy-code
    ```
 
 2. Navigate to the project folder:
@@ -38,13 +35,7 @@ Nova is a dynamic streaming platform that lets you explore and watch a variety o
 3. Open the `index.html` file and enter your TMDb API key where indicated ([get one here](https://www.themoviedb.org/documentation/api)) or use the public API key button.
 4. Enjoy!
 
-## Alternative Domains ⚙️
 
-If [https://novastream.top/](https://novastream.top/) is down, try these alternative domains:
-
-- [https://novastream.vercel.app/](https://novastream.vercel.app/)
-- [https://novastream-alt.netlify.app/](https://novastream-alt.netlify.app/)
-- [https://novastream.onrender.com/](https://novastream.onrender.com/)
 
 ## Hosting 🌐
 
