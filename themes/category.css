@@ -1,0 +1,26 @@
+/* Custom styling for rounded select element */
+#categorySelect {
+    appearance: none;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    background-color: #1f2937; /* Dark background for select */
+    color: #ffffff; /* White text */
+    border: 1px solid #374151; /* Dark border */
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    outline: none;
+}
+
+#categorySelect option {
+    background-color: #1f2937; /* Match the background color */
+    color: #ffffff; /* White text */
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+    display: none;
+}
+/* For Firefox */
+* {
+    scrollbar-width: none;
+}
