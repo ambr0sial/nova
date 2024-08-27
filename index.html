@@ -28,6 +28,12 @@
         <header class="flex justify-between items-center py-4">
             <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
             <div class="text-center text-sm text-zinc-400 mt-4">This website is not affiliated with novastream.to</div>
+            <div class="relative">
+                <select id="categorySelect" class="p-2 rounded bg-zinc-800 border border-zinc-700 text-white focus:border-purple-500 focus:outline-none">
+                    <option value="movie" selected>Movie</option>
+                    <option value="tv">TV Show</option>
+                </select>
+            </div>
         </header>
         <div class="flex gap-4 mb-8">
             <div class="relative flex-1">
@@ -40,7 +46,7 @@
         <h2 class="text-xl font-semibold mb-4">Upcoming Media</h2>
         <div id="upcomingMedia" class="mb-8 ml-0"></div>
         <h2 class="text-xl font-semibold mb-4">Popular Media</h2>
-        <div id="popularMovies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        <div id="popularMedia" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
         <div id="paginationControls" class="flex justify-center items-center mt-4">
             <button id="prevPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Previous</button>
             <span id="currentPage" class="text-white mx-2">1</span>
@@ -75,6 +81,8 @@
         const homePage = document.getElementById('homePage');
         const welcomeBanner = document.getElementById('welcomeBanner');
         const closeBanner = document.getElementById('closeBanner');
+        const categorySelect = document.getElementById('categorySelect');
+        const popularMedia = document.getElementById('popularMedia');
 
         closeBanner.addEventListener('click', () => {
             welcomeBanner.style.display = 'none';
@@ -95,7 +103,8 @@
 
         async function search() {
             const searchInputValue = searchInput.value;
-            const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${searchInputValue}`);
+            const selectedCategory = categorySelect.value;
+            const response = await fetch(`https://api.themoviedb.org/3/search/${selectedCategory}?api_key=${API_KEY}&query=${searchInputValue}`);
             if (response.ok) {
                 const data = await response.json();
                 displaySearchResults(data.results);
@@ -108,7 +117,8 @@
         searchInput.addEventListener('input', async function() {
             const query = searchInput.value;
             if (query.length > 2) {
-                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`);
+                const selectedCategory = categorySelect.value;
+                const response = await fetch(`https://api.themoviedb.org/3/search/${selectedCategory}?api_key=${API_KEY}&query=${query}`);
                 if (response.ok) {
                     const data = await response.json();
                     displaySearchSuggestions(data.results);
@@ -120,13 +130,13 @@
             }
         });
 
-        async function fetchPopularMovies(page = 1) {
-            const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}&page=${page}`);
+        async function fetchPopularMedia(page = 1) {
+            const selectedCategory = categorySelect.value;
+            const response = await fetch(`https://api.themoviedb.org/3/trending/${selectedCategory}/week?api_key=${API_KEY}&page=${page}`);
             if (response.ok) {
                 const data = await response.json();
-                displaySearchResults(data.results);
+                displayPopularMedia(data.results);
                 updatePaginationControls(data.page, data.total_pages);
-                fetchUpcomingMedia();
             } else {
                 console.error('Failed to fetch popular media.');
             }
@@ -147,7 +157,7 @@
         }
 
         function changePage(page) {
-            fetchPopularMovies(page);
+            fetchPopularMedia(page);
         }
 
         async function fetchSelectedMedia(mediaId, mediaType) {
@@ -160,9 +170,8 @@
             }
         }
 
-        function displaySearchResults(results) {
-            const popularMovies = document.getElementById('popularMovies');
-            popularMovies.innerHTML = '';
+        function displayPopularMedia(results) {
+            popularMedia.innerHTML = '';
 
             results.forEach(media => {
                 const mediaCard = document.createElement('div');
@@ -191,7 +200,7 @@
                     fetchSelectedMedia(media.id, media.media_type);
                 });
 
-                popularMovies.appendChild(mediaCard);
+                popularMedia.appendChild(mediaCard);
             });
         }
 
@@ -218,8 +227,14 @@
             });
         }
 
-        // Fetch popular movies on load
-        fetchPopularMovies();
+        // Fetch popular media and upcoming media on load
+        fetchPopularMedia();
+        fetchUpcomingMedia();
+
+        // Update popular media based on category change
+        categorySelect.addEventListener('change', function() {
+            fetchPopularMedia();
+        });
     });
 </script>
 </body>
