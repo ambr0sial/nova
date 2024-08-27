@@ -32,8 +32,6 @@ Nova is a dynamic streaming platform that lets you explore and watch a variety o
    cd nova
    ```
 
-3. Open the `index.html` file and enter your TMDb API key where indicated ([get one here](https://www.themoviedb.org/documentation/api)) or use the public API key button.
-4. Enjoy!
 
 
 
