@@ -35,6 +35,7 @@ async function displaySelectedMedia(media, mediaType) {
                         <select id="providerSelect" class="mt-1 block w-full bg-gray-900 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-xs lg:text-sm">
                             <option value="vidsrc">VidSrc</option>
                             <option value="vidsrc2">VidSrc2</option>
+                            <option value="vidsrcxyz">vidsrcxyz</option> 
                             <option value="superembed">SuperEmbed</option>
                             <option value="embedsoap">EmbedSoap</option>
                             <option value="autoembed">AutoEmbed</option>
@@ -69,12 +70,6 @@ async function displaySelectedMedia(media, mediaType) {
         <div id="videoPlayer" class="w-full h-72 lg:h-[80vh] rounded-lg overflow-hidden mt-6 bg-black hidden">
             <!-- Video player will be dynamically inserted here -->
         </div>
-        <div id="scanningIcon" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-            <div class="text-white text-lg">Checking sources...</div>
-            <svg class="w-12 h-12 animate-spin text-white ml-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12a9 9 0 0118 0A9 9 0 013 12z" />
-            </svg>
-        </div>
     `;
 
     const playButton = document.getElementById('playButton');
@@ -84,7 +79,6 @@ async function displaySelectedMedia(media, mediaType) {
     const posterContainer = selectedMovie.querySelector('#posterContainer');
     const movieInfo = selectedMovie.querySelector('#movieInfo');
     const mediaContainer = selectedMovie.querySelector('#mediaContainer');
-    const scanningIcon = document.getElementById('scanningIcon');
 
     // Handle language selection change
     languageSelect.addEventListener('change', () => {
@@ -125,24 +119,6 @@ async function displaySelectedMedia(media, mediaType) {
         updateEpisodes();
     }
 
-    // Helper function to try fetching from each provider
-    async function findWorkingSource(urls) {
-        for (const url of urls) {
-            scanningIcon.classList.remove('hidden'); // Show scanning icon
-            try {
-                const response = await fetch(url, { method: 'HEAD' }); // Use HEAD to check if the URL is reachable
-                if (response.ok) {
-                    scanningIcon.classList.add('hidden'); // Hide scanning icon
-                    return url;
-                }
-            } catch (error) {
-                console.error(`Error fetching ${url}:`, error);
-            }
-        }
-        scanningIcon.classList.add('hidden'); // Hide scanning icon
-        throw new Error('No working source found.');
-    }
-
     // Handle play button click
     playButton.addEventListener('click', async () => {
         if (!videoPlayer || !movieInfo || !posterContainer) {
@@ -150,7 +126,7 @@ async function displaySelectedMedia(media, mediaType) {
             return;
         }
 
-        let urls;
+        let endpoint;
 
         if (mediaType === 'tv') {
             const seasonSelect = document.getElementById('seasonSelect');
@@ -164,42 +140,64 @@ async function displaySelectedMedia(media, mediaType) {
                 return;
             }
 
-            urls = languageSelect.value === 'fr'
-                ? [`https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}`]
-                : [
-                    `https://vidsrc.cc/v2/embed/tv/${media.id}?season=${seasonNumber}&episode=${episodeNumber}`,
-                    `https://vidsrc2.to/embed/tv/${media.id}?season=${seasonNumber}&episode=${episodeNumber}`,
-                    `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`,
-                    `https://www.embedsoap.com/embed/tv/?id=${media.id}&s=${seasonNumber}&e=${episodeNumber}`,
-                    `https://autoembed.co/tv/tmdb/${media.id}-${seasonNumber}-${episodeNumber}`,
-                    `https://player.smashy.stream/tv/${media.id}?s=${seasonNumber}&e=${episodeNumber}`
-                ];
+            endpoint = languageSelect.value === 'fr'
+                ? `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}`
+                : {
+                    'vidsrc': `https://vidsrc.cc/v2/embed/tv/${media.id}?season=${seasonNumber}&episode=${episodeNumber}`,
+                    'vidsrc2': `https://vidsrc2.to/embed/tv/${media.id}?season=${seasonNumber}&episode=${episodeNumber}`,
+                    'vidsrcxyz': `https://vidsrc.xyz/embed/tv/${media.id}?season=${seasonNumber}&episode=${episodeNumber}`,
+                    'superembed': `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`,
+                    'embedsoap': `https://www.embedsoap.com/embed/tv/?id=${media.id}&s=${seasonNumber}&e=${episodeNumber}`,
+                    'autoembed': `https://autoembed.co/tv/tmdb/${media.id}-${seasonNumber}-${episodeNumber}`,
+                    'smashystream': `https://player.smashy.stream/tv/${media.id}?s=${seasonNumber}&e=${episodeNumber}`,
+                    'trailer': async () => {
+                        const trailerResponse = await fetch(`https://api.themoviedb.org/3/tv/${media.id}/videos?api_key=${localStorage.getItem('apiKey')}`);
+                        const trailerData = await trailerResponse.json();
+                        const trailer = trailerData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                        if (trailer) {
+                            return `https://www.youtube.com/embed/${trailer.key}`;
+                        } else {
+                            alert('Trailer not available.');
+                            return;
+                        }
+                    }
+                }[providerSelect.value];
         } else {
-            urls = languageSelect.value === 'fr'
-                ? [`https://frembed.pro/api/film.php?id=${media.id}`]
-                : [
-                    `https://vidsrc.cc/v2/embed/movie/${media.id}`,
-                    `https://vidsrc2.to/embed/movie/${media.id}`,
-                    `https://multiembed.mov/?video_id=${media.id}&tmdb=1`,
-                    `https://www.embedsoap.com/embed/movie/${media.id}`,
-                    `https://autoembed.co/movie/tmdb/${media.id}`,
-                    `https://player.smashy.stream/movie/${media.id}`
-                ];
+            endpoint = languageSelect.value === 'fr'
+                ? `https://frembed.pro/api/film.php?id=${media.id}`
+                : {
+                    'vidsrc': `https://vidsrc.cc/v2/embed/movie/${media.id}`,
+                    'vidsrc2': `https://vidsrc2.to/embed/movie/${media.id}`,
+                    'vidsrcxyz': `https://vidsrc.xyz/embed/movie/${media.id}`,
+                    'superembed': `https://multiembed.mov/?video_id=${media.id}&tmdb=1`,
+                    'embedsoap': `https://www.embedsoap.com/embed/movie/${media.id}`,
+                    'autoembed': `https://autoembed.co/movie/tmdb/${media.id}`,
+                    'smashystream': `https://player.smashy.stream/movie/${media.id}`,
+                    'trailer': async () => {
+                        const trailerResponse = await fetch(`https://api.themoviedb.org/3/movie/${media.id}/videos?api_key=${localStorage.getItem('apiKey')}`);
+                        const trailerData = await trailerResponse.json();
+                        const trailer = trailerData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+                        if (trailer) {
+                            return `https://www.youtube.com/embed/${trailer.key}`;
+                        } else {
+                            alert('Trailer not available.');
+                            return;
+                        }
+                    }
+                }[providerSelect.value];
         }
 
-        try {
-            const workingUrl = await findWorkingSource(urls);
-            // Remove poster and its menu
-            mediaContainer.removeChild(posterContainer);
-            mediaContainer.removeChild(movieInfo);
-
-            // Show video player
-            videoPlayer.innerHTML = `<iframe src="${workingUrl}" class="w-full h-full" allowfullscreen></iframe>`;
-            videoPlayer.classList.remove('hidden');
-        } catch (error) {
-            alert('No working source found.');
-            console.error(error);
+        if (typeof endpoint === 'function') {
+            endpoint = await endpoint();
         }
+
+        // Remove poster and its menu
+        mediaContainer.removeChild(posterContainer);
+        mediaContainer.removeChild(movieInfo);
+
+        // Show video player
+        videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full h-full" allowfullscreen></iframe>`;
+        videoPlayer.classList.remove('hidden');
     });
 
     selectedMovie.scrollIntoView({ behavior: 'smooth' });

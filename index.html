@@ -12,8 +12,8 @@
     <meta content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png" property="og:image"/>
     <meta content="#A17FC0" data-react-helmet="true" name="theme-color"/>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="themes/themes.css"> <!-- Link to the external CSS file -->
-    <link rel="stylesheet" href="themes/mediacard.css"> <!-- Link to the media card CSS file -->
+    <link rel="stylesheet" href="themes/themes.css">
+    <link rel="stylesheet" href="themes/mediacard.css">
 </head>
 <body>
 <a href="https://ko-fi.com/ambrosial" target="_blank" id="kofiButton">
@@ -23,27 +23,7 @@
     <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub">
 </a>
 
-<div id="loginPage" class="min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-lg p-8 space-y-6 bg-zinc-800 rounded-lg shadow-lg">
-        <h1 class="text-4xl font-bold text-center">Nova</h1>
-        <p class="text-sm text-zinc-400 text-center">Please input your TMDB API key to access the service.</p>
-        <form id="apiKeyForm" class="space-y-4">
-            <input type="text" id="apiKeyInput" placeholder="Enter your TMDB API Key here" class="w-full p-3 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Submit
-            </button>
-            <div class="text-center text-sm text-zinc-400">or</div>
-            <button type="button" id="usePublicApiKey" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Use a public API key
-            </button>
-        </form>
-        <p class="text-xs text-zinc-400 text-center">
-            Note: If the public API key doesn't work anymore, just use your own. It will rarely be updated as it's not my main priority.
-        </p>
-    </div>
-</div>
-
-<div id="homePage" class="hidden">
+<div id="homePage" class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <header class="flex justify-between items-center py-4">
             <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
@@ -88,199 +68,159 @@
 <script src="media/mediaplayer.js"></script>
 <!-- Include the updated search results script -->
 <script src="search/searchResults.js"></script>
-</body>
-</html>
+<script type="module">
+    import API_KEY from './config.js';
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const homePage = document.getElementById('homePage');
+        const welcomeBanner = document.getElementById('welcomeBanner');
+        const closeBanner = document.getElementById('closeBanner');
 
+        closeBanner.addEventListener('click', () => {
+            welcomeBanner.style.display = 'none';
+        });
 
+        // Show home page directly
+        homePage.classList.remove('hidden');
 
+        const searchInput = document.getElementById('searchInput');
 
-<script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const loginPage = document.getElementById('loginPage');
-            const homePage = document.getElementById('homePage');
-            const apiKeyForm = document.getElementById('apiKeyForm');
-            const welcomeBanner = document.getElementById('welcomeBanner');
-            const closeBanner = document.getElementById('closeBanner');
-
-            closeBanner.addEventListener('click', () => {
-                welcomeBanner.style.display = 'none';
-            });
-
-            apiKeyForm.addEventListener('submit', async function(event) {
+        document.getElementById('searchButton').addEventListener('click', search);
+        searchInput.addEventListener('keydown', async function(event) {
+            if (event.key === 'Enter') {
                 event.preventDefault();
-                const apiKey = document.getElementById('apiKeyInput').value;
-                const response = await fetch(`https://api.themoviedb.org/3/movie/550?api_key=${apiKey}`);
-                if (response.ok) {
-                    localStorage.setItem('apiKey', apiKey);
-                    loginPage.classList.add('hidden');
-                    homePage.classList.remove('hidden');
-                    fetchPopularMovies(apiKey);
-                } else {
-                    alert('API Key is invalid. Please try again.');
-                }
-            });
-
-            document.getElementById('usePublicApiKey').addEventListener('click', async function() {
-                const publicKey = '1070730380f5fee0d87cf0382670b255';
-                document.getElementById('apiKeyInput').value = publicKey;
-                const response = await fetch(`https://api.themoviedb.org/3/movie/550?api_key=${publicKey}`);
-                if (response.ok) {
-                    localStorage.setItem('apiKey', publicKey);
-                    loginPage.classList.add('hidden');
-                    homePage.classList.remove('hidden');
-                    fetchPopularMovies(publicKey);
-                } else {
-                    alert('Public API Key is invalid. Please try using your own key.');
-                }
-            });
-
-            const searchInput = document.getElementById('searchInput');
-
-            document.getElementById('searchButton').addEventListener('click', search);
-            searchInput.addEventListener('keydown', async function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    search();
-                }
-            });
-
-            async function search() {
-                const apiKey = localStorage.getItem('apiKey');
-                const searchInputValue = searchInput.value;
-                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${searchInputValue}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    displaySearchResults(data.results);
-                    searchSuggestions.classList.add('hidden');
-                }
-            }
-
-            const searchSuggestions = document.getElementById('searchSuggestions');
-
-            searchInput.addEventListener('input', async function() {
-                const apiKey = localStorage.getItem('apiKey');
-                const query = searchInput.value;
-                if (query.length > 2) {
-                    const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        displaySearchSuggestions(data.results);
-                    } else {
-                        searchSuggestions.classList.add('hidden');
-                    }
-                } else {
-                    searchSuggestions.classList.add('hidden');
-                }
-            });
-
-
-
-            async function fetchPopularMovies(apiKey, page = 1) {
-                const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}&page=${page}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    displaySearchResults(data.results);
-                    updatePaginationControls(data.page, data.total_pages);
-                    fetchUpcomingMedia(apiKey);
-                } else {
-                    console.error('Failed to fetch popular media.');
-                }
-            }
-
-            function updatePaginationControls(currentPage, totalPages) {
-                const prevPageButton = document.getElementById('prevPage');
-                const nextPageButton = document.getElementById('nextPage');
-                const currentPageSpan = document.getElementById('currentPage');
-
-                currentPageSpan.textContent = currentPage;
-
-                prevPageButton.disabled = currentPage === 1;
-                nextPageButton.disabled = currentPage === totalPages;
-
-                prevPageButton.onclick = () => changePage(currentPage - 1);
-                nextPageButton.onclick = () => changePage(currentPage + 1);
-            }
-
-            function changePage(page) {
-                const apiKey = localStorage.getItem('apiKey');
-                fetchPopularMovies(apiKey, page);
-            }
-            async function fetchSelectedMedia(apiKey, mediaId, mediaType) {
-                const response = await fetch(`https://api.themoviedb.org/3/${mediaType}/${mediaId}?api_key=${apiKey}`);
-                if (response.ok) {
-                    const media = await response.json();
-                    displaySelectedMedia(media, mediaType);
-                } else {
-                    console.error('Failed to fetch media details.');
-                }
-            }
-
-
-            function displaySearchResults(results) {
-                const popularMovies = document.getElementById('popularMovies');
-                popularMovies.innerHTML = '';
-
-                results.forEach(media => {
-                    const mediaCard = document.createElement('div');
-                    mediaCard.classList.add('media-card', 'bg-gray-900', 'p-6', 'rounded-lg', 'shadow-lg', 'cursor-pointer', 'transition-transform', 'hover:scale-105', 'relative', 'flex', 'flex-col', 'items-start', 'group', 'overflow-hidden');
-
-                    // Format the release date
-                    const formattedDate = media.release_date ? new Date(media.release_date).toLocaleDateString() : (media.first_air_date ? new Date(media.first_air_date).toLocaleDateString() : 'Unknown Date');
-
-                    // Create star rating
-                    const ratingStars = Array.from({ length: 5 }, (_, i) => i < Math.round(media.vote_average / 2) ? '★' : '☆').join(' ');
-
-                    mediaCard.innerHTML = `
-            <div class="relative w-full h-80 overflow-hidden rounded-lg mb-4">
-                <img src="https://image.tmdb.org/t/p/w300${media.poster_path}" alt="${media.title || media.name}" class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-40"></div>
-            </div>
-            <div class="w-full">
-                <h3 class="text-xl font-semibold text-white truncate">${media.title || media.name}</h3>
-                <p class="text-gray-400 text-sm mt-1">${media.media_type === 'movie' ? '🎬 Movie' : '📺 TV Show'}</p>
-                <div class="flex items-center mt-2">
-                    <span class="text-yellow-400 text-lg">${ratingStars}</span>
-                    <span class="text-gray-300 text-sm ml-2">${media.vote_average.toFixed(1)}/10</span>
-                </div>
-                <p class="text-gray-300 text-sm mt-1">Release Date: ${formattedDate}</p>
-            </div>
-        `;
-
-                    mediaCard.addEventListener('click', function() {
-                        fetchSelectedMedia(localStorage.getItem('apiKey'), media.id, media.media_type);
-                    });
-
-                    popularMovies.appendChild(mediaCard);
-                });
-            }
-
-
-
-
-            async function fetchUpcomingMedia(apiKey) {
-                const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const upcomingMovies = data.results.filter(media => new Date(media.release_date) > new Date());
-                    displayUpcomingMedia(upcomingMovies);
-                } else {
-                    console.error('Failed to fetch upcoming media.');
-                }
-            }
-
-            function displayUpcomingMedia(mediaList) {
-                const upcomingMedia = document.getElementById('upcomingMedia');
-                upcomingMedia.innerHTML = '';
-
-                mediaList.forEach(media => {
-                    const mediaItem = document.createElement('div');
-                    mediaItem.classList.add('text-zinc-300', 'mb-2');
-                    mediaItem.innerHTML = `<span>${media.title}:</span> <span>${media.release_date}</span>`;
-                    upcomingMedia.appendChild(mediaItem);
-                });
+                search();
             }
         });
-    </script>
+
+        async function search() {
+            const searchInputValue = searchInput.value;
+            const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${searchInputValue}`);
+            if (response.ok) {
+                const data = await response.json();
+                displaySearchResults(data.results);
+                searchSuggestions.classList.add('hidden');
+            }
+        }
+
+        const searchSuggestions = document.getElementById('searchSuggestions');
+
+        searchInput.addEventListener('input', async function() {
+            const query = searchInput.value;
+            if (query.length > 2) {
+                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySearchSuggestions(data.results);
+                } else {
+                    searchSuggestions.classList.add('hidden');
+                }
+            } else {
+                searchSuggestions.classList.add('hidden');
+            }
+        });
+
+        async function fetchPopularMovies(page = 1) {
+            const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}&page=${page}`);
+            if (response.ok) {
+                const data = await response.json();
+                displaySearchResults(data.results);
+                updatePaginationControls(data.page, data.total_pages);
+                fetchUpcomingMedia();
+            } else {
+                console.error('Failed to fetch popular media.');
+            }
+        }
+
+        function updatePaginationControls(currentPage, totalPages) {
+            const prevPageButton = document.getElementById('prevPage');
+            const nextPageButton = document.getElementById('nextPage');
+            const currentPageSpan = document.getElementById('currentPage');
+
+            currentPageSpan.textContent = currentPage;
+
+            prevPageButton.disabled = currentPage === 1;
+            nextPageButton.disabled = currentPage === totalPages;
+
+            prevPageButton.onclick = () => changePage(currentPage - 1);
+            nextPageButton.onclick = () => changePage(currentPage + 1);
+        }
+
+        function changePage(page) {
+            fetchPopularMovies(page);
+        }
+
+        async function fetchSelectedMedia(mediaId, mediaType) {
+            const response = await fetch(`https://api.themoviedb.org/3/${mediaType}/${mediaId}?api_key=${API_KEY}`);
+            if (response.ok) {
+                const media = await response.json();
+                displaySelectedMedia(media, mediaType);
+            } else {
+                console.error('Failed to fetch media details.');
+            }
+        }
+
+        function displaySearchResults(results) {
+            const popularMovies = document.getElementById('popularMovies');
+            popularMovies.innerHTML = '';
+
+            results.forEach(media => {
+                const mediaCard = document.createElement('div');
+                mediaCard.classList.add('media-card', 'bg-gray-900', 'p-6', 'rounded-lg', 'shadow-lg', 'cursor-pointer', 'transition-transform', 'hover:scale-105', 'relative', 'flex', 'flex-col', 'items-start', 'group', 'overflow-hidden');
+
+                const formattedDate = media.release_date ? new Date(media.release_date).toLocaleDateString() : (media.first_air_date ? new Date(media.first_air_date).toLocaleDateString() : 'Unknown Date');
+                const ratingStars = Array.from({ length: 5 }, (_, i) => i < Math.round(media.vote_average / 2) ? '★' : '☆').join(' ');
+
+                mediaCard.innerHTML = `
+                    <div class="relative w-full h-80 overflow-hidden rounded-lg mb-4">
+                        <img src="https://image.tmdb.org/t/p/w300${media.poster_path}" alt="${media.title || media.name}" class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-40"></div>
+                    </div>
+                    <div class="w-full">
+                        <h3 class="text-xl font-semibold text-white truncate">${media.title || media.name}</h3>
+                        <p class="text-gray-400 text-sm mt-1">${media.media_type === 'movie' ? '🎬 Movie' : '📺 TV Show'}</p>
+                        <div class="flex items-center mt-2">
+                            <span class="text-yellow-400 text-lg">${ratingStars}</span>
+                            <span class="text-gray-300 text-sm ml-2">${media.vote_average.toFixed(1)}/10</span>
+                        </div>
+                        <p class="text-gray-300 text-sm mt-1">Release Date: ${formattedDate}</p>
+                    </div>
+                `;
+
+                mediaCard.addEventListener('click', function() {
+                    fetchSelectedMedia(media.id, media.media_type);
+                });
+
+                popularMovies.appendChild(mediaCard);
+            });
+        }
+
+        async function fetchUpcomingMedia() {
+            const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`);
+            if (response.ok) {
+                const data = await response.json();
+                const upcomingMovies = data.results.filter(media => new Date(media.release_date) > new Date());
+                displayUpcomingMedia(upcomingMovies);
+            } else {
+                console.error('Failed to fetch upcoming media.');
+            }
+        }
+
+        function displayUpcomingMedia(mediaList) {
+            const upcomingMedia = document.getElementById('upcomingMedia');
+            upcomingMedia.innerHTML = '';
+
+            mediaList.forEach(media => {
+                const mediaItem = document.createElement('div');
+                mediaItem.classList.add('text-zinc-300', 'mb-2');
+                mediaItem.innerHTML = `<span>${media.title}:</span> <span>${media.release_date}</span>`;
+                upcomingMedia.appendChild(mediaItem);
+            });
+        }
+
+        // Fetch popular movies on load
+        fetchPopularMovies();
+    });
+</script>
 </body>
 </html>
