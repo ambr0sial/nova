@@ -1,4 +1,5 @@
 
+
 <p align="center">
   <a href="https://github.com/ambr0sial/nova"><img src="logo.png" alt="Nova" width="128" /></a>
 </p>
@@ -17,7 +18,6 @@ Nova is a dynamic streaming platform that lets you explore and watch a variety o
 
 ### Online Usage 🎉
 
-
 ### Offline Usage 💾
 
 1. Clone the repository:
@@ -32,12 +32,14 @@ Nova is a dynamic streaming platform that lets you explore and watch a variety o
    cd nova
    ```
 
-
-
-
 ## Hosting 🌐
 
 Feel free to host this website yourself! Just provide proper credit (a link to this repository or mention of my username is appreciated).
+
+## Community & Support 💬
+
+Join our community on Discord to get updates, share feedback, or get support:
+- [Join the Nova Discord Server](https://discord.gg/YK62kpT5ex)
 
 ## Contributing ❤
 
