@@ -1,569 +1,366 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova</title>
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta content="Nova" property="og:title"/>
     <meta content="Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone." property="og:description"/>
     <meta content="https://novastream.top" property="og:url"/>
     <meta content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png" property="og:image"/>
     <meta content="#A17FC0" data-react-helmet="true" name="theme-color"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #2D132C;
-            background-image: linear-gradient(135deg, #2D132C 0%, #4A0D67 100%);
-            color: white;
-            font-family: 'Poppins', sans-serif;
-        }
-    
-        #selectedMovie{
-            display:flex;
-            gap:1rem;
-        }
-    
-        .rounded {
-            border-radius: 0.5rem;
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
 
-        .hover\:scale-105:hover {
-            transform: scale(1.05);
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(167, 139, 250, 0.5); }
+            100% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
         }
 
-        .focus\:outline-none:focus {
-            outline: none;
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .focus\:ring-2:focus {
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
-        #loginPage {
-            background-color: rgba(31, 41, 55, 0.8);
+        .card-hover:hover .card-overlay {
+            opacity: 1;
         }
 
-        #searchSuggestions {
-            z-index: 10;
+        .card-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.9) 0%,
+                rgba(0, 0, 0, 0.7) 50%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
         }
 
-        #githubButton, #kofiButton {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 5px;
-            border-radius: 50%;
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
         }
 
-        #githubButton img, #kofiButton img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(to right, #a78bfa, #4c1d95);
+            transition: width 0.3s ease;
         }
 
-        #githubButton:hover, #kofiButton:hover {
-            background-color: rgba(0, 0, 0, 1);
+        .nav-link:hover::after {
+            width: 100%;
         }
 
-        #kofiButton {
-            right: 60px;
+        .glass-effect {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        @media (min-width: 768px) {
-            #selectedMovie {
-                flex-direction: row;
-                gap: 2rem;
-            }
-            #upcomingMedia {
-                margin-left: 0;
-            }
+        .modal-animation {
+            animation: modalFade 0.3s ease-out;
         }
 
-        .container {
-            max-width: 100%;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            margin-left: auto;
-            margin-right: auto;
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .floating-button {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .search-input {
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+            transform: scale(1.02);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .scroll-top-button {
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top-button.visible {
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-800 to-purple-600 text-white min-h-screen">
-    <a href="https://ko-fi.com/ambrosial" target="_blank" id="kofiButton">
-        <img src="https://assets-global.website-files.com/5c14e387dab576fe667689cf/64f1a9ddd0246590df69e9ef_ko-fi_logo_02-p-500.png" alt="Ko-Fi" class="w-8 h-8">
-    </a>
-    <a href="https://github.com/ambr0sial/nova" target="_blank" id="githubButton">
-        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="w-8 h-8">
-    </a>
-    <div id="loginPage" class="min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-lg p-8 space-y-6 bg-zinc-800 rounded-lg shadow-lg">
-            <h1 class="text-4xl font-bold text-center">Nova</h1>
-            <p class="text-sm text-zinc-400 text-center">Please input your TMDB API key to access the service.</p>
-        
-            <form id="apiKeyForm" class="space-y-4">
-                <input type="text" id="apiKeyInput" placeholder="Enter your TMDB API Key here" class="w-full p-3 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
-          
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Submit
-                </button>
-          
-                <div class="text-center text-sm text-zinc-400">
-                    or
+<body class="bg-gray-900 text-white min-h-screen" x-data="app()">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-effect">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center space-x-3">
+                        <img src="logo.png" alt="Nova Logo" class="h-10 w-10">
+                        <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'" 
+                                class="nav-link">
+                            <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
+                        </button>
+                        <a href="#" class="nav-link" @click="language = language === 'en' ? 'fr' : 'en'"
+                           x-text="language === 'en' ? 'Switch to French' : 'Switch to English'"></a>
+                    </div>
                 </div>
-          
-                <button type="button" id="usePublicApiKey" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Use a public API key
-                </button>
-            </form>
-
-            <p class="text-xs text-zinc-400 text-center">
-                Note: If the public API key doesn't work anymore, just use your own. It will rarely be updated as it's not my main priority.
-            </p>
+                <div class="relative">
+                    <input type="text" 
+                           x-model="searchQuery" 
+                           @input="searchContent"
+                           placeholder="Search..." 
+                           class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <div id="homePage" class="hidden">
-        <div class="container mx-auto px-4 py-8">
-            <header class="flex justify-between items-center py-4">
-                <h1 class="text-3xl font-bold text-purple-400">Nova</h1>
-                <div class="text-center text-sm text-zinc-400 mt-4">
-                    This website is not affiliated with novastream.to
-                </div>
-                <nav>
-                    <a href="https://pastebin.com/raw/5kqU1Up8" class="text-zinc-300 hover:text-white px-3 py-2 rounded">About</a>
-                </nav>
-            </header>
-
-            <div class="flex gap-4 mb-8">
-                <div class="relative flex-1">
-                    <input type="text" id="searchInput" placeholder="Search for something" class="w-full p-3 rounded-l bg-zinc-800 border border-zinc-700 focus:border-purple-500 focus:outline-none">
-                    <button id="searchButton" class="absolute inset-y-0 right-0 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-r">
-                        Search
-                    </button>
-                    <div id="searchSuggestions" class="absolute w-full bg-zinc-800 text-white rounded-b-lg mt-1 hidden"></div>
-                </div>
-
-                <button id="randomButton" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded">
-                    Random Movie
-                </button>
-            </div>
-
-            <h2 class="text-xl font-semibold mb-4">Upcoming Media</h2>
-            <div id="upcomingMedia" class="mb-8 ml-0"></div>
-
-            <h2 class="text-xl font-semibold mb-4">Popular Media</h2>
-            <div id="popularMovies" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
-            <div id="paginationControls" class="flex justify-center items-center mt-4">
-                <button id="prevPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Previous</button>
-                <span id="currentPage" class="text-white mx-2">1</span>
-                <button id="nextPage" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-2 px-4 rounded mx-2">Next</button>
-            </div>
-
-            <h2 class="text-xl font-semibold mt-8 mb-4">Selected Media</h2>
-            <div id="selectedMovie" class="bg-zinc-800 p-4 rounded-lg flex">
-                <div id="videoPlayer" class="w-full h-full"></div>
-            </div>
-
-            <footer class="text-center text-gray-400 mt-8">
-                Made with <span id="heartIcon" class="cursor-pointer" onmouseover="this.style.color='red'" onmouseout="this.style.color=''">♥</span> by Ambrosial. Latest version: 12/08/24
-            </footer>
-            <div class="text-center text-sm text-zinc-400 mt-4">
-                Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
-            </div>
-
-            <div id="welcomeBanner" class="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 text-center">
-                <button id="closeBanner" class="text-gray-300 hover:text-white float-right mt-1 mr-1">×</button>
-                <p>Welcome to Nova! Here are our only official domains:</p>
-                <p>novastream.top &nbsp; novastream.vercel.app &nbsp; novastream-alt.netlify.app &nbsp; novastream.onrender.com</p>
+    <!-- Hero Section -->
+    <div class="pt-24 pb-12 px-6">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800" 
+                x-text="currentTab === 'movies' ? 'Popular Movies' : 'Popular TV Shows'"></h2>
+            
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <template x-for="item in content" :key="item.id">
+                    <div class="rounded-lg overflow-hidden card-hover bg-gray-800"
+                         @click="openContent(item)">
+                        <div class="relative">
+                            <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" 
+                                 :alt="item.title || item.name"
+                                 class="w-full h-96 object-cover">
+                            <div class="card-overlay absolute inset-0 flex flex-col justify-end p-4">
+                                <h3 class="text-lg font-semibold" x-text="item.title || item.name"></h3>
+                                <p class="text-gray-300 text-sm mt-2" x-text="item.overview.substring(0, 100) + '...'"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const loginPage = document.getElementById('loginPage');
-            const homePage = document.getElementById('homePage');
-            const apiKeyForm = document.getElementById('apiKeyForm');
-            const welcomeBanner = document.getElementById('welcomeBanner');
-            const closeBanner = document.getElementById('closeBanner');
+    <!-- Video Modal -->
+    <div x-show="showModal" 
+         class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-90 flex items-center justify-center"
+         @click.away="showModal = false"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div class="bg-gray-900 rounded-lg w-full max-w-4xl modal-animation relative">
+            <!-- Back Button -->
+            <button @click="showModal = false" 
+                    class="absolute -top-12 left-0 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all duration-300 flex items-center space-x-2 floating-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.707 4.293a1 1 0 010 1.414L7.414 9H15a1 1 0 110 2H7.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>Back to Browse</span>
+            </button>
 
-            closeBanner.addEventListener('click', () => {
-                welcomeBanner.style.display = 'none';
-            });
-
-            apiKeyForm.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const apiKey = document.getElementById('apiKeyInput').value;
-                const response = await fetch(`https://api.themoviedb.org/3/movie/550?api_key=${apiKey}`);
-                if (response.ok) {
-                    localStorage.setItem('apiKey', apiKey);
-                    loginPage.classList.add('hidden');
-                    homePage.classList.remove('hidden');
-                    fetchPopularMovies(apiKey);
-                } else {
-                    alert('API Key is invalid. Please try again.');
-                }
-            });
-
-            document.getElementById('usePublicApiKey').addEventListener('click', async function() {
-                const publicKey = '1070730380f5fee0d87cf0382670b255';
-                document.getElementById('apiKeyInput').value = publicKey;
-                const response = await fetch(`https://api.themoviedb.org/3/movie/550?api_key=${publicKey}`);
-                if (response.ok) {
-                    localStorage.setItem('apiKey', publicKey);
-                    loginPage.classList.add('hidden');
-                    homePage.classList.remove('hidden');
-                    fetchPopularMovies(publicKey);
-                } else {
-                    alert('Public API Key is invalid. Please try using your own key.');
-                }
-            });
-
-            const searchInput = document.getElementById('searchInput');
-
-            document.getElementById('searchButton').addEventListener('click', search);
-            searchInput.addEventListener('keydown', async function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    search();
-                }
-            });
-
-            async function search() {
-                const apiKey = localStorage.getItem('apiKey');
-                const searchInputValue = searchInput.value;
-                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${searchInputValue}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    displaySearchResults(data.results);
-                    searchSuggestions.classList.add('hidden');
-                }
-            }
-
-            const searchSuggestions = document.getElementById('searchSuggestions');
-
-            searchInput.addEventListener('input', async function() {
-                const apiKey = localStorage.getItem('apiKey');
-                const query = searchInput.value;
-                if (query.length > 2) {
-                    const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${query}`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        displaySearchSuggestions(data.results);
-                    } else {
-                        searchSuggestions.classList.add('hidden');
-                    }
-                } else {
-                    searchSuggestions.classList.add('hidden');
-                }
-            });
-
-            function displaySearchSuggestions(results) {
-                searchSuggestions.innerHTML = results.map(media => `
-                    <div class="p-2 hover:bg-zinc-700 cursor-pointer" data-id="${media.id}" data-type="${media.media_type}">
-                        <span>${media.title || media.name} (${media.media_type === 'movie' ? 'Movie' : 'TV Show'}) - ${media.vote_average}/10</span>
-                    </div>
-                `).join('');
-                searchSuggestions.classList.remove('hidden');
-
-                searchSuggestions.querySelectorAll('div').forEach(div => {
-                    div.addEventListener('click', function() {
-                        const mediaId = this.getAttribute('data-id');
-                        const mediaType = this.getAttribute('data-type');
-                        fetchSelectedMedia(localStorage.getItem('apiKey'), mediaId, mediaType);
-                        searchSuggestions.classList.add('hidden');
-                    });
-                });
-            }
-
-            document.getElementById('searchButton').addEventListener('click', async function() {
-                const apiKey = localStorage.getItem('apiKey');
-                const searchInputValue = searchInput.value;
-                const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${searchInputValue}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    displaySearchResults(data.results);
-                }
-            });
-
-            document.getElementById('randomButton').addEventListener('click', async function() {
-                const apiKey = localStorage.getItem('apiKey');
-                const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const randomMedia = data.results[Math.floor(Math.random() * data.results.length)];
-                    fetchSelectedMedia(apiKey, randomMedia.id, randomMedia.media_type);
-                }
-            });
-
-            async function fetchPopularMovies(apiKey, page = 1) {
-                const response = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}&page=${page}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    displaySearchResults(data.results);
-                    updatePaginationControls(data.page, data.total_pages);
-                    fetchUpcomingMedia(apiKey);
-                } else {
-                    console.error('Failed to fetch popular media.');
-                }
-            }
-
-            function updatePaginationControls(currentPage, totalPages) {
-                const prevPageButton = document.getElementById('prevPage');
-                const nextPageButton = document.getElementById('nextPage');
-                const currentPageSpan = document.getElementById('currentPage');
-
-                currentPageSpan.textContent = currentPage;
-
-                prevPageButton.disabled = currentPage === 1;
-                nextPageButton.disabled = currentPage === totalPages;
-
-                prevPageButton.onclick = () => changePage(currentPage - 1);
-                nextPageButton.onclick = () => changePage(currentPage + 1);
-            }
-
-            function changePage(page) {
-                const apiKey = localStorage.getItem('apiKey');
-                fetchPopularMovies(apiKey, page);
-            }
-
-            async function fetchSelectedMedia(apiKey, mediaId, mediaType) {
-                const response = await fetch(`https://api.themoviedb.org/3/${mediaType}/${mediaId}?api_key=${apiKey}`);
-                if (response.ok) {
-                    const media = await response.json();
-                    displaySelectedMedia(media, mediaType);
-                } else {
-                    console.error('Failed to fetch media details.');
-                }
-            }
-
-            async function displaySelectedMedia(media, mediaType) {
-                const selectedMovie = document.getElementById('selectedMovie');
-                selectedMovie.innerHTML = `
-                    <div class="w-1/3">
-                        <img id="poster" src="https://image.tmdb.org/t/p/w500${media.poster_path}" alt="${media.title || media.name}" class="rounded-lg">
-                        <div class="mt-4">
-                            <label for="languageSelect" class="block text-sm font-medium text-zinc-300">Select Language:</label>
-                            <select id="languageSelect" class="mt-1 block w-full bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                <option value="en">English</option>
-                                <option value="fr">French</option>
-                            </select>
-                            <label for="providerSelect" class="block text-sm font-medium text-zinc-300 mt-2">Select Content Provider:</label>
-                            <select id="providerSelect" class="mt-1 block w-full bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                <option value="superembed">SuperEmbed</option>
-                                <option value="embedsoap">EmbedSoap</option>
-                                <option value="autoembed">AutoEmbed</option>
-                                <option value="smashystream">SmashyStream</option>
-                                <option value="trailer">Trailer</option>
-                            </select>
-                        </div>
-                        ${mediaType === 'tv' ? `
-                        <div class="mt-4">
-                            <label for="seasonSelect" class="block text-sm font-medium text-zinc-300">Select Season:</label>
-                            <select id="seasonSelect" class="mt-1 block w-full bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                                ${media.seasons.map(season => `<option value="${season.season_number}">${season.name}</option>`).join('')}
-                            </select>
-                            <label for="episodeSelect" class="block text-sm font-medium text-zinc-300 mt-2">Select Episode:</label>
-                            <select id="episodeSelect" class="mt-1 block w-full bg-zinc-800 border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"></select>
-                        </div>
-                        ` : ''}
-                    </div>
-                    <div id="movieInfo" class="w-2/3 pl-4">
-                        <h2 class="text-2xl font-bold">${media.title || media.name}</h2>
-                        <p class="text-sm text-zinc-400">${media.release_date || media.first_air_date}</p>
-                        <p class="mt-4">${media.overview}</p>
-                        <p class="text-sm text-zinc-400">Type: ${mediaType === 'movie' ? 'Movie' : 'TV Show'}</p>
-                        <button id="playButton" class="mt-4 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-                            Play
+            <div class="relative" style="padding-top: 56.25%">
+                <iframe x-bind:src="currentVideoUrl"
+                        class="absolute inset-0 w-full h-full rounded-t-lg"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+            </div>
+            <div class="p-6 bg-gray-800 rounded-b-lg">
+                <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800" 
+                    x-text="selectedContent?.title || selectedContent?.name"></h3>
+                <p class="mt-4 text-gray-300" x-text="selectedContent?.overview"></p>
+                
+                <!-- Season/Episode selector for TV Shows -->
+                <template x-if="currentTab === 'shows' && selectedContent">
+                    <div class="mt-6 flex flex-wrap gap-4">
+                        <select x-model="selectedSeason" 
+                                @change="updateEpisodes"
+                                class="bg-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all duration-300">
+                            <template x-for="season in seasons" :key="season">
+                                <option :value="season" x-text="'Season ' + season"></option>
+                            </template>
+                        </select>
+                        <select x-model="selectedEpisode"
+                                class="bg-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all duration-300">
+                            <template x-for="episode in episodes" :key="episode">
+                                <option :value="episode" x-text="'Episode ' + episode"></option>
+                            </template>
+                        </select>
+                        <button @click="loadEpisode"
+                                class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">
+                            Play Episode
                         </button>
                     </div>
-                    <div id="videoPlayer" class="w-full h-full rounded-lg overflow-hidden hidden"></div>
-                `;
+                </template>
+            </div>
+        </div>
+    </div>
 
-                const playButton = document.getElementById('playButton');
-                playButton.addEventListener('click', async () => {
-                    const videoPlayer = selectedMovie.querySelector('#videoPlayer');
-                    const movieInfo = selectedMovie.querySelector('#movieInfo');
-                    const poster = selectedMovie.querySelector('#poster');
-                    const languageSelect = document.getElementById('languageSelect');
-                    const language = languageSelect.value;
+    <footer class="text-gray-400 py-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">
+                Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
+            </p>
+            <p class="mt-2 text-xs">
+                Made with ❤ by Ambrosial. 01/01/25 🎉
+            </p>
+        </div>
+    </footer>
 
-                    const providerSelect = document.getElementById('providerSelect');
-                    const provider = providerSelect.value;
+    <script>
+        function app() {
+            return {
+                apiKey: '1070730380f5fee0d87cf0382670b255',
+                content: [],
+                currentTab: 'movies',
+                language: 'en',
+                searchQuery: '',
+                showModal: false,
+                selectedContent: null,
+                currentVideoUrl: '',
+                selectedSeason: 1,
+                selectedEpisode: 1,
+                seasons: [],
+                episodes: [],
 
-                    if (!videoPlayer || !movieInfo || !poster) {
-                        console.error("Error: videoPlayer, movieInfo, or poster elements not found.");
+                async init() {
+                    await this.fetchContent();
+                    this.$watch('currentTab', () => this.fetchContent());
+                    this.$watch('language', () => this.fetchContent());
+                },
+
+                async fetchContent() {
+                    const baseUrl = 'https://api.themoviedb.org/3';
+                    const endpoint = this.currentTab === 'movies' ? 'movie/popular' : 'tv/popular';
+                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&language=${this.language}-${this.language.toUpperCase()}`;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.content = data.results;
+                    } catch (error) {
+                        console.error('Error fetching content:', error);
+                    }
+                },
+
+                async searchContent() {
+                    if (!this.searchQuery) {
+                        await this.fetchContent();
                         return;
                     }
 
-                    let endpoint;
+                    const baseUrl = 'https://api.themoviedb.org/3/search';
+                    const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
+                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&query=${this.searchQuery}&language=${this.language}-${this.language.toUpperCase()}`;
 
-                    if (mediaType === 'tv') {
-                        const seasonSelect = document.getElementById('seasonSelect');
-                        const episodeSelect = document.getElementById('episodeSelect');
-                        
-                        const seasonNumber = seasonSelect.value;
-                        const episodeNumber = episodeSelect.value;
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.content = data.results;
+                    } catch (error) {
+                        console.error('Error searching content:', error);
+                    }
+                },
 
-                        if (!seasonNumber || !episodeNumber) {
-                            console.error("Error: Season number or episode number not selected.");
-                            return;
-                        }
+                async openContent(item) {
+                    this.selectedContent = item;
+                    this.showModal = true;
 
-                        if (language === 'fr') {
-                            endpoint = `https://frembed.pro/api/serie.php?id=${media.id}&sa=${seasonNumber}&epi=${episodeNumber}`;
-                        } else {
-                            if (provider === 'superembed') {
-                                endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1&s=${seasonNumber}&e=${episodeNumber}`;
-                            } else if (provider === 'embedsoap') {
-                                endpoint = `https://www.embedsoap.com/embed/tv/?id=${media.id}&s=${seasonNumber}&e=${episodeNumber}`;
-                            } else if (provider === 'autoembed') {
-                                endpoint = `https://autoembed.co/tv/tmdb/${media.id}-${seasonNumber}-${episodeNumber}`;
-                            } else if (provider === 'smashystream') {
-                                endpoint = `https://player.smashy.stream/tv/${media.id}?s=${seasonNumber}&e=${episodeNumber}`;
-                            } else if (provider === 'trailer') {
-                                const trailerResponse = await fetch(`https://api.themoviedb.org/3/${mediaType}/${media.id}/videos?api_key=${localStorage.getItem('apiKey')}`);
-                                const trailerData = await trailerResponse.json();
-                                const trailer = trailerData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-                                if (trailer) {
-                                    endpoint = `https://www.youtube.com/embed/${trailer.key}`;
-                                } else {
-                                    alert('Trailer not available.');
-                                    return;
-                                }
-                            }
+                    if (this.currentTab === 'shows') {
+                        const url = `https://api.themoviedb.org/3/tv/${item.id}?api_key=${this.apiKey}`;
+                        try {
+                            const response = await fetch(url);
+                            const data = await response.json();
+                            this.seasons = Array.from({length: data.number_of_seasons}, (_, i) => i + 1);
+                            this.updateEpisodes();
+                        } catch (error) {
+                            console.error('Error fetching seasons:', error);
                         }
                     } else {
-                        if (language === 'fr') {
-                            endpoint = `https://frembed.pro/api/film.php?id=${media.id}`;
-                        } else {
-                            if (provider === 'superembed') {
-                                endpoint = `https://multiembed.mov/?video_id=${media.id}&tmdb=1`;
-                            } else if (provider === 'embedsoap') {
-                                endpoint = `https://www.embedsoap.com/embed/movie/${media.id}`;
-                            } else if (provider === 'autoembed') {
-                                endpoint = `https://autoembed.co/movie/tmdb/${media.id}`;
-                            } else if (provider === 'smashystream') {
-                                endpoint = `https://player.smashy.stream/movie/${media.id}`;
-                            } else if (provider === 'trailer') {
-                                const trailerResponse = await fetch(`https://api.themoviedb.org/3/${mediaType}/${media.id}/videos?api_key=${localStorage.getItem('apiKey')}`);
-                                const trailerData = await trailerResponse.json();
-                                const trailer = trailerData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
-                                if (trailer) {
-                                    endpoint = `https://www.youtube.com/embed/${trailer.key}`;
-                                } else {
-                                    alert('Trailer not available.');
-                                    return;
-                                }
-                            }
-                        }
+                        this.currentVideoUrl = this.language === 'en' 
+                            ? `https://multiembed.mov/?video_id=${item.id}&tmdb=1`
+                            : `https://frembed.lol/api/film.php?id=${item.id}`;
                     }
+                },
 
-                    videoPlayer.innerHTML = `<iframe src="${endpoint}" class="w-full" style="height: ${poster.offsetHeight}px;" allowfullscreen></iframe>`;
-                    videoPlayer.classList.remove('hidden');
-                    movieInfo.classList.add('hidden');
-                });
-
-                languageSelect.addEventListener('change', () => {
-                    const providerSelect = document.getElementById('providerSelect');
-                    if (languageSelect.value === 'fr') {
-                        providerSelect.classList.add('hidden');
-                    } else {
-                        providerSelect.classList.remove('hidden');
+                async updateEpisodes() {
+                    const url = `https://api.themoviedb.org/3/tv/${this.selectedContent.id}/season/${this.selectedSeason}?api_key=${this.apiKey}`;
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.episodes = Array.from({length: data.episodes.length}, (_, i) => i + 1);
+                        this.selectedEpisode = 1;
+                    } catch (error) {
+                        console.error('Error fetching episodes:', error);
                     }
-                    playButton.click();
-                });
+                },
 
-                providerSelect.addEventListener('change', () => {
-                    playButton.click();
-                });
-
-                if (mediaType === 'tv') {
-                    const seasonSelect = document.getElementById('seasonSelect');
-                    const episodeSelect = document.getElementById('episodeSelect');
-
-                    async function updateEpisodes() {
-                        const seasonNumber = seasonSelect.value;
-                        const response = await fetch(`https://api.themoviedb.org/3/tv/${media.id}/season/${seasonNumber}?api_key=${localStorage.getItem('apiKey')}`);
-                        if (response.ok) {
-                            const season = await response.json();
-                            episodeSelect.innerHTML = season.episodes.map(episode => `<option value="${episode.episode_number}">${episode.name}</option>`).join('');
-                        } else {
-                            console.error('Failed to fetch season details.');
-                        }
-                    }
-
-                    seasonSelect.addEventListener('change', async () => {
-                        await updateEpisodes();
-                        playButton.click();
-                    });
-
-                    episodeSelect.addEventListener('change', () => {
-                        playButton.click();
-                    });
-
-                    updateEpisodes();
-                }
-
-                selectedMovie.scrollIntoView({ behavior: 'smooth' });
-            }
-
-            function displaySearchResults(results) {
-                const popularMovies = document.getElementById('popularMovies');
-                popularMovies.innerHTML = '';
-
-                results.forEach(media => {
-                    const mediaCard = document.createElement('div');
-                    mediaCard.classList.add('bg-zinc-800', 'p-4', 'rounded-lg', 'cursor-pointer', 'transition', 'transform', 'hover:scale-105');
-
-                    mediaCard.innerHTML = `
-                        <img src="https://image.tmdb.org/t/p/w200${media.poster_path}" alt="${media.title || media.name}" class="rounded">
-                        <div class="mt-2">
-                            <h3 class="text-lg font-semibold">${media.title || media.name}</h3>
-                            <p class="text-zinc-400">Type: ${media.media_type === 'movie' ? 'Movie' : 'TV Show'}</p>
-                            <p class="text-sm text-zinc-400">Rating: ${media.vote_average}/10</p>
-                            <p class="text-sm text-zinc-400">Release Date: ${media.release_date || media.first_air_date}</p>
-                        </div>
-                    `;
-
-                    mediaCard.addEventListener('click', function() {
-                        fetchSelectedMedia(localStorage.getItem('apiKey'), media.id, media.media_type);
-                    });
-
-                    popularMovies.appendChild(mediaCard);
-                });
-            }
-
-            async function fetchUpcomingMedia(apiKey) {
-                const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=en-US&page=1`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const upcomingMovies = data.results.filter(media => new Date(media.release_date) > new Date());
-                    displayUpcomingMedia(upcomingMovies);
-                } else {
-                    console.error('Failed to fetch upcoming media.');
+                loadEpisode() {
+                    this.currentVideoUrl = this.language === 'en'
+                        ? `https://multiembed.mov/?video_id=${this.selectedContent.id}&tmdb=1&s=${this.selectedSeason}&e=${this.selectedEpisode}`
+                        : `https://frembed.lol/api/serie.php?id=${this.selectedContent.id}&sa=${this.selectedSeason}&epi=${this.selectedEpisode}`;
                 }
             }
-
-            function displayUpcomingMedia(mediaList) {
-                const upcomingMedia = document.getElementById('upcomingMedia');
-                upcomingMedia.innerHTML = '';
-
-                mediaList.forEach(media => {
-                    const mediaItem = document.createElement('div');
-                    mediaItem.classList.add('text-zinc-300', 'mb-2');
-                    mediaItem.innerHTML = `<span>${media.title}:</span> <span>${media.release_date}</span>`;
-                    upcomingMedia.appendChild(mediaItem);
-                });
-            }
-        });
+        }
     </script>
+    <button 
+        @click="window.scrollTo({top: 0})" 
+        @scroll.window="showScrollTop = window.pageYOffset > 500"
+        x-data="{ showScrollTop: false }"
+        x-show="showScrollTop"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform translate-y-10"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform translate-y-10"
+        class="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-4 shadow-lg cursor-pointer transition-all duration-300 hover:scale-110 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
 </body>
 </html>
