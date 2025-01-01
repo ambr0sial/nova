@@ -6,7 +6,7 @@
 </p>
 
 > [!IMPORTANT]
-> NEW UPDATEE <33
+> Hello there! No updates to Nova were made for 5 months now, so for ~2 months I've been working on a totally revamped experience. Since it's now 2025, I decided to publish it today. Come and check it out! ❤
 
 # Nova ☄
 
