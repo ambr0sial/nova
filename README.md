@@ -12,28 +12,6 @@
 
 Nova is a streaming platform that allows users to explore and watch a variety of movies. It uses The Movie Database (TMDb) API and the SuperEmbed/FREmbed API to fetch movie information and offers a user-friendly interface for everyone.
 
-## Getting Started ✨
-
-### Online Usage 🎉
-
-1. Open the [Nova website](https://novastream.top/).
-2. Put your TMDb API key where it asks you ([get one here](https://www.themoviedb.org/documentation/api)) or click on the public API key button.
-3. Enjoy!
-
-### Offline Usage 💾
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/ambr0sial/nova.git
-   ```
-2. Open the project folder:
-   ```bash
-   cd nova
-   ```
-3. Open the `index.html` file and put your TMDb API key where it asks you ([get one here](https://www.themoviedb.org/documentation/api)) or click on the public API key button.
-4. Enjoy!
-
 ## Alternative Domains ⚙️
 
 If https://novastream.top/ is down, here's a few other domains you could try:
