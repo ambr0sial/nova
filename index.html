@@ -124,10 +124,16 @@
             opacity: 1;
             visibility: visible;
         }
+
+        #githubButton img, #kofiButton img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()">
-    <!-- Navigation -->
+    <!-- navigation -->
     <nav class="fixed w-full z-50 glass-effect">
         <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between">
@@ -144,6 +150,15 @@
                         <a href="#" class="nav-link" @click="language = language === 'en' ? 'fr' : 'en'"
                            x-text="language === 'en' ? 'Switch to French' : 'Switch to English'"></a>
                     </div>
+                    <a href="https://github.com/ambr0sial/nova" target="_blank" class="nav-link flex items-center">
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://ko-fi.com/ambrosial" target="_blank" class="nav-link flex items-center">
+                        <span>Ko-Fi</span>
+                    </a>
+                    <a href="https://discord.gg/s9kUZw7CqP" target="_blank" class="nav-link flex items-center">
+                        <span>Discord</span>
+                    </a>
                 </div>
                 <div class="relative">
                     <input type="text" 
@@ -156,13 +171,13 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- hero section -->
     <div class="pt-24 pb-12 px-6">
         <div class="container mx-auto">
             <h2 class="text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800" 
                 x-text="currentTab === 'movies' ? 'Popular Movies' : 'Popular TV Shows'"></h2>
             
-            <!-- Content Grid -->
+            <!-- content grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 <template x-for="item in content" :key="item.id">
                     <div class="rounded-lg overflow-hidden card-hover bg-gray-800"
@@ -182,7 +197,7 @@
         </div>
     </div>
 
-    <!-- Video Modal -->
+    <!-- video modal -->
     <div x-show="showModal" 
          class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-90 flex items-center justify-center"
          @click.away="showModal = false"
@@ -193,7 +208,6 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0">
         <div class="bg-gray-900 rounded-lg w-full max-w-4xl modal-animation relative">
-            <!-- Back Button -->
             <button @click="showModal = false" 
                     class="absolute -top-12 left-0 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all duration-300 flex items-center space-x-2 floating-button">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -213,7 +227,7 @@
                     x-text="selectedContent?.title || selectedContent?.name"></h3>
                 <p class="mt-4 text-gray-300" x-text="selectedContent?.overview"></p>
                 
-                <!-- Season/Episode selector for TV Shows -->
+                <!-- season/episode selector -->
                 <template x-if="currentTab === 'shows' && selectedContent">
                     <div class="mt-6 flex flex-wrap gap-4">
                         <select x-model="selectedSeason" 
@@ -245,12 +259,37 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 01/01/25 🎉
+                Made with ❤ by Ambrosial. 13/01/25
             </p>
         </div>
     </footer>
 
     <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            function isMobile() {
+                return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            }
+
+            if (isMobile()) {
+                const warningModal = document.createElement('div');
+                warningModal.innerHTML = `
+                    <div class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-90 flex items-center justify-center">
+                        <div class="bg-gray-900 rounded-lg w-full max-w-md p-6 modal-animation relative">
+                            <h2 class="text-2xl font-bold text-red-500 mb-4">Warning</h2>
+                            <p class="text-gray-300 mb-6">This website is pretty much awful to use on a phone. I <strong>highly</strong> recommend you to switch to a computer.</p>
+                            <button id="continueAnyways" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">Continue anyways</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(warningModal);
+
+                document.getElementById('continueAnyways').addEventListener('click', function() {
+                    warningModal.style.display = 'none';
+                });
+            }
+        });
+
         function app() {
             return {
                 apiKey: '1070730380f5fee0d87cf0382670b255',
@@ -362,5 +401,30 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
+    <div id="donationBanner" class="fixed bottom-4 left-4 right-4 md:bottom-2 md:right-auto md:left-2 bg-purple-600 text-white text-sm md:text-base p-2 md:p-3 rounded-lg shadow-lg flex items-center justify-between space-x-2 md:space-x-4 z-50">
+        <span>Enjoying Nova? Support me on <a href="https://ko-fi.com/ambrosial" target="_blank" class="underline hover:text-purple-300 transition-all">Ko-Fi</a> <3</span>
+        <button id="closeBanner" class="text-white hover:text-gray-300 transition-all">
+            &times;
+        </button>
+    </div>
+    <script>
+        const closeBannerButton = document.getElementById('closeBanner');
+        if (closeBannerButton) {
+            closeBannerButton.addEventListener('click', function() {
+                const banner = document.getElementById('donationBanner');
+                if (banner) {
+                    banner.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
+
+<!--
+ _   _                 
+| \ | | _____   ____ _ 
+|  \| |/ _ \ \ / / _` |
+| |\  | (_) \ V / (_| |
+|_| \_|\___/ \_/ \__,_|
+-->
