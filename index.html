@@ -188,6 +188,7 @@
                                  class="w-full h-96 object-cover">
                             <div class="card-overlay absolute inset-0 flex flex-col justify-end p-4">
                                 <h3 class="text-lg font-semibold" x-text="item.title || item.name"></h3>
+                                <p class="text-gray-400 text-sm mt-1" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
                                 <p class="text-gray-300 text-sm mt-2" x-text="item.overview.substring(0, 100) + '...'"></p>
                             </div>
                         </div>
@@ -225,6 +226,7 @@
             <div class="p-6 bg-gray-800 rounded-b-lg">
                 <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800" 
                     x-text="selectedContent?.title || selectedContent?.name"></h3>
+                <p class="text-gray-300 mt-2" x-text="'⭐ ' + (selectedContent?.vote_average ? selectedContent.vote_average.toFixed(1) + '/10' : 'N/A')"></p>
                 <p class="mt-4 text-gray-300" x-text="selectedContent?.overview"></p>
                 
                 <!-- controls section -->
@@ -252,7 +254,7 @@
                         </div>
                     </template>
 
-                    <!-- Source selector (only visible for English content) -->
+                    <!-- source selector (only visible for english content) -->
                     <div x-show="language === 'en'" class="flex flex-wrap items-center gap-4 pt-2 border-t border-gray-700">
                         <span class="text-gray-300 font-medium">Source:</span>
                         <div class="flex flex-wrap gap-2">
@@ -277,13 +279,12 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 14/01/25
+                Made with ❤ by Ambrosial. 15/01/25
             </p>
         </div>
     </footer>
 
     <script>
-
         document.addEventListener('DOMContentLoaded', function() {
             function isMobile() {
                 return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -304,6 +305,33 @@
 
                 document.getElementById('continueAnyways').addEventListener('click', function() {
                     warningModal.style.display = 'none';
+                });
+            }
+
+            const discordPopupSeen = localStorage.getItem('discordPopupSeen');
+
+            if (!discordPopupSeen) {
+                const popup = document.createElement('div');
+                popup.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
+                popup.innerHTML = `
+                    <div class="bg-gray-800 rounded-lg p-6 text-center space-y-4 max-w-sm">
+                        <h2 class="text-xl font-bold text-purple-400">Nova has a Discord Server!</h2>
+                        <p class="text-gray-300">Join the community for updates and discussions <3</p>
+                        <a href="https://discord.gg/s9kUZw7CqP" target="_blank" 
+                            class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white inline-block">
+                            Join Now
+                        </a>
+                        <button id="closePopup" 
+                            class="text-gray-500 hover:text-gray-300 focus:outline-none">
+                            Dismiss
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(popup);
+
+                document.getElementById('closePopup').addEventListener('click', function() {
+                    popup.style.display = 'none';
+                    localStorage.setItem('discordPopupSeen', 'true');
                 });
             }
         });
@@ -334,7 +362,7 @@
                     },
                     {
                         id: 'vidbinge',
-                        name: 'Vidbinge',
+                        name: 'Vidbinge (4K)',
                         urls: {
                             movie: 'https://vidbinge.dev/embed/movie/{id}',
                             tv: 'https://vidbinge.dev/embed/tv/{id}/{season}/{episode}'
