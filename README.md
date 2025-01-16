@@ -9,7 +9,7 @@
 </p>
 
 > [!IMPORTANT]
-> Hello there! No updates to Nova were made for 5 months now, so for ~2 months I've been working on a totally revamped experience. Since it's now 2025, I decided to publish it today. Come and check it out! ❤
+> 16/01 TOTAL WATCHING EXPERIENCE REVAMPED along with other really nice features!!
 
 # Nova ☄
 
