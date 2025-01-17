@@ -12,8 +12,10 @@
     <meta property="og:url" content="https://novastream.top">
     <meta property="og:title" content="Nova">
     <meta property="og:description" content="Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone.">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
     <meta property="og:image" content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png">
-    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:card" content="summary">
     <meta property="twitter:url" content="https://novastream.top">
     <meta property="twitter:title" content="Nova - Watch Movies & TV Shows">
     <meta property="twitter:description" content="Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone.">
@@ -227,7 +229,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <h3 class="text-xl font-semibold">Sources</h3>
+                            <h3 class="text-xl font-semibold">Stream</h3>
                         </div>
                         <div class="space-y-4">
                             <div class="space-y-2">
@@ -259,6 +261,55 @@
                                         </template>
                                     </template>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- download section -->
+                    <div class="bg-gray-800 rounded-lg p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <h3 class="text-xl font-semibold">Download</h3>
+                        </div>
+                        <div class="space-y-4">
+                            <template x-if="isShow">
+                                <div class="flex flex-wrap gap-4 mb-4">
+                                    <select x-model="selectedTorrentSeason" 
+                                            @change="fetchTorrentInfo"
+                                            class="bg-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all duration-300">
+                                        <template x-for="season in seasons" :key="season">
+                                            <option :value="season" x-text="'Season ' + season"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </template>
+                            <div x-show="torrentInfo" class="space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-400">Quality:</span>
+                                    <span class="text-gray-200" x-text="torrentInfo.quality || 'N/A'"></span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-400">Type:</span>
+                                    <span class="text-gray-200" x-text="torrentInfo.type || 'N/A'"></span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-400">Size:</span>
+                                    <span class="text-gray-200" x-text="torrentInfo.size || 'N/A'"></span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-400">Seeders:</span>
+                                    <span class="text-green-400" x-text="torrentInfo.seeders || 'N/A'"></span>
+                                </div>
+                                <a :href="torrentInfo.link" 
+                                   target="_blank"
+                                   class="block w-full text-center bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-all duration-300 mt-4">
+                                    Download Torrent
+                                </a>
+                            </div>
+                            <div x-show="!torrentInfo" class="text-center text-gray-400 py-4">
+                                Loading torrent information...
                             </div>
                         </div>
                     </div>
@@ -641,10 +692,12 @@
                     this.contentId = urlParams.get('id');
                     this.contentType = urlParams.get('type');
                     this.isShow = this.contentType === 'tv';
+                    this.selectedTorrentSeason = 1;
 
                     if (this.contentId && this.contentType) {
                         await this.fetchContent();
                         this.updateVideoUrl();
+                        this.fetchTorrentInfo();
                     }
                 },
 
@@ -804,6 +857,71 @@
 
                 toggleSection(section) {
                     this.sections[section] = !this.sections[section];
+                },
+
+                torrentInfo: null,
+
+                async fetchTorrentInfo() {
+                    const contentTitle = this.content?.title || this.content?.name;
+                    if (!contentTitle) return;
+
+                    try {
+                        const corsProxy = 'https://corsproxy.io/?';
+                        
+                        let searchQuery = contentTitle;
+                        if (this.isShow) {
+                            searchQuery += ` S${String(this.selectedTorrentSeason).padStart(2, '0')}`;
+                        }
+                        
+                        const targetUrl = `https://knaben.org/search/${encodeURIComponent(searchQuery)}/0/1/seeders`;
+                        const response = await fetch(corsProxy + encodeURIComponent(targetUrl));
+                        const html = await response.text();
+                        
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        
+                        const rows = doc.querySelectorAll('tr[data-id]');
+                        let magnetRow = null;
+                        let magnetLink = null;
+
+                        for (const row of rows) {
+                            const links = row.querySelectorAll('a');
+                            for (const link of links) {
+                                if (link.href.startsWith('magnet:')) {
+                                    magnetRow = row;
+                                    magnetLink = link.href;
+                                    break;
+                                }
+                            }
+                            if (magnetRow) break;
+                        }
+
+                        if (!magnetRow || !magnetLink) {
+                            this.torrentInfo = null;
+                            return;
+                        }
+
+                        const titleElement = magnetRow.querySelector('td.text-wrap a');
+                        const torrentTitle = titleElement.textContent;
+                        
+                        const qualityMatch = torrentTitle.match(/\[(.*?)\]/g);
+                        const quality = qualityMatch ? qualityMatch[0].replace(/[\[\]]/g, '') : 'N/A';
+                        const type = qualityMatch && qualityMatch[1] ? qualityMatch[1].replace(/[\[\]]/g, '') : 'N/A';
+                        
+                        const size = magnetRow.querySelector('td[title*="Bytes"]').textContent;
+                        const seeders = magnetRow.querySelector('td:nth-child(5)').textContent;
+
+                        this.torrentInfo = {
+                            quality,
+                            type,
+                            size,
+                            seeders,
+                            link: magnetLink
+                        };
+                    } catch (error) {
+                        console.error('Error fetching torrent info:', error);
+                        this.torrentInfo = null;
+                    }
                 }
             }
         }
