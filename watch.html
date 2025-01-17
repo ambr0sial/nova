@@ -265,52 +265,56 @@
                         </div>
                     </div>
 
-                    <!-- download section -->
-                    <div class="bg-gray-800 rounded-lg p-6">
-                        <div class="flex items-center space-x-3 mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            <h3 class="text-xl font-semibold">Download</h3>
-                        </div>
-                        <div class="space-y-4">
+                    <!-- torrent download section -->
+                    <div class="mt-8 bg-gray-800 rounded-lg p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <h3 class="text-xl font-semibold text-gray-200">Download</h3>
+                            </div>
                             <template x-if="isShow">
-                                <div class="flex flex-wrap gap-4 mb-4">
-                                    <select x-model="selectedTorrentSeason" 
-                                            @change="fetchTorrentInfo"
-                                            class="bg-gray-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all duration-300">
+                                <div class="flex items-center space-x-2">
+                                    <label class="text-gray-400">Season:</label>
+                                    <select x-model="selectedTorrentSeason" @change="fetchTorrentInfo()" class="bg-gray-700 text-gray-200 rounded px-2 py-1">
                                         <template x-for="season in seasons" :key="season">
-                                            <option :value="season" x-text="'Season ' + season"></option>
+                                            <option :value="season" x-text="season"></option>
                                         </template>
                                     </select>
                                 </div>
                             </template>
-                            <div x-show="torrentInfo" class="space-y-3">
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-gray-400">Quality:</span>
-                                    <span class="text-gray-200" x-text="torrentInfo.quality || 'N/A'"></span>
+                        </div>
+
+                        <div x-show="torrentInfo === undefined" class="text-center text-gray-400 py-4">
+                            Loading torrent information...
+                        </div>
+
+                        <div x-show="torrentInfo === null" class="text-center text-gray-400 py-4">
+                            No torrents found
+                        </div>
+
+                        <div x-show="torrentInfo && torrentInfo.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <template x-for="torrent in torrentInfo" :key="torrent.magnet">
+                                <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors duration-300">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-purple-400 font-semibold" x-text="torrent.quality || 'N/A'"></span>
+                                            <span class="text-gray-400">•</span>
+                                            <span class="text-gray-300" x-text="torrent.type || 'N/A'"></span>
+                                        </div>
+                                        <div class="flex items-center space-x-1 text-green-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                            </svg>
+                                            <span x-text="torrent.seeders || '0'"></span>
+                                        </div>
+                                    </div>
+                                    <a :href="torrent.magnet" class="block w-full text-center bg-purple-600 text-white text-sm font-medium rounded-md py-2 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
+                                        Download Torrent
+                                    </a>
                                 </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-gray-400">Type:</span>
-                                    <span class="text-gray-200" x-text="torrentInfo.type || 'N/A'"></span>
-                                </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-gray-400">Size:</span>
-                                    <span class="text-gray-200" x-text="torrentInfo.size || 'N/A'"></span>
-                                </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-gray-400">Seeders:</span>
-                                    <span class="text-green-400" x-text="torrentInfo.seeders || 'N/A'"></span>
-                                </div>
-                                <a :href="torrentInfo.link" 
-                                   target="_blank"
-                                   class="block w-full text-center bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-all duration-300 mt-4">
-                                    Download Torrent
-                                </a>
-                            </div>
-                            <div x-show="!torrentInfo || torrentInfo === null" class="text-center text-gray-400 py-4">
-                                <span x-text="torrentInfo === undefined ? 'Loading torrent information...' : 'No torrents found'"></span>
-                            </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -917,75 +921,121 @@
 
                 async fetchTorrentInfo() {
                     const contentTitle = this.content?.title || this.content?.name;
+                    const releaseYear = (this.content?.release_date || this.content?.first_air_date || '').substring(0, 4);
                     if (!contentTitle) return;
 
                     this.torrentInfo = undefined;
 
                     try {
-                        const corsProxy = 'https://corsproxy.io/?';
+                        const corsProxy = 'https://api.allorigins.win/raw?url=';
                         
                         let searchQuery = contentTitle;
+                        if (releaseYear) {
+                            searchQuery += ` ${releaseYear}`;
+                        }
                         if (this.isShow) {
                             searchQuery += ` S${String(this.selectedTorrentSeason).padStart(2, '0')}`;
                         }
                         
-                        const targetUrl = `https://knaben.org/search/${encodeURIComponent(searchQuery)}/0/1/seeders`;
+                        const targetUrl = `https://cloudtorrents.com/search?query=${encodeURIComponent(searchQuery)}&ordering=-se`;
+                        console.log('Fetching torrents from:', targetUrl);
+                        
                         const response = await fetch(corsProxy + encodeURIComponent(targetUrl));
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
                         const html = await response.text();
                         
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
                         
-                        const rows = doc.querySelectorAll('tr[data-id]');
-                        let magnetRow = null;
-                        let magnetLink = null;
+                        const rows = doc.querySelectorAll('tbody tr');
+                        console.log('Found rows:', rows.length);
+                        
+                        const qualityTypeMap = new Map();
 
                         for (const row of rows) {
-                            const links = row.querySelectorAll('a');
-                            for (const link of links) {
-                                if (link.href.startsWith('magnet:')) {
-                                    magnetRow = row;
-                                    magnetLink = link.href;
-                                    break;
-                                }
+                            const titleElement = row.querySelector('td:first-child a');
+                            if (!titleElement) continue;
+
+                            const title = titleElement.textContent.trim();
+                            
+                            if (!this.verifyTorrentTitle(title, contentTitle, releaseYear)) continue;
+
+                            const magnetElement = row.querySelector('a[href^="magnet:"]');
+                            if (!magnetElement) continue;
+
+                            const magnetLink = magnetElement.href;
+                            
+                            let quality = 'N/A';
+                            const qualityMatch = title.match(/\b(720p|1080p|2160p|4K)\b/i);
+                            if (qualityMatch) {
+                                quality = qualityMatch[1].toUpperCase();
                             }
-                            if (magnetRow) break;
+                            
+                            let type = 'N/A';
+                            const typeMatch = title.match(/\b(BluRay|WEBDL|WEB-DL|WEBRip|HDRip|BRRip|DVDRip)\b/i);
+                            if (typeMatch) {
+                                type = typeMatch[1].replace('WEBDL', 'WEB-DL');
+                            }
+
+                            const sizeElement = row.querySelector('td:nth-child(4)');
+                            const seedersElement = row.querySelector('td:nth-child(5)');
+                            const seeders = parseInt(seedersElement?.textContent.trim() || '0', 10);
+
+                            const torrent = {
+                                quality,
+                                type,
+                                size: sizeElement ? sizeElement.textContent.trim() : 'N/A',
+                                seeders: seeders,
+                                magnet: magnetLink
+                            };
+
+                            const key = `${quality}-${type}`;
+                            
+                            if (!qualityTypeMap.has(key) || qualityTypeMap.get(key).seeders < seeders) {
+                                qualityTypeMap.set(key, torrent);
+                            }
                         }
 
-                        if (!magnetRow || !magnetLink) {
+                        const torrents = Array.from(qualityTypeMap.values());
+                        torrents.sort((a, b) => {
+                            const qualityOrder = { '4K': 4, '2160P': 3, '1080P': 2, '720P': 1, 'N/A': 0 };
+                            const qualityDiff = (qualityOrder[b.quality] || 0) - (qualityOrder[a.quality] || 0);
+                            if (qualityDiff !== 0) return qualityDiff;
+                            return b.seeders - a.seeders;
+                        });
+
+                        this.torrentInfo = torrents.slice(0, 4);
+                        if (this.torrentInfo.length === 0) {
                             this.torrentInfo = null;
-                            return;
                         }
-
-                        const titleElement = magnetRow.querySelector('td.text-wrap a');
-                        const torrentTitle = titleElement.textContent;
-                        
-                        let quality = 'N/A';
-                        const qualityMatch = torrentTitle.match(/\b(720p|1080p|2160p|4K)\b/i);
-                        if (qualityMatch) {
-                            quality = qualityMatch[1].toUpperCase();
-                        }
-                        
-                        let type = 'N/A';
-                        const typeMatch = torrentTitle.match(/\b(BluRay|WEBDL|WEB-DL|WEBRip|HDRip|BRRip|DVDRip)\b/i);
-                        if (typeMatch) {
-                            type = typeMatch[1].replace('WEBDL', 'WEB-DL');
-                        }
-                        
-                        const size = magnetRow.querySelector('td[title*="Bytes"]').textContent;
-                        const seeders = magnetRow.querySelector('td:nth-child(5)').textContent;
-
-                        this.torrentInfo = {
-                            quality,
-                            type,
-                            size,
-                            seeders,
-                            link: magnetLink
-                        };
                     } catch (error) {
                         console.error('Error fetching torrent info:', error);
                         this.torrentInfo = null;
                     }
+                },
+
+                verifyTorrentTitle(torrentTitle, contentTitle, releaseYear) {
+                    const cleanTorrentTitle = torrentTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    const cleanContentTitle = contentTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    
+                    if (!cleanTorrentTitle.includes(cleanContentTitle)) {
+                        return false;
+                    }
+                    
+                    if (releaseYear && !torrentTitle.includes(releaseYear)) {
+                        return false;
+                    }
+                    
+                    if (this.isShow) {
+                        const seasonPattern = new RegExp(`S${String(this.selectedTorrentSeason).padStart(2, '0')}`, 'i');
+                        if (!seasonPattern.test(torrentTitle)) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
                 }
             }
         }
