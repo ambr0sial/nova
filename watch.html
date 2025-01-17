@@ -308,8 +308,8 @@
                                     Download Torrent
                                 </a>
                             </div>
-                            <div x-show="!torrentInfo" class="text-center text-gray-400 py-4">
-                                Loading torrent information...
+                            <div x-show="!torrentInfo || torrentInfo === null" class="text-center text-gray-400 py-4">
+                                <span x-text="torrentInfo === undefined ? 'Loading torrent information...' : 'No torrents found'"></span>
                             </div>
                         </div>
                     </div>
@@ -859,11 +859,13 @@
                     this.sections[section] = !this.sections[section];
                 },
 
-                torrentInfo: null,
+                torrentInfo: undefined,
 
                 async fetchTorrentInfo() {
                     const contentTitle = this.content?.title || this.content?.name;
                     if (!contentTitle) return;
+
+                    this.torrentInfo = undefined;
 
                     try {
                         const corsProxy = 'https://corsproxy.io/?';
@@ -904,9 +906,17 @@
                         const titleElement = magnetRow.querySelector('td.text-wrap a');
                         const torrentTitle = titleElement.textContent;
                         
-                        const qualityMatch = torrentTitle.match(/\[(.*?)\]/g);
-                        const quality = qualityMatch ? qualityMatch[0].replace(/[\[\]]/g, '') : 'N/A';
-                        const type = qualityMatch && qualityMatch[1] ? qualityMatch[1].replace(/[\[\]]/g, '') : 'N/A';
+                        let quality = 'N/A';
+                        const qualityMatch = torrentTitle.match(/\b(720p|1080p|2160p|4K)\b/i);
+                        if (qualityMatch) {
+                            quality = qualityMatch[1].toUpperCase();
+                        }
+                        
+                        let type = 'N/A';
+                        const typeMatch = torrentTitle.match(/\b(BluRay|WEBDL|WEB-DL|WEBRip|HDRip|BRRip|DVDRip)\b/i);
+                        if (typeMatch) {
+                            type = typeMatch[1].replace('WEBDL', 'WEB-DL');
+                        }
                         
                         const size = magnetRow.querySelector('td[title*="Bytes"]').textContent;
                         const seeders = magnetRow.querySelector('td:nth-child(5)').textContent;
