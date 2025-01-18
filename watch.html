@@ -170,23 +170,31 @@
                 <!-- left column (video player and controls) -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- video player -->
-                    <div class="relative bg-gray-800 rounded-lg overflow-hidden" style="padding-top: 56.25%">
-                        <iframe x-bind:src="currentVideoUrl"
-                                class="absolute inset-0 w-full h-full"
-                                frameborder="0"
-                                @error="checkProviderStatus()"
-                                @load="handleProviderLoad()"
-                                allowfullscreen></iframe>
-                        
-                        <!-- provider down message -->
-                        <div x-show="showDownMessage" 
-                             class="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90">
-                            <div class="text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <div class="relative pt-[56.25%]">
+                            <iframe x-bind:src="currentVideoUrl" 
+                                    class="absolute top-0 left-0 w-full h-full" 
+                                    frameborder="0" 
+                                    scrolling="no" 
+                                    allowfullscreen>
+                            </iframe>
+                            <button @click="toggleWatchLater(content)" 
+                                    class="absolute top-4 right-4 p-2 bg-gray-900 bg-opacity-75 rounded-full hover:bg-purple-600 transition-colors duration-300"
+                                    :class="isInWatchLater(content) ? 'text-purple-400' : 'text-white'">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
                                 </svg>
-                                <p class="text-xl font-semibold text-white mb-2">This provider is currently down 💔</p>
-                                <p class="text-gray-400">Please try another source from the list below!</p>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="text-sm text-gray-400" x-show="content?.runtime || content?.episode_run_time">
+                                <span>If you start now, it'll end at </span>
+                                <span class="text-purple-400" x-text="(() => {
+                                    const runtime = content?.runtime || content?.episode_run_time?.[0] || 0;
+                                    const now = new Date();
+                                    const endTime = new Date(now.getTime() + runtime * 60000);
+                                    return endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                })()"></span>
                             </div>
                         </div>
                     </div>

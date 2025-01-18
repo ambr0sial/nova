@@ -35,4 +35,4 @@ const availableSources = [
             tv: 'https://moviesapi.club/tv/{id}-{season}-{episode}'
         }
     }
-]; 
+];
