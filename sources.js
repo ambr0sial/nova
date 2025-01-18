@@ -34,5 +34,14 @@ const availableSources = [
             movie: 'https://moviesapi.club/movie/{id}',
             tv: 'https://moviesapi.club/tv/{id}-{season}-{episode}'
         }
+    },
+    {
+        id: 'embedsu',
+        name: 'EmbedSU',
+        isFrench: false,
+        urls: {
+            movie: 'https://embed.su/embed/movie/{id}',
+            tv: 'https://embed.su/embed/tv/{id}/{season}/{episode}'
+        }
     }
 ];
