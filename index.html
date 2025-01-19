@@ -53,6 +53,39 @@
             100% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
         }
 
+        .search-container {
+            position: relative;
+            width: 256px;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: radial-gradient(
+                circle at var(--mouse-x, center) var(--mouse-y, center),
+                rgba(168, 85, 247, 0.4) 0%,
+                rgba(168, 85, 247, 0.1) 30%,
+                transparent 70%
+            );
+            border-radius: 9999px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .search-container:hover::before,
+        .search-container:focus-within::before {
+            opacity: 1;
+        }
+
+        .search-input {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
         .card-hover {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -148,6 +181,8 @@
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()">
+    <div id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
+
     <!-- navigation -->
     <nav class="fixed w-full z-50 glass-effect">
         <div class="container mx-auto px-6 py-3">
@@ -180,11 +215,13 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <input type="text" 
-                           x-model="searchQuery" 
-                           @keyup.debounce.300ms="searchContent()"
-                           placeholder="Search..." 
-                           class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                    <div class="search-container">
+                        <input type="text" 
+                               x-model="searchQuery" 
+                               @keyup.debounce.300ms="searchContent()"
+                               placeholder="Search..." 
+                               class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                    </div>
                     <div x-show="searchQuery" 
                          @click="searchQuery = ''; fetchContent()"
                          class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-white">
@@ -210,8 +247,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (18/01/25)</span>
-                        <span class="text-gray-300 hidden sm:inline"> Added a new provider (EmbedSU), bookmark button on watch page and indicator for the end time of the content</span>
+                        <span class="font-semibold text-purple-400">Update (19/01/25)</span>
+                        <span class="text-gray-300 hidden sm:inline"> Added particles and a nice sleek effect on the search bar when hovering over it</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -381,13 +418,100 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 17/01/25
+                Made with ❤ by Ambrosial. 19/01/25
             </p>
-            <p class="mt-2 text-xs">
-                <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
-            </p>
+            <div class="relative mt-2">
+                <div id="particles-js" class="absolute inset-0 pointer-events-none"></div>
+                <p class="text-xs relative z-10">
+                    <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
+                </p>
+            </div>
         </div>
     </footer>
+
+    <!-- particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#a855f7'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 2,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#a855f7',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detect_on: 'window',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    },
+                    push: {
+                        particles_nb: 4
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
 
     <!-- watch later modal -->
     <div x-show="showWatchLater" 
@@ -785,6 +909,16 @@
                 }
             });
         }
+    </script>
+    <script>
+        document.querySelector('.search-container input').addEventListener('mousemove', (e) => {
+            const container = e.target.parentElement;
+            const rect = container.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) * 100) / rect.width;
+            const y = ((e.clientY - rect.top) * 100) / rect.height;
+            container.style.setProperty('--mouse-x', x + '%');
+            container.style.setProperty('--mouse-y', y + '%');
+        });
     </script>
 </body>
 </html>

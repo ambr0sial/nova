@@ -112,9 +112,20 @@
                 rgba(0, 0, 0, 0.3) 100%
             );
         }
+
+        @keyframes textColorAnimation {
+            0% { color: #A855F7; }  /* purple-500 */
+            50% { color: #7C3AED; } /* violet-600 */
+            100% { color: #A855F7; } /* purple-500 */
+        }
+        .animated-text {
+            animation: textColorAnimation 2s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()">
+    <div id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
+
     <!-- navigation -->
     <nav class="fixed w-full z-50 glass-effect">
         <div class="container mx-auto px-6 py-3">
@@ -165,7 +176,7 @@
         </div>
 
         <!-- main -->
-        <div class="container mx-auto px-6 py-8">
+        <div class="container mx-auto px-6 py-8 relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- left column (video player and controls) -->
                 <div class="lg:col-span-2 space-y-6">
@@ -176,6 +187,8 @@
                                     class="absolute top-0 left-0 w-full h-full" 
                                     frameborder="0" 
                                     scrolling="no" 
+                                    @error="checkProviderStatus()"
+                                    @load="handleProviderLoad()"
                                     allowfullscreen>
                             </iframe>
                             <button @click="toggleWatchLater(content)" 
@@ -185,16 +198,35 @@
                                     <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
                                 </svg>
                             </button>
+                            <!-- provider down message -->
+                            <div x-show="showDownMessage" 
+                                 class="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90">
+                                <div class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <p class="text-xl font-semibold text-white mb-2">This provider is currently down 💔</p>
+                                    <p class="text-gray-400">Please try another source from the list below!</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="p-4">
-                            <div class="text-sm text-gray-400" x-show="content?.runtime || content?.episode_run_time">
-                                <span>If you start now, it'll end at </span>
-                                <span class="text-purple-400" x-text="(() => {
-                                    const runtime = content?.runtime || content?.episode_run_time?.[0] || 0;
-                                    const now = new Date();
-                                    const endTime = new Date(now.getTime() + runtime * 60000);
-                                    return endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                                })()"></span>
+                            <div class="flex items-center justify-between text-sm text-gray-400">
+                                <div class="hidden lg:block">
+                                    <a href="https://ko-fi.com/ambrosial" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors">Support me here</a>
+                                </div>
+                                <div class="text-center mx-auto animated-text" x-show="content?.runtime || content?.episode_run_time">
+                                    <span>If you start now, it'll end at </span>
+                                    <span x-text="(() => {
+                                        const runtime = content?.runtime || content?.episode_run_time?.[0] || 0;
+                                        const now = new Date();
+                                        const endTime = new Date(now.getTime() + runtime * 60000);
+                                        return endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                    })()"></span>
+                                </div>
+                                <div class="hidden lg:block">
+                                    <a href="https://ko-fi.com/ambrosial" target="_blank" class="text-purple-400 hover:text-purple-300 transition-colors">Support me here</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -619,7 +651,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 17/01/25
+                Made with ❤ by Ambrosial. 19/01/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -720,6 +752,90 @@
             </div>
         </div>
     </div>
+
+    <!-- particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#a855f7'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 2,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#a855f7',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detect_on: 'window',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    },
+                    push: {
+                        particles_nb: 4
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
 
     <script>
         function app() {
