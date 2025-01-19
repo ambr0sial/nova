@@ -22,8 +22,8 @@ const availableSources = [
         name: 'Frembed',
         isFrench: true,
         urls: {
-            movie: 'https://frembed.lol/api/film.php?id={id}',
-            tv: 'https://frembed.lol/api/serie.php?id={id}&sa={season}&epi={episode}'
+            movie: 'https://frembed.live/api/film.php?id={id}',
+            tv: 'https://frembed.live/api/serie.php?id={id}&sa={season}&epi={episode}'
         }
     },
     {
