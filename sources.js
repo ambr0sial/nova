@@ -1,7 +1,7 @@
 const availableSources = [
     {
         id: 'multiembed',
-        name: 'Multiembed',
+        name: 'MultiEmbed',
         isFrench: false,
         urls: {
             movie: 'https://multiembed.mov/?video_id={id}&tmdb=1',
@@ -10,7 +10,7 @@ const availableSources = [
     },
     {
         id: 'vidbinge',
-        name: 'Vidbinge (4K)',
+        name: 'VidBinge (4K)',
         isFrench: false,
         urls: {
             movie: 'https://vidbinge.dev/embed/movie/{id}',
@@ -42,6 +42,78 @@ const availableSources = [
         urls: {
             movie: 'https://embed.su/embed/movie/{id}',
             tv: 'https://embed.su/embed/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'hexa',
+        name: 'Hexa',
+        isFrench: false,
+        urls: {
+            movie: 'https://api.hexa.watch/movie/{id}',
+            tv: 'https://api.hexa.watch/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidlink',
+        name: 'VidLink',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidlink.pro/movie/{id}',
+            tv: 'https://vidlink.pro/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidsrc',
+        name: 'VidSrc',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=false',
+            tv: 'https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=false'
+        }
+    },
+    {
+        id: '2embed',
+        name: '2Embed',
+        isFrench: false,
+        urls: {
+            movie: 'https://www.2embed.cc/embed/{id}',
+            tv: 'https://www.2embed.cc/embedtv/{id}&s={season}&e={episode}'
+        }
+    },
+    {
+        id: 'primewire',
+        name: 'PrimeWire',
+        isFrench: false,
+        urls: {
+            movie: 'https://www.primewire.tf/embed/movie?tmdb={id}',
+            tv: 'https://www.primewire.tf/embed/tv?tmdb={id}&season={season}&episode={episode}'
+        }
+    },
+    {
+        id: '123embed',
+        name: '123Embed',
+        isFrench: false,
+        urls: {
+            movie: 'https://play2.123embed.net/movie/{id}',
+            tv: 'https://play2.123embed.net/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: '111movies',
+        name: '111Movies',
+        isFrench: false,
+        urls: {
+            movie: 'https://111movies.com/movie/{id}',
+            tv: 'https://111movies.com/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'smashystream',
+        name: 'SmashyStream',
+        isFrench: false,
+        urls: {
+            movie: 'https://embed.smashystream.com/playere.php?tmdb={id}',
+            tv: 'https://embed.smashystream.com/playere.php?tmdb={id}&season={season}&episode={episode}'
         }
     }
 ];
