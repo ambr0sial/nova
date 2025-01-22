@@ -26,10 +26,14 @@ If https://novastream.top/ is down, here's a few other domains you could try:
 
 ## Hosting 🌐
 
-You can freely host this website yourself if you want to. The only thing I'll ask from you is to give me proper credits (just the link to this repository or even my username is enough)!
+You can freely host this website yourself if you want to. The only thing I'll ask from you is to give me proper credits (the link to this repository is enough)!
 
 ## Contributing ❤
 
 Contributions are always welcome! Feel free to open pull requests.
+
+## Star History ⭐
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ambr0sial/nova&type=Timeline)](https://star-history.com/#ambr0sial/nova&Timeline)
 
 #### Made with ❤ by ambr0sial.
