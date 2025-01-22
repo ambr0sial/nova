@@ -14,7 +14,9 @@
     </a>
   </p>
   <h3>✨ Click, watch, enjoy. ✨</h3>
-  <br>
+  
+  <p><strong>Nova itself is ad-free, but it happens that providers insert their own ads. For the best experience, I recommend using <a href="https://ublockorigin.com/">uBlock Origin</a>.</strong></p>
+  
   <p align="center">
     <img alt="Nova Screenshot" src="https://iili.io/2iL3qAB.png" width="700">
   </p>
