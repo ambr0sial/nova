@@ -9,6 +9,7 @@
 </p>
 
 > [!IMPORTANT]
+> 22/01 nova is now entirely phone responsive!!
 > 16/01 TOTAL WATCHING EXPERIENCE REVAMPED along with other really nice features!!
 
 # Nova ☄
