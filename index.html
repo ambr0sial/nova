@@ -189,8 +189,8 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-8">
                     <div class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Nova Logo" class="h-10 w-10">
-                        <span class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
+                        <img src="logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
+                        <span class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
                     </div>
                     <div class="hidden md:flex space-x-6">
                         <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'" 
@@ -214,26 +214,67 @@
                         </a>
                     </div>
                 </div>
-                <div class="relative">
-                    <div class="search-container">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="search-container hidden md:block">
+                            <input type="text" 
+                                   x-model="searchQuery" 
+                                   @keyup.debounce.300ms="searchContent()"
+                                   placeholder="Search..." 
+                                   class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                        </div>
+                    </div>
+                    <!-- mobile menu button -->
+                    <button @click="mobileMenu = !mobileMenu" class="md:hidden text-gray-300 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- mobile menu -->
+            <div x-show="mobileMenu" 
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 transform -translate-y-2"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 transform translate-y-0"
+                x-transition:leave-end="opacity-0 transform -translate-y-2"
+                class="md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-4">
+                    <!-- mobile search -->
+                    <div class="relative">
                         <input type="text" 
                                x-model="searchQuery" 
                                @keyup.debounce.300ms="searchContent()"
                                placeholder="Search..." 
-                               class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                               class="w-full bg-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
                     </div>
-                    <div x-show="searchQuery" 
-                         @click="searchQuery = ''; fetchContent()"
-                         class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-white">
-                        ×
-                    </div>
+                    <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'; mobileMenu = false" 
+                            class="text-left px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
+                        <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
+                    </button>
+                    <button @click="showWatchLater = true; mobileMenu = false" 
+                            class="flex items-center justify-between px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
+                        <span>Watch Later</span>
+                        <span x-show="watchLaterCount > 0" 
+                              class="bg-purple-600 text-white text-xs flex items-center justify-center rounded-full w-6 h-6" 
+                              x-text="watchLaterCount"></span>
+                    </button>
+                    <a href="https://github.com/ambr0sial/nova" target="_blank" 
+                       class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">GitHub</a>
+                    <a href="https://ko-fi.com/ambrosial" target="_blank" 
+                       class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Ko-Fi</a>
+                    <a href="https://discord.gg/s9kUZw7CqP" target="_blank" 
+                       class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Discord</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- update message -->
-    <div class="fixed top-16 left-0 right-0 z-40 animate-slide-down"
+    <div class="fixed top-[3.5rem] md:top-16 left-0 right-0 z-40 animate-slide-down"
          x-data="{ show: true }"
          x-show="show"
          x-transition:enter="transition ease-out duration-300"
@@ -245,10 +286,10 @@
         <div class="bg-gray-900 border-b border-purple-500/20">
             <div class="container mx-auto px-6 py-2 flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                    <!-- <span class="text-purple-400">🎉</span> -->
+                    <span class="text-purple-400">🎉</span>
                     <p class="text-sm">
                         <span class="font-semibold text-purple-400">Update (22/01/25)</span>
-                        <span class="text-gray-300 hidden sm:inline"> Edited contents banners to be more informative</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Nova is now entirely phone responsive! 💜</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -321,7 +362,7 @@
             </div>
             
             <!-- content grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
                 <template x-for="item in filteredContent" :key="item.id">
                     <div class="relative card-hover">
                         <a :href="'watch.html?id=' + item.id + '&type=' + (currentTab === 'movies' ? 'movie' : 'tv')"
@@ -329,18 +370,18 @@
                             <div class="relative">
                                 <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" 
                                      :alt="item.title || item.name"
-                                     class="w-full h-96 object-cover">
-                                <div class="card-overlay absolute inset-0 flex flex-col justify-end p-4">
-                                    <h3 class="text-lg font-semibold" x-text="item.title || item.name"></h3>
-                                    <p class="text-gray-400 text-sm mt-1" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
-                                    <p class="text-gray-300 text-sm mt-2" x-text="item.overview.substring(0, 100) + '...'"></p>
+                                     class="w-full h-48 sm:h-64 md:h-72 lg:h-96 object-cover">
+                                <div class="card-overlay absolute inset-0 flex flex-col justify-end p-3 md:p-4">
+                                    <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name"></h3>
+                                    <p class="text-gray-400 text-xs md:text-sm mt-1" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
+                                    <p class="text-gray-300 text-xs md:text-sm mt-2 hidden sm:block" x-text="item.overview.substring(0, 100) + '...'"></p>
                                 </div>
                             </div>
                         </a>
                         <button @click.stop="toggleWatchLater(item)"
-                                class="absolute top-2 right-2 p-2 bg-gray-900 bg-opacity-75 rounded-full hover:bg-purple-600 transition-all duration-300"
+                                class="absolute top-2 right-2 p-1.5 md:p-2 bg-gray-900 bg-opacity-75 rounded-full hover:bg-purple-600 transition-all duration-300"
                                 :class="isInWatchLater(item) ? 'text-purple-400' : 'text-white'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
                             </svg>
                         </button>
@@ -373,59 +414,56 @@
     </div>
 
     <!-- streaming services -->
-    <div class="container mx-auto px-6 py-12">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold text-gray-300">Content Available From</h2>
-            <p class="text-gray-400 mt-2">Nova aggregates content from various premium streaming platforms</p>
+    <div class="container mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div class="text-center mb-6 md:mb-8">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-300">Content Available From</h2>
+            <p class="text-sm md:text-base text-gray-400 mt-2">Nova aggregates content from various premium streaming platforms</p>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-center justify-items-center opacity-80">
+        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 items-center justify-items-center opacity-80">
             <a href="https://netflix.com" target="_blank" class="transform transition-transform hover:scale-105">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" 
                      alt="Netflix" 
-                     class="h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(229,9,20,0.7)]">
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(229,9,20,0.7)]">
             </a>
             <a href="https://www.primevideo.com" target="_blank" class="transform transition-transform hover:scale-105">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" 
                      alt="Prime Video" 
-                     class="h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(0,168,225,0.7)]">
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(0,168,225,0.7)]">
             </a>
             <a href="https://www.disneyplus.com" target="_blank" class="transform transition-transform hover:scale-105">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" 
                      alt="Disney+" 
-                     class="h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(113,168,255,0.7)]">
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(113,168,255,0.7)]">
             </a>
             <a href="https://www.hulu.com" target="_blank" class="transform transition-transform hover:scale-105">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Hulu_logo_%282014%29.svg" 
                      alt="Hulu" 
-                     class="h-7 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(28,231,131,0.7)]">
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(28,231,131,0.7)]">
             </a>
             <a href="https://www.max.com" target="_blank" class="transform transition-transform hover:scale-105">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" 
                      alt="HBO Max" 
-                     class="h-6 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(116,80,254,0.7)]">
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(116,80,254,0.7)]">
             </a>
             <a href="https://tv.apple.com" target="_blank" class="transform transition-transform hover:scale-105">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Apple_TV_Plus_logo.svg" 
                      alt="Apple TV+" 
-                     class="h-6 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(0,244,244,0.7)]">
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(0,244,244,0.7)]">
             </a>
         </div>
     </div>
 
-    <footer class="text-gray-400 py-6 mt-12">
-        <div class="container mx-auto text-center">
-            <p class="text-sm">
+    <footer class="text-gray-400 py-4 md:py-6 mt-8 md:mt-12">
+        <div class="container mx-auto px-4 md:px-6 text-center">
+            <p class="text-xs md:text-sm">
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
                 Made with ❤ by Ambrosial. 22/01/25
             </p>
-            <div class="relative mt-2">
-                <div id="particles-js" class="absolute inset-0 pointer-events-none"></div>
-                <p class="text-xs relative z-10">
-                    <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
-                </p>
-            </div>
+            <p class="mt-2 text-xs">
+                <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
+            </p>
         </div>
     </footer>
 
@@ -609,28 +647,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            function isMobile() {
-                return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            }
-
-            if (isMobile()) {
-                const warningModal = document.createElement('div');
-                warningModal.innerHTML = `
-                    <div class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-90 flex items-center justify-center">
-                        <div class="bg-gray-900 rounded-lg w-full max-w-md p-6 modal-animation relative">
-                            <h2 class="text-2xl font-bold text-red-500 mb-4">Warning</h2>
-                            <p class="text-gray-300 mb-6">This website is pretty much awful to use on a phone. I <strong>highly</strong> recommend you to switch to a computer.</p>
-                            <button id="continueAnyways" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105">Continue anyways</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(warningModal);
-
-                document.getElementById('continueAnyways').addEventListener('click', function() {
-                    warningModal.style.display = 'none';
-                });
-            }
-
             const discordPopupSeen = localStorage.getItem('discordPopupSeen');
 
             if (!discordPopupSeen) {
@@ -684,6 +700,7 @@
                 selectedGenre: '',
                 minRating: '',
                 filteredContent: [],
+                mobileMenu: false,
 
                 async init() {
                     const savedItems = localStorage.getItem('watchLater');
