@@ -178,6 +178,15 @@
             height: 32px;
             border-radius: 50%;
         }
+
+        .card-hover:hover img {
+            filter: blur(3px);
+            transition: filter 0.3s ease;
+        }
+
+        .card-hover img {
+            transition: filter 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()">
@@ -288,8 +297,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (23/01/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Changed the default provider from MultiEmbed to EmbedSU</span>
+                        <span class="font-semibold text-purple-400">Update (24/01/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added blur to content cards</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -459,7 +468,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 23/01/25
+                Made with ❤ by Ambrosial. 24/01/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
