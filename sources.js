@@ -54,12 +54,21 @@ const availableSources = [
         }
     },
     {
-        id: 'vidsrc',
-        name: 'VidSrc',
+        id: 'vidsrccc',
+        name: 'VidSrcCC',
         isFrench: false,
         urls: {
             movie: 'https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=false',
             tv: 'https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=false'
+        }
+    },
+    {
+        id: 'vidsrcto',
+        name: 'VidSrcTO',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.to/embed/movie/{id}',
+            tv: 'https://vidsrc.to/embed/tv/{id}/{season}/{episode}'
         }
     },
     {
