@@ -124,5 +124,14 @@ const availableSources = [
             movie: 'https://flicky.host/embed/movie/?id={id}',
             tv: 'https://flicky.host/embed/tv/?id={id}/{season}/{episode}'
         }
+    },
+    {
+        id: 'autoembed',
+        name: 'AutoEmbed',
+        isFrench: false,
+        urls: {
+            movie: 'https://player.autoembed.cc/embed/movie/{id}',
+            tv: 'https://player.autoembed.cc/embed/tv/{id}/{season}/{episode}'
+        }
     }
 ];
