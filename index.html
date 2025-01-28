@@ -187,6 +187,33 @@
         .card-hover img {
             transition: filter 0.3s ease;
         }
+
+        .search-suggestions {
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .suggestion-item {
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .suggestion-item.selected {
+            background: rgba(168, 85, 247, 0.15);
+        }
+
+        .media-type-badge {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            background: rgba(168, 85, 247, 0.2);
+            color: rgb(216, 180, 254);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()">
@@ -225,12 +252,47 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="relative">
-                        <div class="search-container hidden md:block">
+                        <div class="search-container hidden md:block"
+                             @click.away="searchSuggestions = []">
                             <input type="text" 
                                    x-model="searchQuery" 
-                                   @keyup.debounce.300ms="searchContent()"
-                                   placeholder="Search..." 
+                                   @input.debounce.300ms="getSearchSuggestions()"
+                                   @keydown.arrow-down.prevent="selectNextSuggestion"
+                                   @keydown.arrow-up.prevent="selectPreviousSuggestion"
+                                   @keydown.enter.prevent="handleEnterKey"
+                                   @keydown.escape="searchSuggestions = []"
+                                   placeholder="Search movies & shows..." 
                                    class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                            
+                            <!-- search suggestions dropdown -->
+                            <div x-show="searchSuggestions.length > 0" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
+                                 class="search-suggestions absolute left-0 right-0 mt-2 rounded-lg overflow-hidden z-50 max-h-96 overflow-y-auto">
+                                <template x-for="(item, index) in searchSuggestions" :key="item.id">
+                                    <div @click="goToContent(item)"
+                                         @mouseenter="selectedSuggestionIndex = index"
+                                         class="suggestion-item px-4 py-3 cursor-pointer flex items-start space-x-3"
+                                         :class="{ 'selected': selectedSuggestionIndex === index }">
+                                        <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w92' + item.poster_path : 'placeholder.jpg'"
+                                             :alt="item.title || item.name"
+                                             class="w-12 h-16 object-cover rounded"
+                                             @error="$el.src = 'https://via.placeholder.com/92x138?text=No+Poster'">
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center space-x-2">
+                                                <h4 class="font-medium truncate" x-text="item.title || item.name"></h4>
+                                                <span class="media-type-badge whitespace-nowrap" x-text="item.media_type === 'movie' ? 'Movie' : 'TV Show'"></span>
+                                            </div>
+                                            <p class="text-sm text-gray-400 mt-1" x-text="item.release_date || item.first_air_date || 'Release date unknown'"></p>
+                                            <p class="text-sm text-gray-300 mt-1 line-clamp-2" x-text="item.overview || 'No overview available'"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
                     <!-- mobile menu button -->
@@ -297,8 +359,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (27/01/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added Flicky (new english provider)</span>
+                        <span class="font-semibold text-purple-400">Update (28/01/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added real-time suggestions to the search bar</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -468,7 +530,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 27/01/25
+                Made with ❤ by Ambrosial. 28/01/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -710,6 +772,8 @@
                 minRating: '',
                 filteredContent: [],
                 mobileMenu: false,
+                searchSuggestions: [],
+                selectedSuggestionIndex: -1,
 
                 async init() {
                     const savedItems = localStorage.getItem('watchLater');
@@ -899,6 +963,54 @@
                     this.watchLaterCount = 0;
                     localStorage.setItem('watchLater', JSON.stringify([]));
                     this.showClearConfirm = false;
+                },
+
+                async getSearchSuggestions() {
+                    if (!this.searchQuery.trim()) {
+                        this.searchSuggestions = [];
+                        return;
+                    }
+
+                    const url = `https://api.themoviedb.org/3/search/multi?api_key=${this.apiKey}&query=${encodeURIComponent(this.searchQuery)}&language=${this.language}-${this.language.toUpperCase()}&page=1`;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.searchSuggestions = data.results
+                            .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
+                            .slice(0, 8);
+                        this.selectedSuggestionIndex = -1;
+                    } catch (error) {
+                        console.error('Error fetching search suggestions:', error);
+                        this.searchSuggestions = [];
+                    }
+                },
+
+                selectNextSuggestion() {
+                    if (this.selectedSuggestionIndex < this.searchSuggestions.length - 1) {
+                        this.selectedSuggestionIndex++;
+                    } else {
+                        this.selectedSuggestionIndex = 0;
+                    }
+                },
+
+                selectPreviousSuggestion() {
+                    if (this.selectedSuggestionIndex > 0) {
+                        this.selectedSuggestionIndex--;
+                    } else {
+                        this.selectedSuggestionIndex = this.searchSuggestions.length - 1;
+                    }
+                },
+
+                handleEnterKey() {
+                    if (this.selectedSuggestionIndex >= 0 && this.searchSuggestions[this.selectedSuggestionIndex]) {
+                        this.goToContent(this.searchSuggestions[this.selectedSuggestionIndex]);
+                    }
+                },
+
+                goToContent(item) {
+                    const type = item.media_type === 'movie' ? 'movie' : 'tv';
+                    window.location.href = `watch.html?id=${item.id}&type=${type}`;
                 }
             }
         }
