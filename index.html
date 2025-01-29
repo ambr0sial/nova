@@ -187,33 +187,6 @@
         .card-hover img {
             transition: filter 0.3s ease;
         }
-
-        .search-suggestions {
-            background: rgba(31, 41, 55, 0.95);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .suggestion-item {
-            transition: all 0.2s ease;
-        }
-
-        .suggestion-item:hover {
-            background: rgba(168, 85, 247, 0.1);
-        }
-
-        .suggestion-item.selected {
-            background: rgba(168, 85, 247, 0.15);
-        }
-
-        .media-type-badge {
-            font-size: 0.65rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 0.25rem;
-            background: rgba(168, 85, 247, 0.2);
-            color: rgb(216, 180, 254);
-        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()">
@@ -252,47 +225,12 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <div class="relative">
-                        <div class="search-container hidden md:block"
-                             @click.away="searchSuggestions = []">
+                        <div class="search-container hidden md:block">
                             <input type="text" 
                                    x-model="searchQuery" 
-                                   @input.debounce.300ms="getSearchSuggestions()"
-                                   @keydown.arrow-down.prevent="selectNextSuggestion"
-                                   @keydown.arrow-up.prevent="selectPreviousSuggestion"
-                                   @keydown.enter.prevent="handleEnterKey"
-                                   @keydown.escape="searchSuggestions = []"
-                                   placeholder="Search movies & shows..." 
+                                   @keyup.debounce.300ms="searchContent()"
+                                   placeholder="Search..." 
                                    class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
-                            
-                            <!-- search suggestions dropdown -->
-                            <div x-show="searchSuggestions.length > 0" 
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 transform -translate-y-2"
-                                 x-transition:enter-end="opacity-100 transform translate-y-0"
-                                 x-transition:leave="transition ease-in duration-150"
-                                 x-transition:leave-start="opacity-100 transform translate-y-0"
-                                 x-transition:leave-end="opacity-0 transform -translate-y-2"
-                                 class="search-suggestions absolute left-0 right-0 mt-2 rounded-lg overflow-hidden z-50 max-h-96 overflow-y-auto">
-                                <template x-for="(item, index) in searchSuggestions" :key="item.id">
-                                    <div @click="goToContent(item)"
-                                         @mouseenter="selectedSuggestionIndex = index"
-                                         class="suggestion-item px-4 py-3 cursor-pointer flex items-start space-x-3"
-                                         :class="{ 'selected': selectedSuggestionIndex === index }">
-                                        <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w92' + item.poster_path : 'placeholder.jpg'"
-                                             :alt="item.title || item.name"
-                                             class="w-12 h-16 object-cover rounded"
-                                             @error="$el.src = 'https://via.placeholder.com/92x138?text=No+Poster'">
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center space-x-2">
-                                                <h4 class="font-medium truncate" x-text="item.title || item.name"></h4>
-                                                <span class="media-type-badge whitespace-nowrap" x-text="item.media_type === 'movie' ? 'Movie' : 'TV Show'"></span>
-                                            </div>
-                                            <p class="text-sm text-gray-400 mt-1" x-text="item.release_date || item.first_air_date || 'Release date unknown'"></p>
-                                            <p class="text-sm text-gray-300 mt-1 line-clamp-2" x-text="item.overview || 'No overview available'"></p>
-                                        </div>
-                                    </div>
-                                </template>
-                            </div>
                         </div>
                     </div>
                     <!-- mobile menu button -->
@@ -359,8 +297,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (28/01/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added real-time suggestions to the search bar</span>
+                        <span class="font-semibold text-purple-400">Update (29/01/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added AutoEmbed (new english provider)</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -382,7 +320,7 @@
                     <!-- genre filter -->
                     <div class="relative">
                         <select x-model="selectedGenre"
-                                @change="filterContent()"
+                                @change="applyFilters()"
                                 class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
                             <option value="">All Genres</option>
                             <template x-for="genre in genres" :key="genre.id">
@@ -396,10 +334,10 @@
                         </div>
                     </div>
 
-                    <!-- rating filter -->
+                    <!-- rating range -->
                     <div class="relative">
                         <select x-model="minRating"
-                                @change="filterContent()"
+                                @change="applyFilters()"
                                 class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
                             <option value="">Any Rating</option>
                             <option value="8">8+ ⭐</option>
@@ -414,18 +352,60 @@
                         </div>
                     </div>
 
+                    <!-- language filter -->
+                    <div class="relative">
+                        <select x-model="selectedLanguage"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="">All Languages</option>
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="es">Spanish</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- sort order -->
+                    <div class="relative">
+                        <select x-model="sortBy"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="popularity.desc">Most Popular</option>
+                            <option value="revenue.desc">Highest Revenue</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
                     <!-- active filters display -->
-                    <div class="flex flex-wrap gap-2" x-show="selectedGenre || minRating">
+                    <div class="flex flex-wrap gap-2">
                         <template x-if="selectedGenre">
                             <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
                                 <span x-text="getGenreName(selectedGenre)"></span>
-                                <button @click="selectedGenre = ''; filterContent()" class="hover:text-gray-300">×</button>
+                                <button @click="selectedGenre = ''; applyFilters()" class="hover:text-gray-300">×</button>
                             </span>
                         </template>
                         <template x-if="minRating">
                             <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
                                 <span x-text="minRating + '+ ⭐'"></span>
-                                <button @click="minRating = ''; filterContent()" class="hover:text-gray-300">×</button>
+                                <button @click="minRating = ''; applyFilters()" class="hover:text-gray-300">×</button>
+                            </span>
+                        </template>
+                        <template x-if="selectedLanguage">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                                <span x-text="getLanguageName(selectedLanguage)"></span>
+                                <button @click="selectedLanguage = ''; applyFilters()" class="hover:text-gray-300">×</button>
                             </span>
                         </template>
                     </div>
@@ -530,7 +510,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 28/01/25
+                Made with ❤ by Ambrosial. 29/01/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -772,8 +752,8 @@
                 minRating: '',
                 filteredContent: [],
                 mobileMenu: false,
-                searchSuggestions: [],
-                selectedSuggestionIndex: -1,
+                selectedLanguage: '',
+                sortBy: 'popularity.desc',
 
                 async init() {
                     const savedItems = localStorage.getItem('watchLater');
@@ -818,18 +798,52 @@
                     return genre ? genre.name : '';
                 },
 
-                filterContent() {
-                    this.filteredContent = this.content.filter(item => {
-                        if (this.selectedGenre && !item.genre_ids.includes(parseInt(this.selectedGenre))) {
-                            return false;
-                        }
-                        
-                        if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
-                            return false;
-                        }
-                        
-                        return true;
+                async applyFilters() {
+                    const baseUrl = 'https://api.themoviedb.org/3/discover';
+                    const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
+                    
+                    let params = new URLSearchParams({
+                        api_key: this.apiKey,
+                        language: `${this.language}-${this.language.toUpperCase()}`,
+                        page: this.currentPage,
+                        sort_by: this.sortBy
                     });
+
+                    if (this.selectedGenre) {
+                        params.append('with_genres', this.selectedGenre);
+                    }
+
+                    if (this.minRating) {
+                        params.append('vote_average.gte', this.minRating);
+                    }
+
+                    if (this.selectedLanguage) {
+                        params.append('with_original_language', this.selectedLanguage);
+                    }
+
+                    const url = `${baseUrl}/${endpoint}?${params.toString()}`;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.content = data.results;
+                        this.filteredContent = this.content;
+                    } catch (error) {
+                        console.error('Error applying filters:', error);
+                    }
+                },
+
+                getLanguageName(code) {
+                    const languages = {
+                        en: 'English',
+                        fr: 'French',
+                        es: 'Spanish',
+                        de: 'German',
+                        it: 'Italian',
+                        ja: 'Japanese',
+                        ko: 'Korean'
+                    };
+                    return languages[code] || code;
                 },
 
                 async fetchContent() {
@@ -841,7 +855,7 @@
                         const response = await fetch(url);
                         const data = await response.json();
                         this.content = data.results;
-                        this.filterContent();
+                        this.applyFilters();
                     } catch (error) {
                         console.error('Error fetching content:', error);
                     }
@@ -849,19 +863,39 @@
 
                 async searchContent() {
                     if (!this.searchQuery) {
-                        await this.fetchContent();
+                        await this.applyFilters();
                         return;
                     }
 
                     const baseUrl = 'https://api.themoviedb.org/3/search';
                     const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
-                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&query=${encodeURIComponent(this.searchQuery)}&language=${this.language}-${this.language.toUpperCase()}&page=${this.currentPage}`;
+                    
+                    let params = new URLSearchParams({
+                        api_key: this.apiKey,
+                        query: this.searchQuery,
+                        language: `${this.language}-${this.language.toUpperCase()}`,
+                        page: this.currentPage
+                    });
+
+                    const url = `${baseUrl}/${endpoint}?${params.toString()}`;
 
                     try {
                         const response = await fetch(url);
                         const data = await response.json();
                         this.content = data.results;
-                        this.filterContent();
+                        
+                        this.filteredContent = this.content.filter(item => {
+                            if (this.selectedGenre && !item.genre_ids.includes(parseInt(this.selectedGenre))) {
+                                return false;
+                            }
+                            if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
+                                return false;
+                            }
+                            if (this.selectedLanguage && item.original_language !== this.selectedLanguage) {
+                                return false;
+                            }
+                            return true;
+                        });
                     } catch (error) {
                         console.error('Error searching content:', error);
                     }
@@ -963,54 +997,6 @@
                     this.watchLaterCount = 0;
                     localStorage.setItem('watchLater', JSON.stringify([]));
                     this.showClearConfirm = false;
-                },
-
-                async getSearchSuggestions() {
-                    if (!this.searchQuery.trim()) {
-                        this.searchSuggestions = [];
-                        return;
-                    }
-
-                    const url = `https://api.themoviedb.org/3/search/multi?api_key=${this.apiKey}&query=${encodeURIComponent(this.searchQuery)}&language=${this.language}-${this.language.toUpperCase()}&page=1`;
-
-                    try {
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        this.searchSuggestions = data.results
-                            .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
-                            .slice(0, 8);
-                        this.selectedSuggestionIndex = -1;
-                    } catch (error) {
-                        console.error('Error fetching search suggestions:', error);
-                        this.searchSuggestions = [];
-                    }
-                },
-
-                selectNextSuggestion() {
-                    if (this.selectedSuggestionIndex < this.searchSuggestions.length - 1) {
-                        this.selectedSuggestionIndex++;
-                    } else {
-                        this.selectedSuggestionIndex = 0;
-                    }
-                },
-
-                selectPreviousSuggestion() {
-                    if (this.selectedSuggestionIndex > 0) {
-                        this.selectedSuggestionIndex--;
-                    } else {
-                        this.selectedSuggestionIndex = this.searchSuggestions.length - 1;
-                    }
-                },
-
-                handleEnterKey() {
-                    if (this.selectedSuggestionIndex >= 0 && this.searchSuggestions[this.selectedSuggestionIndex]) {
-                        this.goToContent(this.searchSuggestions[this.selectedSuggestionIndex]);
-                    }
-                },
-
-                goToContent(item) {
-                    const type = item.media_type === 'movie' ? 'movie' : 'tv';
-                    window.location.href = `watch.html?id=${item.id}&type=${type}`;
                 }
             }
         }
