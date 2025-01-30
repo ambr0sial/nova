@@ -72,6 +72,33 @@ const availableSources = [
         }
     },
     {
+        id: 'vidsrcrip',
+        name: 'VidSrcRIP',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.rip/embed/movie/{id}',
+            tv: 'https://vidsrc.rip/embed/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidsrcsu',
+        name: 'VidSrcSU',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.su/embed/movie/{id}',
+            tv: 'https://vidsrc.su/embed/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidsrcxyz',
+        name: 'VidSrcXYZ',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.xyz/embed/movie/{id}',
+            tv: 'https://vidsrc.xyz/embed/tv/{id}/{season}-{episode}'
+        }
+    },
+    {
         id: '2embed',
         name: '2Embed',
         isFrench: false,
