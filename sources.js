@@ -99,6 +99,15 @@ const availableSources = [
         }
     },
     {
+        id: 'vidsrcvip',
+        name: 'VidSrcVIP',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.vip/embed/movie/{id}',
+            tv: 'https://vidsrc.vip/embed/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
         id: '2embed',
         name: '2Embed',
         isFrench: false,
