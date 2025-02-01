@@ -297,8 +297,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (31/01/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added VidSrcVIP (new english provider)</span>
+                        <span class="font-semibold text-purple-400">Update (01/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added a random pick button</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -410,6 +410,13 @@
                         </template>
                     </div>
                 </div>
+                <button @click="pickRandom()" 
+                        class="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-4 py-2 rounded-lg hover:brightness-110 transition-all duration-300 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <span>Random Pick</span>
+                </button>
             </div>
             
             <!-- content grid -->
@@ -510,7 +517,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 31/01/25
+                Made with ❤ by Ambrosial. 01/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -997,6 +1004,13 @@
                     this.watchLaterCount = 0;
                     localStorage.setItem('watchLater', JSON.stringify([]));
                     this.showClearConfirm = false;
+                },
+
+                pickRandom() {
+                    const randomItem = this.filteredContent[Math.floor(Math.random() * this.filteredContent.length)];
+                    if (randomItem) {
+                        window.location.href = `watch.html?id=${randomItem.id}&type=${this.currentTab === 'movies' ? 'movie' : 'tv'}`;
+                    }
                 }
             }
         }
