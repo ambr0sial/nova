@@ -694,11 +694,11 @@
                     <template x-for="item in similarContent" :key="item.id">
                         <div class="relative card-hover">
                             <a :href="'watch.html?id=' + item.id + '&type=' + contentType"
-                               class="block rounded-lg overflow-hidden bg-gray-800 cursor-pointer">
-                                <div class="relative">
+                               class="block rounded-lg overflow-hidden bg-gray-800 aspect-[2/3]">
+                                <div class="relative h-full">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
                                          :alt="item.title || item.name"
-                                         class="w-full h-36 sm:h-48 md:h-56 lg:h-64 object-cover">
+                                         class="w-full h-full object-cover">
                                     <div class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-base font-semibold" x-text="item.title || item.name"></h3>
                                         <p class="text-gray-400 text-xs md:text-sm flex items-center mt-1">
@@ -769,7 +769,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 01/02/25
+                Made with ❤ by Ambrosial. 03/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
