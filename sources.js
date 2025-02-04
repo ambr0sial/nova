@@ -169,5 +169,14 @@ const availableSources = [
             movie: 'https://player.autoembed.cc/embed/movie/{id}',
             tv: 'https://player.autoembed.cc/embed/tv/{id}/{season}/{episode}'
         }
+    },
+    {
+        id: 'videasy',
+        name: 'VidEasy',
+        isFrench: false,
+        urls: {
+            movie: 'https://player.videasy.net/movie/{id}?color=8834ec',
+            tv: 'https://player.videasy.net/tv/{id}/{season}/{episode}?color=8834ec'
+        }
     }
 ];
