@@ -38,9 +38,10 @@
     </script>
     <style>
         .glass-effect {
-            background: rgba(17, 24, 39, 0.8);
+            background: rgba(17, 24, 39, 0.7);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .backdrop-gradient {
@@ -49,7 +50,8 @@
 
         .nav-link {
             position: relative;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
         }
 
         .nav-link::after {
@@ -57,10 +59,15 @@
             position: absolute;
             width: 0;
             height: 2px;
-            bottom: -4px;
-            left: 0;
+            bottom: 0;
+            left: 50%;
             background: linear-gradient(to right, #a78bfa, #4c1d95);
-            transition: width 0.3s ease;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: #a78bfa;
         }
 
         .nav-link:hover::after {
@@ -129,6 +136,21 @@
 
         .card-hover img {
             transition: filter 0.3s ease;
+        }
+
+        .search-container::before {
+            background: radial-gradient(
+                circle at var(--mouse-x, center) var(--mouse-y, center),
+                rgba(168, 85, 247, 0.5) 0%,
+                rgba(168, 85, 247, 0.2) 25%,
+                transparent 70%
+            );
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+            transform: scale(1.02);
+            background: rgba(31, 41, 55, 0.9);
         }
     </style>
 </head>
@@ -769,7 +791,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 03/02/25
+                Made with ❤ by Ambrosial. 04/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>

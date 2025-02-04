@@ -64,8 +64,8 @@
             inset: -2px;
             background: radial-gradient(
                 circle at var(--mouse-x, center) var(--mouse-y, center),
-                rgba(168, 85, 247, 0.4) 0%,
-                rgba(168, 85, 247, 0.1) 30%,
+                rgba(168, 85, 247, 0.5) 0%,
+                rgba(168, 85, 247, 0.2) 25%,
                 transparent 70%
             );
             border-radius: 9999px;
@@ -88,6 +88,23 @@
 
         .card-hover {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .card-hover::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(
+                35deg,
+                rgba(168, 85, 247, 0.4),
+                rgba(168, 85, 247, 0),
+                rgba(139, 92, 246, 0.4)
+            );
+            border-radius: 0.5rem;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .card-hover:hover {
@@ -95,13 +112,23 @@
             box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
+        .card-hover:hover::after {
+            opacity: 1;
+        }
+
         .card-hover:hover .card-overlay {
             opacity: 1;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.95) 0%,
+                rgba(0, 0, 0, 0.8) 40%,
+                rgba(0, 0, 0, 0.2) 100%
+            );
         }
 
         .card-overlay {
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.4s ease;
             background: linear-gradient(
                 to top,
                 rgba(0, 0, 0, 0.9) 0%,
@@ -110,9 +137,19 @@
             );
         }
 
+        .card-hover:hover img {
+            filter: blur(2px) brightness(0.9);
+            transition: all 0.4s ease;
+        }
+
+        .card-hover img {
+            transition: all 0.4s ease;
+        }
+
         .nav-link {
             position: relative;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
         }
 
         .nav-link::after {
@@ -120,10 +157,15 @@
             position: absolute;
             width: 0;
             height: 2px;
-            bottom: -4px;
-            left: 0;
+            bottom: 0;
+            left: 50%;
             background: linear-gradient(to right, #a78bfa, #4c1d95);
-            transition: width 0.3s ease;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: #a78bfa;
         }
 
         .nav-link:hover::after {
@@ -131,9 +173,10 @@
         }
 
         .glass-effect {
-            background: rgba(17, 24, 39, 0.8);
+            background: rgba(17, 24, 39, 0.7);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .modal-animation {
@@ -149,13 +192,10 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        .search-input {
-            transition: all 0.3s ease;
-        }
-
         .search-input:focus {
-            box-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
             transform: scale(1.02);
+            background: rgba(31, 41, 55, 0.9);
         }
 
         html {
@@ -177,15 +217,6 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-        }
-
-        .card-hover:hover img {
-            filter: blur(3px);
-            transition: filter 0.3s ease;
-        }
-
-        .card-hover img {
-            transition: filter 0.3s ease;
         }
     </style>
 </head>
@@ -297,8 +328,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (03/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Modified content cards so they now display the full posters instead of being cropped</span>
+                        <span class="font-semibold text-purple-400">Update (04/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Made multiple design improvements (thank you for hitting 100 members on the Discord server!)</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -517,7 +548,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 03/02/25
+                Made with ❤ by Ambrosial. 04/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
