@@ -273,6 +273,15 @@
                 </div>
             </div>
             
+            <!-- mobile search bar -->
+            <div class="md:hidden mt-3">
+                <input type="text" 
+                       x-model="searchQuery" 
+                       @keyup.debounce.300ms="searchContent()"
+                       placeholder="Search movies and TV shows..." 
+                       class="w-full bg-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm">
+            </div>
+
             <!-- mobile menu -->
             <div x-show="mobileMenu" 
                 x-transition:enter="transition ease-out duration-200"
@@ -283,14 +292,6 @@
                 x-transition:leave-end="opacity-0 transform -translate-y-2"
                 class="md:hidden mt-4 pb-4">
                 <div class="flex flex-col space-y-4">
-                    <!-- mobile search -->
-                    <div class="relative">
-                        <input type="text" 
-                               x-model="searchQuery" 
-                               @keyup.debounce.300ms="searchContent()"
-                               placeholder="Search..." 
-                               class="w-full bg-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                    </div>
                     <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'; mobileMenu = false" 
                             class="text-left px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
                         <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
