@@ -227,10 +227,18 @@
     <nav class="fixed w-full z-50 glass-effect">
         <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-8">
+                <div class="flex items-center space-x-4 md:space-x-8">
                     <div class="flex items-center space-x-3">
                         <img src="logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
                         <span class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
+                    </div>
+                    <!-- mobile search bar -->
+                    <div class="md:hidden relative">
+                        <input type="text" 
+                               x-model="searchQuery" 
+                               @keyup.debounce.300ms="searchContent()"
+                               placeholder="Search..." 
+                               class="w-32 bg-gray-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
                     </div>
                     <div class="hidden md:flex space-x-6">
                         <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'" 
@@ -273,15 +281,6 @@
                 </div>
             </div>
             
-            <!-- mobile search bar -->
-            <div class="md:hidden mt-3">
-                <input type="text" 
-                       x-model="searchQuery" 
-                       @keyup.debounce.300ms="searchContent()"
-                       placeholder="Search movies and TV shows..." 
-                       class="w-full bg-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm">
-            </div>
-
             <!-- mobile menu -->
             <div x-show="mobileMenu" 
                 x-transition:enter="transition ease-out duration-200"
@@ -329,8 +328,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (09/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added VidEasy as a new source (thank you for hitting 100 members on the Discord server!)</span>
+                        <span class="font-semibold text-purple-400">Update (11/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added the search bar outside of the hamburger menu in the mobile version</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -549,7 +548,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 09/02/25
+                Made with ❤ by Ambrosial. 11/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
