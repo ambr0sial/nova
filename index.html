@@ -84,6 +84,7 @@
             position: relative;
             z-index: 1;
             transition: all 0.3s ease;
+            padding-right: 5rem !important;
         }
 
         .card-hover {
@@ -198,6 +199,17 @@
             background: rgba(31, 41, 55, 0.9);
         }
 
+        .search-input:focus + div {
+            opacity: 0.7;
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .search-input + div {
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            z-index: 2;
+        }
+
         html {
             scroll-behavior: smooth;
         }
@@ -220,7 +232,9 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen" x-data="app()">
+<body class="bg-gray-900 text-white min-h-screen" x-data="app()" 
+      @keydown.meta.k.prevent="$refs.searchInput.focus()"
+      @keydown.ctrl.k.prevent="$refs.searchInput.focus()">
     <div id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
 
     <!-- navigation -->
@@ -266,10 +280,15 @@
                     <div class="relative">
                         <div class="search-container hidden md:block">
                             <input type="text" 
+                                   x-ref="searchInput"
                                    x-model="searchQuery" 
                                    @keyup.debounce.300ms="searchContent()"
                                    placeholder="Search..." 
                                    class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1 text-gray-400 pointer-events-none select-none">
+                                <span class="text-xs bg-gray-700 rounded px-1.5 py-0.5">⌘</span>
+                                <span class="text-xs bg-gray-700 rounded px-1.5 py-0.5">K</span>
+                            </div>
                         </div>
                     </div>
                     <!-- mobile menu button -->
@@ -328,8 +347,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (12/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added timestamps to watch later items</span>
+                        <span class="font-semibold text-purple-400">Update (13/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added VidEasy as a new source (thank you for hitting 100 members on the Discord server!)</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -548,7 +567,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 12/02/25
+                Made with ❤ by Ambrosial. 13/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -685,10 +704,7 @@
                                      class="w-full h-48 object-cover">
                                 <div class="p-4">
                                     <h3 class="font-medium" x-text="item.title || item.name"></h3>
-                                    <div class="flex items-center justify-between mt-1">
-                                        <p class="text-gray-400 text-sm" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
-                                        <p class="text-gray-500 text-xs" x-text="formatTimeAgo(item.addedAt)"></p>
-                                    </div>
+                                    <p class="text-gray-400 text-sm mt-1" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
                                 </div>
                             </a>
                             <button @click="toggleWatchLater(item)"
@@ -1016,8 +1032,7 @@
                     if (index === -1) {
                         this.watchLaterItems.push({
                             ...item,
-                            type: this.currentTab === 'movies' ? 'movie' : 'tv',
-                            addedAt: new Date().toISOString()
+                            type: this.currentTab === 'movies' ? 'movie' : 'tv'
                         });
                     } else {
                         this.watchLaterItems.splice(index, 1);
@@ -1045,25 +1060,6 @@
                     const randomItem = this.filteredContent[Math.floor(Math.random() * this.filteredContent.length)];
                     if (randomItem) {
                         window.location.href = `watch.html?id=${randomItem.id}&type=${this.currentTab === 'movies' ? 'movie' : 'tv'}`;
-                    }
-                },
-
-                formatTimeAgo(dateString) {
-                    const date = new Date(dateString);
-                    const now = new Date();
-                    const seconds = Math.floor((now - date) / 1000);
-                    const minutes = Math.floor(seconds / 60);
-                    const hours = Math.floor(minutes / 60);
-                    const days = Math.floor(hours / 24);
-
-                    if (days > 0) {
-                        return days === 1 ? '1 day ago' : `${days} days ago`;
-                    } else if (hours > 0) {
-                        return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
-                    } else if (minutes > 0) {
-                        return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
-                    } else {
-                        return 'Just now';
                     }
                 }
             }
