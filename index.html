@@ -347,8 +347,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (13/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added VidEasy as a new source (thank you for hitting 100 members on the Discord server!)</span>
+                        <span class="font-semibold text-purple-400">Update (15/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added a search by actor/director (by putting @ before the name, e.g. @Pierre Niney)</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -567,7 +567,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 13/02/25
+                Made with ❤ by Ambrosial. 15/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -924,38 +924,69 @@
                         return;
                     }
 
-                    const baseUrl = 'https://api.themoviedb.org/3/search';
-                    const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
+                    const baseUrl = 'https://api.themoviedb.org/3';
+                    const searchQuery = this.searchQuery.trim();
                     
-                    let params = new URLSearchParams({
-                        api_key: this.apiKey,
-                        query: this.searchQuery,
-                        language: `${this.language}-${this.language.toUpperCase()}`,
-                        page: this.currentPage
-                    });
+                    // Check if searching for person (actor/director)
+                    if (searchQuery.startsWith('@')) {
+                        const personName = searchQuery.substring(1);
+                        if (!personName) {
+                            await this.applyFilters();
+                            return;
+                        }
 
-                    const url = `${baseUrl}/${endpoint}?${params.toString()}`;
+                        // First search for the person
+                        const personUrl = `${baseUrl}/search/person?api_key=${this.apiKey}&query=${encodeURIComponent(personName)}`;
+                        try {
+                            const personResponse = await fetch(personUrl);
+                            const personData = await personResponse.json();
+                            const person = personData.results[0];
+                            
+                            if (person) {
+                                // Get movies/shows the person was involved in
+                                const creditsUrl = `${baseUrl}/person/${person.id}/combined_credits?api_key=${this.apiKey}`;
+                                const creditsResponse = await fetch(creditsUrl);
+                                const creditsData = await creditsResponse.json();
+                                
+                                // Filter based on current tab (movie/tv)
+                                this.content = creditsData[this.currentTab === 'movies' ? 'cast' : 'crew']
+                                    .filter(item => this.currentTab === 'movies' ? item.media_type === 'movie' : item.media_type === 'tv')
+                                    .slice(0, 20); // Limit to 20 results
+                            } else {
+                                this.content = [];
+                            }
+                        } catch (error) {
+                            console.error('Error searching person:', error);
+                            this.content = [];
+                        }
+                    } else {
+                        // Regular title search
+                        const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
+                        const url = `${baseUrl}/search/${endpoint}?api_key=${this.apiKey}&query=${encodeURIComponent(searchQuery)}&language=${this.language}-${this.language.toUpperCase()}&page=${this.currentPage}`;
 
-                    try {
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        this.content = data.results;
-                        
-                        this.filteredContent = this.content.filter(item => {
-                            if (this.selectedGenre && !item.genre_ids.includes(parseInt(this.selectedGenre))) {
-                                return false;
-                            }
-                            if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
-                                return false;
-                            }
-                            if (this.selectedLanguage && item.original_language !== this.selectedLanguage) {
-                                return false;
-                            }
-                            return true;
-                        });
-                    } catch (error) {
-                        console.error('Error searching content:', error);
+                        try {
+                            const response = await fetch(url);
+                            const data = await response.json();
+                            this.content = data.results;
+                        } catch (error) {
+                            console.error('Error searching content:', error);
+                            this.content = [];
+                        }
                     }
+                    
+                    // Apply additional filters
+                    this.filteredContent = this.content.filter(item => {
+                        if (this.selectedGenre && !item.genre_ids?.includes(parseInt(this.selectedGenre))) {
+                            return false;
+                        }
+                        if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
+                            return false;
+                        }
+                        if (this.selectedLanguage && item.original_language !== this.selectedLanguage) {
+                            return false;
+                        }
+                        return true;
+                    });
                 },
 
                 async openContent(item) {
