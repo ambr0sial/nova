@@ -573,15 +573,15 @@
                             </svg>
                         </div>
                         <div class="section-content mt-4" :class="sections.cast ? 'expanded' : 'collapsed'">
-                            <div class="relative">
+                            <div class="relative overflow-visible px-6">
                                 <button @click="castPage > 0 && castPage--" 
-                                        class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 bg-gray-900 p-2 rounded-full hover:bg-gray-700 transition-all duration-300 z-10"
+                                        class="absolute left-0 top-1/2 -translate-y-1/2 bg-gray-900 p-2 rounded-full hover:bg-gray-700 transition-all duration-300 z-20"
                                         :class="castPage === 0 ? 'opacity-50 cursor-not-allowed' : 'opacity-100'">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                     </svg>
                                 </button>
-                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 relative">
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 relative overflow-hidden">
                                     <template x-for="actor in displayedCast" :key="actor.id">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-12 h-12 flex-shrink-0">
@@ -604,7 +604,7 @@
                                     </template>
                                 </div>
                                 <button @click="castPage < maxCastPage && castPage++" 
-                                        class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 bg-gray-900 p-2 rounded-full hover:bg-gray-700 transition-all duration-300 z-10"
+                                        class="absolute right-0 top-1/2 -translate-y-1/2 bg-gray-900 p-2 rounded-full hover:bg-gray-700 transition-all duration-300 z-20"
                                         :class="castPage >= maxCastPage ? 'opacity-50 cursor-not-allowed' : 'opacity-100'">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -791,7 +791,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 15/02/25
+                Made with ❤ by Ambrosial. 17/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
