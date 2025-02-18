@@ -269,7 +269,6 @@
                                     scrolling="no" 
                                     @error="checkProviderStatus()"
                                     @load="handleProviderLoad()"
-                                    @message="handlePlayerMessage($event)"
                                     allowfullscreen>
                             </iframe>
                             <button @click="toggleWatchLater(content)" 
@@ -288,28 +287,6 @@
                                     </svg>
                                     <p class="text-lg md:text-xl font-semibold text-white mb-2">Source unavailable, trying alternatives... 🔄</p>
                                     <p class="text-sm md:text-base text-gray-400">If this persists, you can manually select another source below!</p>
-                                </div>
-                            </div>
-                            <!-- next episode message -->
-                            <div x-show="showNextEpisodeMessage" 
-                                 class="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90">
-                                <div class="text-center px-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 md:h-12 md:w-12 mx-auto text-purple-400 mb-3 md:mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <p class="text-lg md:text-xl font-semibold text-white mb-2">Episode Complete!</p>
-                                    <p class="text-sm md:text-base text-gray-400 mb-4">Next episode starting in <span x-text="nextEpisodeCountdown"></span> seconds...</p>
-                                    <div class="flex justify-center space-x-3">
-                                        <button @click="playNextEpisode()" 
-                                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors duration-300">
-                                            Play Now
-                                        </button>
-                                        <button @click="cancelAutoNext()" 
-                                                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-300">
-                                            Cancel
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -336,31 +313,95 @@
 
                     <!-- episode selector -->
                     <template x-if="isShow">
-                        <div class="bg-gray-800 rounded-lg p-4 md:p-6 space-y-3 md:space-y-4">
-                            <div class="flex items-center space-x-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                                </svg>
-                                <h3 class="text-lg md:text-xl font-semibold">Episodes</h3>
+                        <div class="bg-gray-800 rounded-lg p-4 md:p-6 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                                    </svg>
+                                    <h3 class="text-lg md:text-xl font-semibold">Episodes</h3>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'" 
+                                            class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                                        <template x-if="viewMode === 'grid'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                            </svg>
+                                        </template>
+                                        <template x-if="viewMode === 'list'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                            </svg>
+                                        </template>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="flex flex-wrap gap-3 md:gap-4">
-                                <select x-model="selectedSeason" 
-                                        @change="updateEpisodes"
-                                        class="bg-gray-700 rounded-lg px-3 md:px-4 py-2 text-sm md:text-base focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all duration-300">
+
+                            <!-- season selector -->
+                            <div class="relative">
+                                <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
                                     <template x-for="season in seasons" :key="season">
-                                        <option :value="season" x-text="'Season ' + season"></option>
+                                        <button @click="selectedSeason = season; updateEpisodes()"
+                                                class="px-4 py-2 rounded-lg transition-all duration-300 whitespace-nowrap"
+                                                :class="selectedSeason === season ? 'bg-purple-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-gray-300'">
+                                            <span x-text="'Season ' + season"></span>
+                                        </button>
                                     </template>
-                                </select>
-                                <select x-model="selectedEpisode"
-                                        class="bg-gray-700 rounded-lg px-3 md:px-4 py-2 text-sm md:text-base focus:ring-2 focus:ring-purple-400 focus:outline-none transition-all duration-300">
-                                    <template x-for="episode in episodes" :key="episode">
-                                        <option :value="episode" x-text="'Episode ' + episode"></option>
-                                    </template>
-                                </select>
-                                <button @click="loadEpisode"
-                                        class="bg-purple-600 hover:bg-purple-700 px-4 md:px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 text-sm md:text-base">
-                                    Play Episode
-                                </button>
+                                </div>
+                            </div>
+
+                            <!-- episodes grid/list view -->
+                            <div :class="viewMode === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4' : 'space-y-4'">
+                                <template x-for="episode in seasonData?.episodes" :key="episode.episode_number">
+                                    <div @click="selectedEpisode = episode.episode_number; loadEpisode()"
+                                         :class="[
+                                             viewMode === 'grid' 
+                                                ? 'bg-gray-700 rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg'
+                                                : 'bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-600 transition-colors',
+                                             selectedEpisode === episode.episode_number 
+                                                ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-gray-900'
+                                                : ''
+                                         ]">
+                                        <template x-if="viewMode === 'grid'">
+                                            <div>
+                                                <div class="relative aspect-video">
+                                                    <img :src="episode.still_path 
+                                                              ? 'https://image.tmdb.org/t/p/w300' + episode.still_path
+                                                              : 'https://via.placeholder.com/300x169'"
+                                                         :alt="episode.name"
+                                                         class="w-full h-full object-cover">
+                                                    <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                                        <span class="text-sm font-medium" x-text="'Episode ' + episode.episode_number"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="p-3">
+                                                    <h4 class="font-medium text-sm line-clamp-1" x-text="episode.name"></h4>
+                                                    <p class="text-xs text-gray-400 mt-1 line-clamp-2" x-text="episode.overview || 'No description available.'"></p>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="viewMode === 'list'">
+                                            <div class="flex items-start p-3 space-x-3">
+                                                <div class="relative w-32 flex-shrink-0">
+                                                    <img :src="episode.still_path 
+                                                              ? 'https://image.tmdb.org/t/p/w300' + episode.still_path
+                                                              : 'https://via.placeholder.com/300x169'"
+                                                         :alt="episode.name"
+                                                         class="w-full aspect-video object-cover rounded">
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-sm font-medium text-gray-400" x-text="'Episode ' + episode.episode_number"></span>
+                                                        <span class="text-xs text-gray-500" x-text="episode.air_date"></span>
+                                                    </div>
+                                                    <h4 class="font-medium mt-1" x-text="episode.name"></h4>
+                                                    <p class="text-sm text-gray-400 mt-1 line-clamp-2" x-text="episode.overview || 'No description available.'"></p>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                     </template>
@@ -814,7 +855,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 18/02/25
+                Made with ❤ by Ambrosial. 19/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -1005,31 +1046,23 @@
             return {
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 content: null,
-                currentVideoUrl: '',
+                contentId: null,
+                contentType: null,
+                isShow: false,
                 selectedSeason: 1,
                 selectedEpisode: 1,
                 seasons: [],
                 episodes: [],
-                selectedSource: 'embedsu',
-                isShow: false,
-                contentId: null,
-                contentType: null,
-                similarContent: [],
-                providerDown: false,
-                providerTimeout: null,
-                showDownMessage: false,
-                messageTimeout: null,
-                lastUrl: '',
-                showWatchLater: false,
+                selectedSource: 'multiembed',
+                availableSources: availableSources,
+                currentVideoUrl: '',
                 watchLaterItems: [],
                 watchLaterCount: 0,
+                showWatchLater: false,
                 showClearConfirm: false,
-                availableSources: availableSources,
                 mobileMenu: false,
-                showNextEpisodeMessage: false,
-                nextEpisodeCountdown: 10,
-                autoNextTimeout: null,
-                countdownInterval: null,
+                viewMode: 'grid',
+                seasonData: null,
 
                 async init() {
                     const savedItems = localStorage.getItem('watchLater');
@@ -1181,6 +1214,7 @@
                     const currentIndex = this.availableSources.findIndex(s => s.id === this.selectedSource);
                     if (currentIndex === -1) return;
 
+                    // Try the next source that matches the current language preference
                     const currentSource = this.availableSources[currentIndex];
                     const isFrench = currentSource.isFrench;
                     
@@ -1244,8 +1278,10 @@
                     try {
                         const response = await fetch(url);
                         const data = await response.json();
+                        this.seasonData = data;
                         this.episodes = Array.from({length: data.episodes.length}, (_, i) => i + 1);
                         this.selectedEpisode = 1;
+                        this.updateVideoUrl();
                     } catch (error) {
                         console.error('Error fetching episodes:', error);
                     }
@@ -1400,61 +1436,6 @@
                     }
                     
                     return true;
-                },
-
-                handlePlayerMessage(event) {
-                    // Listen for video end message from the player
-                    if (event.data === 'videoEnded' && this.isShow) {
-                        this.startNextEpisodeCountdown();
-                    }
-                },
-
-                startNextEpisodeCountdown() {
-                    if (!this.isShow || this.selectedEpisode >= this.episodes.length) {
-                        return;
-                    }
-
-                    this.showNextEpisodeMessage = true;
-                    this.nextEpisodeCountdown = 10;
-
-                    // Clear any existing timeouts/intervals
-                    this.cancelAutoNext();
-
-                    // Start countdown
-                    this.countdownInterval = setInterval(() => {
-                        this.nextEpisodeCountdown--;
-                        if (this.nextEpisodeCountdown <= 0) {
-                            this.playNextEpisode();
-                        }
-                    }, 1000);
-
-                    // Set timeout for auto-play
-                    this.autoNextTimeout = setTimeout(() => {
-                        this.playNextEpisode();
-                    }, 10000);
-                },
-
-                playNextEpisode() {
-                    if (!this.isShow || this.selectedEpisode >= this.episodes.length) {
-                        return;
-                    }
-
-                    this.cancelAutoNext();
-                    this.selectedEpisode++;
-                    this.updateVideoUrl();
-                    this.showNextEpisodeMessage = false;
-                },
-
-                cancelAutoNext() {
-                    if (this.autoNextTimeout) {
-                        clearTimeout(this.autoNextTimeout);
-                        this.autoNextTimeout = null;
-                    }
-                    if (this.countdownInterval) {
-                        clearInterval(this.countdownInterval);
-                        this.countdownInterval = null;
-                    }
-                    this.showNextEpisodeMessage = false;
                 }
             }
         }
