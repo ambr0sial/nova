@@ -172,7 +172,7 @@ const availableSources = [
     },
     {
         id: 'videasy',
-        name: 'VidEasy',
+        name: 'VidEasy (4K)',
         isFrench: false,
         urls: {
             movie: 'https://player.videasy.net/movie/{id}?color=8834ec',
