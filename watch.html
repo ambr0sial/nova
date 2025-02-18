@@ -269,6 +269,7 @@
                                     scrolling="no" 
                                     @error="checkProviderStatus()"
                                     @load="handleProviderLoad()"
+                                    @message="handlePlayerMessage($event)"
                                     allowfullscreen>
                             </iframe>
                             <button @click="toggleWatchLater(content)" 
@@ -285,8 +286,30 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 md:h-12 md:w-12 mx-auto text-red-500 mb-3 md:mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                     </svg>
-                                    <p class="text-lg md:text-xl font-semibold text-white mb-2">This provider is currently down 💔</p>
-                                    <p class="text-sm md:text-base text-gray-400">Please try another source from the list below!</p>
+                                    <p class="text-lg md:text-xl font-semibold text-white mb-2">Source unavailable, trying alternatives... 🔄</p>
+                                    <p class="text-sm md:text-base text-gray-400">If this persists, you can manually select another source below!</p>
+                                </div>
+                            </div>
+                            <!-- next episode message -->
+                            <div x-show="showNextEpisodeMessage" 
+                                 class="absolute inset-0 flex items-center justify-center bg-gray-900 bg-opacity-90">
+                                <div class="text-center px-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 md:h-12 md:w-12 mx-auto text-purple-400 mb-3 md:mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <p class="text-lg md:text-xl font-semibold text-white mb-2">Episode Complete!</p>
+                                    <p class="text-sm md:text-base text-gray-400 mb-4">Next episode starting in <span x-text="nextEpisodeCountdown"></span> seconds...</p>
+                                    <div class="flex justify-center space-x-3">
+                                        <button @click="playNextEpisode()" 
+                                                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors duration-300">
+                                            Play Now
+                                        </button>
+                                        <button @click="cancelAutoNext()" 
+                                                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors duration-300">
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -791,7 +814,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 17/02/25
+                Made with ❤ by Ambrosial. 18/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -1003,6 +1026,10 @@
                 showClearConfirm: false,
                 availableSources: availableSources,
                 mobileMenu: false,
+                showNextEpisodeMessage: false,
+                nextEpisodeCountdown: 10,
+                autoNextTimeout: null,
+                countdownInterval: null,
 
                 async init() {
                     const savedItems = localStorage.getItem('watchLater');
@@ -1141,12 +1168,31 @@
 
                     this.providerTimeout = setTimeout(() => {
                         if (this.providerDown) {
-                            console.log('Provider appears to be down - no content loaded');
+                            console.log('Provider appears to be down - trying next source');
+                            this.tryNextSource();
                             this.messageTimeout = setTimeout(() => {
                                 this.showDownMessage = true;
                             }, 500);
                         }
                     }, 1500);
+                },
+
+                tryNextSource() {
+                    const currentIndex = this.availableSources.findIndex(s => s.id === this.selectedSource);
+                    if (currentIndex === -1) return;
+
+                    const currentSource = this.availableSources[currentIndex];
+                    const isFrench = currentSource.isFrench;
+                    
+                    let nextIndex = (currentIndex + 1) % this.availableSources.length;
+                    while (nextIndex !== currentIndex) {
+                        if (this.availableSources[nextIndex].isFrench === isFrench) {
+                            this.selectedSource = this.availableSources[nextIndex].id;
+                            this.updateVideoUrl();
+                            return;
+                        }
+                        nextIndex = (nextIndex + 1) % this.availableSources.length;
+                    }
                 },
 
                 handleProviderLoad() {
@@ -1354,6 +1400,61 @@
                     }
                     
                     return true;
+                },
+
+                handlePlayerMessage(event) {
+                    // Listen for video end message from the player
+                    if (event.data === 'videoEnded' && this.isShow) {
+                        this.startNextEpisodeCountdown();
+                    }
+                },
+
+                startNextEpisodeCountdown() {
+                    if (!this.isShow || this.selectedEpisode >= this.episodes.length) {
+                        return;
+                    }
+
+                    this.showNextEpisodeMessage = true;
+                    this.nextEpisodeCountdown = 10;
+
+                    // Clear any existing timeouts/intervals
+                    this.cancelAutoNext();
+
+                    // Start countdown
+                    this.countdownInterval = setInterval(() => {
+                        this.nextEpisodeCountdown--;
+                        if (this.nextEpisodeCountdown <= 0) {
+                            this.playNextEpisode();
+                        }
+                    }, 1000);
+
+                    // Set timeout for auto-play
+                    this.autoNextTimeout = setTimeout(() => {
+                        this.playNextEpisode();
+                    }, 10000);
+                },
+
+                playNextEpisode() {
+                    if (!this.isShow || this.selectedEpisode >= this.episodes.length) {
+                        return;
+                    }
+
+                    this.cancelAutoNext();
+                    this.selectedEpisode++;
+                    this.updateVideoUrl();
+                    this.showNextEpisodeMessage = false;
+                },
+
+                cancelAutoNext() {
+                    if (this.autoNextTimeout) {
+                        clearTimeout(this.autoNextTimeout);
+                        this.autoNextTimeout = null;
+                    }
+                    if (this.countdownInterval) {
+                        clearInterval(this.countdownInterval);
+                        this.countdownInterval = null;
+                    }
+                    this.showNextEpisodeMessage = false;
                 }
             }
         }

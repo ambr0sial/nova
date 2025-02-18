@@ -347,8 +347,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (17/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Fixed the arrow buttons in the cast section where they were cut off to the edges of the section card</span>
+                        <span class="font-semibold text-purple-400">Update (18/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added more sorting options/filters and source auto-switching</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -402,6 +402,28 @@
                         </div>
                     </div>
 
+                    <!-- year range -->
+                    <div class="relative">
+                        <select x-model="yearRange"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="">Any Year</option>
+                            <option value="2020,2024">2020s</option>
+                            <option value="2010,2019">2010s</option>
+                            <option value="2000,2009">2000s</option>
+                            <option value="1990,1999">1990s</option>
+                            <option value="1980,1989">1980s</option>
+                            <option value="1970,1979">1970s</option>
+                            <option value="1960,1969">1960s</option>
+                            <option value="1950,1959">1950s</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
                     <!-- language filter -->
                     <div class="relative">
                         <select x-model="selectedLanguage"
@@ -430,6 +452,7 @@
                                 class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
                             <option value="popularity.desc">Most Popular</option>
                             <option value="revenue.desc">Highest Revenue</option>
+                            <option value="vote_count.desc">Most Reviewed</option>
                         </select>
                         <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -452,11 +475,23 @@
                                 <button @click="minRating = ''; applyFilters()" class="hover:text-gray-300">×</button>
                             </span>
                         </template>
+                        <template x-if="yearRange">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                                <span x-text="getYearRangeName(yearRange)"></span>
+                                <button @click="yearRange = ''; applyFilters()" class="hover:text-gray-300">×</button>
+                            </span>
+                        </template>
                         <template x-if="selectedLanguage">
                             <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
                                 <span x-text="getLanguageName(selectedLanguage)"></span>
                                 <button @click="selectedLanguage = ''; applyFilters()" class="hover:text-gray-300">×</button>
                             </span>
+                        </template>
+                        <template x-if="hasActiveFilters">
+                            <button @click="clearAllFilters()" 
+                                    class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 transition-colors duration-300">
+                                <span>Clear All Filters</span>
+                            </button>
                         </template>
                     </div>
                 </div>
@@ -567,7 +602,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 17/02/25
+                Made with ❤ by Ambrosial. 18/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -811,6 +846,7 @@
                 mobileMenu: false,
                 selectedLanguage: '',
                 sortBy: 'popularity.desc',
+                yearRange: '',
 
                 async init() {
                     const savedItems = localStorage.getItem('watchLater');
@@ -826,6 +862,7 @@
                         this.currentPage = 1;
                         this.selectedGenre = '';
                         this.minRating = '';
+                        this.yearRange = '';
                         await this.fetchGenres();
                         await this.fetchContent();
                     });
@@ -878,6 +915,12 @@
                         params.append('with_original_language', this.selectedLanguage);
                     }
 
+                    if (this.yearRange) {
+                        const [startYear, endYear] = this.yearRange.split(',');
+                        params.append('primary_release_date.gte', `${startYear}-01-01`);
+                        params.append('primary_release_date.lte', `${endYear}-12-31`);
+                    }
+
                     const url = `${baseUrl}/${endpoint}?${params.toString()}`;
 
                     try {
@@ -901,6 +944,25 @@
                         ko: 'Korean'
                     };
                     return languages[code] || code;
+                },
+
+                getYearRangeName(range) {
+                    if (!range) return '';
+                    const [start, end] = range.split(',');
+                    const decade = Math.floor(start / 10) * 10;
+                    return `${decade}s`;
+                },
+
+                get hasActiveFilters() {
+                    return this.selectedGenre || this.minRating || this.yearRange || this.selectedLanguage;
+                },
+
+                clearAllFilters() {
+                    this.selectedGenre = '';
+                    this.minRating = '';
+                    this.yearRange = '';
+                    this.selectedLanguage = '';
+                    this.applyFilters();
                 },
 
                 async fetchContent() {
