@@ -236,7 +236,7 @@
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()" 
       @keydown.meta.k.prevent="$refs.searchInput.focus()"
       @keydown.ctrl.k.prevent="$refs.searchInput.focus()">
-    <div id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
+    <div x-show="localStorage.getItem('showParticles') !== 'false'" id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
 
     <!-- navigation -->
     <nav class="fixed w-full z-50 glass-effect">
@@ -347,7 +347,8 @@
     </nav>
 
     <!-- update message -->
-    <div class="fixed top-[3.5rem] md:top-16 left-0 right-0 z-40 animate-slide-down"
+    <div x-show="localStorage.getItem('showUpdateNotice') !== 'false'" 
+         class="fixed top-[3.5rem] md:top-16 left-0 right-0 z-40 animate-slide-down"
          x-data="{ show: true }"
          x-show="show"
          x-transition:enter="transition ease-out duration-300"
@@ -359,10 +360,10 @@
         <div class="bg-gray-900 border-b border-purple-500/20">
             <div class="container mx-auto px-6 py-2 flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                    <span class="text-purple-400">🎉</span>
+                    <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (20/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added a settings page (still under development)</span>
+                        <span class="font-semibold text-purple-400">Update (22/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added appearance settings to the settings page</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -621,7 +622,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 20/02/25
+                Made with ❤ by Ambrosial. 22/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -1212,6 +1213,16 @@
             const y = ((e.clientY - rect.top) * 100) / rect.height;
             container.style.setProperty('--mouse-x', x + '%');
             container.style.setProperty('--mouse-y', y + '%');
+        });
+    </script>
+    <script>
+        window.addEventListener('appearance-changed', () => {
+            const particlesEl = document.getElementById('particles-js');
+            if (localStorage.getItem('showParticles') === 'false') {
+                particlesEl.style.display = 'none';
+            } else {
+                particlesEl.style.display = 'block';
+            }
         });
     </script>
 </body>

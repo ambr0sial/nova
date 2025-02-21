@@ -93,7 +93,19 @@
     activeSection: 'default-source', 
     mobileMenu: false,
     showMobileWarning: window.innerWidth < 768,
-    isMobileWarningDismissed: false
+    isMobileWarningDismissed: false,
+    showParticles: localStorage.getItem('showParticles') === null ? true : localStorage.getItem('showParticles') !== 'false',
+    showUpdateNotice: localStorage.getItem('showUpdateNotice') === null ? true : localStorage.getItem('showUpdateNotice') !== 'false',
+    toggleParticles() {
+        this.showParticles = !this.showParticles;
+        localStorage.setItem('showParticles', this.showParticles);
+        window.dispatchEvent(new Event('appearance-changed'));
+    },
+    toggleUpdateNotice() {
+        this.showUpdateNotice = !this.showUpdateNotice;
+        localStorage.setItem('showUpdateNotice', this.showUpdateNotice);
+        window.dispatchEvent(new Event('appearance-changed'));
+    }
 }">
     <!-- mobile warning -->
     <div x-show="showMobileWarning && !isMobileWarningDismissed" 
@@ -175,6 +187,12 @@
                     class="text-left px-4 py-2 rounded-lg hover:bg-purple-600/50 transition-colors">
                     Default Source
                 </button>
+                <button 
+                    @click="activeSection = 'appearance'"
+                    :class="{'bg-purple-600': activeSection === 'appearance'}"
+                    class="text-left px-4 py-2 rounded-lg hover:bg-purple-600/50 transition-colors">
+                    Appearance
+                </button>
             </div>
         </div>
 
@@ -235,6 +253,46 @@
                         </template>
                     </div>
                 </div>
+
+                <!-- appearance section -->
+                <div x-show="activeSection === 'appearance'" class="animate-fade-in space-y-8">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-semibold mb-2">Appearance</h2>
+                        <p class="text-slate-400">Customize how Nova looks and feels</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- background particles toggle -->
+                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                            <div class="space-y-1">
+                                <h3 class="font-medium">Background Particles</h3>
+                                <p class="text-sm text-slate-400">Toggle the animated particle effect in the background of Nova</p>
+                            </div>
+                            <button 
+                                @click="toggleParticles"
+                                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300"
+                                :class="showParticles ? 'bg-purple-600' : 'bg-gray-600'">
+                                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300"
+                                      :class="showParticles ? 'translate-x-6' : 'translate-x-1'"></span>
+                            </button>
+                        </div>
+
+                        <!-- update notice toggle -->
+                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                            <div class="space-y-1">
+                                <h3 class="font-medium">Update Notice</h3>
+                                <p class="text-sm text-slate-400">Toggle the update notice on the homepage that informs you about the latest updates</p>
+                            </div>
+                            <button 
+                                @click="toggleUpdateNotice"
+                                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300"
+                                :class="showUpdateNotice ? 'bg-purple-600' : 'bg-gray-600'">
+                                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300"
+                                      :class="showUpdateNotice ? 'translate-x-6' : 'translate-x-1'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -242,6 +300,12 @@
     <script>
         if (!localStorage.getItem('defaultSource')) {
             localStorage.setItem('defaultSource', 'embedsu');
+        }
+        if (localStorage.getItem('showParticles') === null) {
+            localStorage.setItem('showParticles', 'true');
+        }
+        if (localStorage.getItem('showUpdateNotice') === null) {
+            localStorage.setItem('showUpdateNotice', 'true');
         }
     </script>
 </body>
