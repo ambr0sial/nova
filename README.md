@@ -72,14 +72,7 @@ Filtered search for better content discovery
 
 ## 🌐 Alternative Domains
 
-If the main domain is unavailable, try these alternatives:
-
-```markdown
-🔗 https://novastream.vercel.app
-🔗 https://novastream-alt.netlify.app
-🔗 https://novastream.onrender.com
-🔗 https://nova-2bn.pages.dev
-```
+If the main domain is unavailable, visit [this website](https://nova-domains.github.io) to see alternative domains.
 
 ## 🤝 Contributing
 
