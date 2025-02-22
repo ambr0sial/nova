@@ -347,10 +347,9 @@
     </nav>
 
     <!-- update message -->
-    <div x-show="localStorage.getItem('showUpdateNotice') !== 'false'" 
+    <div x-data="{ show: true }"
+         x-show="show && localStorage.getItem('showUpdateNotice') !== 'false'" 
          class="fixed top-[3.5rem] md:top-16 left-0 right-0 z-40 animate-slide-down"
-         x-data="{ show: true }"
-         x-show="show"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="transform -translate-y-full"
          x-transition:enter-end="transform translate-y-0"
@@ -363,7 +362,7 @@
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
                         <span class="font-semibold text-purple-400">Update (22/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added appearance settings to the settings page</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Fixed a bug where the update notice was impossible to close</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
