@@ -236,6 +236,14 @@
 <body class="bg-gray-900 text-white min-h-screen" x-data="app()" 
       @keydown.meta.k.prevent="$refs.searchInput.focus()"
       @keydown.ctrl.k.prevent="$refs.searchInput.focus()">
+    <div x-data="{ showPopup: localStorage.getItem('showPopupReminder') !== 'false' }" x-show="showPopup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+        <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 class="text-lg font-bold mb-2">Important Notice</h2>
+            <p class="mb-4">Please bookmark <a href="https://nova-domains.github.io" target="_blank" class="text-purple-400 underline">nova-domains.github.io</a> in case the domain you're using stops working. This website lists all Nova domains and indicates whether each one is working or not.</p>
+            <p class="mb-4">You can disable this popup in <a href="settings.html" class="text-purple-400 underline">Settings > Appearance</a>.</p>
+            <button @click="showPopup = false" class="bg-purple-600 text-white w-full px-4 py-2 rounded hover:bg-purple-700 transition">Got it!</button>
+        </div>
+    </div>
     <div x-show="localStorage.getItem('showParticles') !== 'false'" id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
 
     <!-- navigation -->
@@ -260,6 +268,7 @@
                                 class="nav-link">
                             <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
                         </button>
+                        <a href="livesports.html" class="nav-link">Live Sports</a>
                         <button @click="showWatchLater = true" class="nav-link flex items-center space-x-2">
                             <span>Watch Later</span>
                             <span x-show="watchLaterCount > 0" 
@@ -321,6 +330,7 @@
                             class="text-left px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
                         <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
                     </button>
+                    <a href="livesports.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
                     <button @click="showWatchLater = true; mobileMenu = false" 
                             class="flex items-center justify-between px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
                         <span>Watch Later</span>
@@ -359,10 +369,10 @@
         <div class="bg-gray-900 border-b border-purple-500/20">
             <div class="container mx-auto px-6 py-2 flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                    <!-- <span class="text-purple-400">🎉</span> -->
+                    <span class="text-purple-400">🎉</span>
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (22/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Fixed a bug where the update notice was impossible to close</span>
+                        <span class="font-semibold text-purple-400">Update (24/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added live sports section and popup for domains list</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -557,7 +567,7 @@
                         :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'"
                         class="bg-gray-800 px-6 py-3 rounded-lg transition-all duration-300 flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                     <span>Previous</span>
                 </button>
@@ -1050,180 +1060,180 @@
                         }
                     }
                     
-                    this.filteredContent = this.content.filter(item => {
-                        if (this.selectedGenre && !item.genre_ids?.includes(parseInt(this.selectedGenre))) {
-                            return false;
-                        }
-                        if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
-                            return false;
-                        }
-                        if (this.selectedLanguage && item.original_language !== this.selectedLanguage) {
-                            return false;
-                        }
-                        return true;
-                    });
-                },
-
-                async openContent(item) {
-                    this.selectedContent = item;
-                    this.showModal = true;
-
-                    if (this.currentTab === 'shows') {
-                        const url = `https://api.themoviedb.org/3/tv/${item.id}?api_key=${this.apiKey}`;
-                        try {
-                            const response = await fetch(url);
-                            const data = await response.json();
-                            this.seasons = Array.from({length: data.number_of_seasons}, (_, i) => i + 1);
-                            this.updateEpisodes();
-                        } catch (error) {
-                            console.error('Error fetching seasons:', error);
-                        }
-                    }
-                    this.updateVideoUrl();
-                },
-
-                getSourceUrl(sourceId, type, params) {
-                    const source = this.availableSources.find(s => s.id === sourceId);
-                    if (!source) return '';
-
-                    let url = source.urls[type];
-                    Object.entries(params).forEach(([key, value]) => {
-                        url = url.replace(`{${key}}`, value);
-                    });
-                    return url;
-                },
-
-                updateVideoUrl() {
-                    const source = this.availableSources.find(s => s.id === this.selectedSource);
-                    if (!source) return '';
-
-                    const params = this.currentTab === 'shows'
-                        ? { id: this.selectedContent.id, season: this.selectedSeason, episode: this.selectedEpisode }
-                        : { id: this.selectedContent.id };
-
-                    this.currentVideoUrl = this.getSourceUrl(
-                        this.selectedSource,
-                        this.currentTab === 'shows' ? 'tv' : 'movie',
-                        params
-                    );
-                },
-
-                async updateEpisodes() {
-                    const url = `https://api.themoviedb.org/3/tv/${this.selectedContent.id}/season/${this.selectedSeason}?api_key=${this.apiKey}`;
-                    try {
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        this.episodes = Array.from({length: data.episodes.length}, (_, i) => i + 1);
-                        this.selectedEpisode = 1;
-                    } catch (error) {
-                        console.error('Error fetching episodes:', error);
-                    }
-                },
-
-                loadEpisode() {
-                    this.updateVideoUrl();
-                },
-
-                async changePage(page) {
-                    this.currentPage = page;
-                    if (this.searchQuery) {
-                        await this.searchContent();
-                    } else {
-                        await this.fetchContent();
-                    }
-                },
-
-                toggleWatchLater(item) {
-                    const index = this.watchLaterItems.findIndex(i => i.id === item.id);
-                    if (index === -1) {
-                        this.watchLaterItems.push({
-                            ...item,
-                            type: this.currentTab === 'movies' ? 'movie' : 'tv'
-                        });
-                    } else {
-                        this.watchLaterItems.splice(index, 1);
-                    }
-                    this.watchLaterCount = this.watchLaterItems.length;
-                    localStorage.setItem('watchLater', JSON.stringify(this.watchLaterItems));
-                },
-
-                isInWatchLater(item) {
-                    return this.watchLaterItems.some(i => i.id === item.id);
-                },
-
-                clearWatchLater() {
-                    this.showClearConfirm = true;
-                },
-
-                doClearWatchLater() {
-                    this.watchLaterItems = [];
-                    this.watchLaterCount = 0;
-                    localStorage.setItem('watchLater', JSON.stringify([]));
-                    this.showClearConfirm = false;
-                },
-
-                pickRandom() {
-                    const randomItem = this.filteredContent[Math.floor(Math.random() * this.filteredContent.length)];
-                    if (randomItem) {
-                        window.location.href = `watch.html?id=${randomItem.id}&type=${this.currentTab === 'movies' ? 'movie' : 'tv'}`;
-                    }
+            this.filteredContent = this.content.filter(item => {
+                if (this.selectedGenre && !item.genre_ids?.includes(parseInt(this.selectedGenre))) {
+                    return false;
                 }
-            }
-        }
-    </script>
-    <button 
-        @click="window.scrollTo({top: 0})" 
-        @scroll.window="showScrollTop = window.pageYOffset > 500"
-        x-data="{ showScrollTop: false }"
-        x-show="showScrollTop"
-        x-transition:enter="transition ease-out duration-300"
-        x-transition:enter-start="opacity-0 transform translate-y-10"
-        x-transition:enter-end="opacity-100 transform translate-y-0"
-        x-transition:leave="transition ease-in duration-300"
-        x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform translate-y-10"
-        class="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-4 shadow-lg cursor-pointer transition-all duration-300 hover:scale-110 z-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-    </button>
-    <div id="donationBanner" class="fixed bottom-4 left-4 right-4 md:bottom-2 md:right-auto md:left-2 bg-purple-600 text-white text-sm md:text-base p-2 md:p-3 rounded-lg shadow-lg flex items-center justify-between space-x-2 md:space-x-4 z-50">
-        <span>Enjoying Nova? Support me on <a href="https://ko-fi.com/ambrosial" target="_blank" class="underline hover:text-purple-300 transition-all">Ko-Fi</a> <3</span>
-        <button id="closeBanner" class="text-white hover:text-gray-300 transition-all">
-            &times;
-        </button>
-    </div>
-    <script>
-        const closeBannerButton = document.getElementById('closeBanner');
-        if (closeBannerButton) {
-            closeBannerButton.addEventListener('click', function() {
-                const banner = document.getElementById('donationBanner');
-                if (banner) {
-                    banner.style.display = 'none';
+                if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
+                    return false;
                 }
+                if (this.selectedLanguage && item.original_language !== this.selectedLanguage) {
+                    return false;
+                }
+                return true;
             });
-        }
-    </script>
-    <script>
-        document.querySelector('.search-container input').addEventListener('mousemove', (e) => {
-            const container = e.target.parentElement;
-            const rect = container.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) * 100) / rect.width;
-            const y = ((e.clientY - rect.top) * 100) / rect.height;
-            container.style.setProperty('--mouse-x', x + '%');
-            container.style.setProperty('--mouse-y', y + '%');
-        });
-    </script>
-    <script>
-        window.addEventListener('appearance-changed', () => {
-            const particlesEl = document.getElementById('particles-js');
-            if (localStorage.getItem('showParticles') === 'false') {
-                particlesEl.style.display = 'none';
+        },
+
+        async openContent(item) {
+            this.selectedContent = item;
+            this.showModal = true;
+
+            if (this.currentTab === 'shows') {
+                const url = `https://api.themoviedb.org/3/tv/${item.id}?api_key=${this.apiKey}`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    this.seasons = Array.from({length: data.number_of_seasons}, (_, i) => i + 1);
+                    this.updateEpisodes();
+                } catch (error) {
+                    console.error('Error fetching seasons:', error);
+                }
+            }
+            this.updateVideoUrl();
+        },
+
+        getSourceUrl(sourceId, type, params) {
+            const source = this.availableSources.find(s => s.id === sourceId);
+            if (!source) return '';
+
+            let url = source.urls[type];
+            Object.entries(params).forEach(([key, value]) => {
+                url = url.replace(`{${key}}`, value);
+            });
+            return url;
+        },
+
+        updateVideoUrl() {
+            const source = this.availableSources.find(s => s.id === this.selectedSource);
+            if (!source) return '';
+
+            const params = this.currentTab === 'shows'
+                ? { id: this.selectedContent.id, season: this.selectedSeason, episode: this.selectedEpisode }
+                : { id: this.selectedContent.id };
+
+            this.currentVideoUrl = this.getSourceUrl(
+                this.selectedSource,
+                this.currentTab === 'shows' ? 'tv' : 'movie',
+                params
+            );
+        },
+
+        async updateEpisodes() {
+            const url = `https://api.themoviedb.org/3/tv/${this.selectedContent.id}/season/${this.selectedSeason}?api_key=${this.apiKey}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.episodes = Array.from({length: data.episodes.length}, (_, i) => i + 1);
+                this.selectedEpisode = 1;
+            } catch (error) {
+                console.error('Error fetching episodes:', error);
+            }
+        },
+
+        loadEpisode() {
+            this.updateVideoUrl();
+        },
+
+        async changePage(page) {
+            this.currentPage = page;
+            if (this.searchQuery) {
+                await this.searchContent();
             } else {
-                particlesEl.style.display = 'block';
+                await this.fetchContent();
+            }
+        },
+
+        toggleWatchLater(item) {
+            const index = this.watchLaterItems.findIndex(i => i.id === item.id);
+            if (index === -1) {
+                this.watchLaterItems.push({
+                    ...item,
+                    type: this.currentTab === 'movies' ? 'movie' : 'tv'
+                });
+            } else {
+                this.watchLaterItems.splice(index, 1);
+            }
+            this.watchLaterCount = this.watchLaterItems.length;
+            localStorage.setItem('watchLater', JSON.stringify(this.watchLaterItems));
+        },
+
+        isInWatchLater(item) {
+            return this.watchLaterItems.some(i => i.id === item.id);
+        },
+
+        clearWatchLater() {
+            this.showClearConfirm = true;
+        },
+
+        doClearWatchLater() {
+            this.watchLaterItems = [];
+            this.watchLaterCount = 0;
+            localStorage.setItem('watchLater', JSON.stringify([]));
+            this.showClearConfirm = false;
+        },
+
+        pickRandom() {
+            const randomItem = this.filteredContent[Math.floor(Math.random() * this.filteredContent.length)];
+            if (randomItem) {
+                window.location.href = `watch.html?id=${randomItem.id}&type=${this.currentTab === 'movies' ? 'movie' : 'tv'}`;
+            }
+        }
+    }
+}
+</script>
+<button 
+    @click="window.scrollTo({top: 0})" 
+    @scroll.window="showScrollTop = window.pageYOffset > 500"
+    x-data="{ showScrollTop: false }"
+    x-show="showScrollTop"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform translate-y-10"
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 transform translate-y-0"
+    x-transition:leave-end="opacity-0 transform translate-y-10"
+    class="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-4 shadow-lg cursor-pointer transition-all duration-300 hover:scale-110 z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+</button>
+<div id="donationBanner" class="fixed bottom-4 left-4 right-4 md:bottom-2 md:right-auto md:left-2 bg-purple-600 text-white text-sm md:text-base p-2 md:p-3 rounded-lg shadow-lg flex items-center justify-between space-x-2 md:space-x-4 z-50">
+    <span>Enjoying Nova? Support me on <a href="https://ko-fi.com/ambrosial" target="_blank" class="underline hover:text-purple-300 transition-all">Ko-Fi</a> <3</span>
+    <button id="closeBanner" class="text-white hover:text-gray-300 transition-all">
+        &times;
+    </button>
+</div>
+<script>
+    const closeBannerButton = document.getElementById('closeBanner');
+    if (closeBannerButton) {
+        closeBannerButton.addEventListener('click', function() {
+            const banner = document.getElementById('donationBanner');
+            if (banner) {
+                banner.style.display = 'none';
             }
         });
-    </script>
+    }
+</script>
+<script>
+    document.querySelector('.search-container input').addEventListener('mousemove', (e) => {
+        const container = e.target.parentElement;
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) * 100) / rect.width;
+        const y = ((e.clientY - rect.top) * 100) / rect.height;
+        container.style.setProperty('--mouse-x', x + '%');
+        container.style.setProperty('--mouse-y', y + '%');
+    });
+</script>
+<script>
+    window.addEventListener('appearance-changed', () => {
+        const particlesEl = document.getElementById('particles-js');
+        if (localStorage.getItem('showParticles') === 'false') {
+            particlesEl.style.display = 'none';
+        } else {
+            particlesEl.style.display = 'block';
+        }
+    });
+</script>
 </body>
 </html>
 

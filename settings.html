@@ -166,6 +166,7 @@
                 class="md:hidden mt-4 pb-4">
                 <div class="flex flex-col space-y-4">
                     <a href="index.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Home</a>
+                    <a href="livesports.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
                     <a href="https://github.com/ambr0sial/nova" target="_blank" 
                        class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">GitHub</a>
                     <a href="https://ko-fi.com/ambrosial" target="_blank" 
@@ -279,7 +280,7 @@
                             </button>
                         </div>
 
-                        <!-- Update Notice Toggle -->
+                        <!-- update notice toggle -->
                         <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
                             <div class="space-y-1">
                                 <h3 class="font-medium">Update Notice</h3>
@@ -291,6 +292,22 @@
                                 :class="showUpdateNotice ? 'bg-purple-600' : 'bg-gray-600'">
                                 <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300"
                                       :class="showUpdateNotice ? 'translate-x-6' : 'translate-x-1'"></span>
+                            </button>
+                        </div>
+
+                        <!-- popup reminder toggle -->
+                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                            <div class="space-y-1">
+                                <h3 class="font-medium">Popup Reminder</h3>
+                                <p class="text-sm text-slate-400">Toggle the popup reminder to bookmark the site</p>
+                            </div>
+                            <button 
+                                @click="showPopupReminder = !showPopupReminder; localStorage.setItem('showPopupReminder', showPopupReminder)"
+                                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300"
+                                :class="showPopupReminder ? 'bg-purple-600' : 'bg-gray-600'"
+                                x-data="{ showPopupReminder: localStorage.getItem('showPopupReminder') !== 'false' }">
+                                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300"
+                                      :class="showPopupReminder ? 'translate-x-6' : 'translate-x-1'"></span>
                             </button>
                         </div>
                     </div>
@@ -308,6 +325,9 @@
         }
         if (localStorage.getItem('showUpdateNotice') === null) {
             localStorage.setItem('showUpdateNotice', 'true');
+        }
+        if (localStorage.getItem('showPopupReminder') === null) {
+            localStorage.setItem('showPopupReminder', 'true');
         }
     </script>
 </body>
