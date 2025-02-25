@@ -369,10 +369,10 @@
         <div class="bg-gray-900 border-b border-purple-500/20">
             <div class="container mx-auto px-6 py-2 flex items-center justify-between">
                 <div class="flex items-center space-x-2">
-                    <span class="text-purple-400">🎉</span>
+                    <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (24/02/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Added live sports section and popup for domains list</span>
+                        <span class="font-semibold text-purple-400">Update (26/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added content information language switcher in settings (EN/FR)</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -567,7 +567,7 @@
                         :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'"
                         class="bg-gray-800 px-6 py-3 rounded-lg transition-all duration-300 flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                     <span>Previous</span>
                 </button>
@@ -631,7 +631,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 24/02/25
+                Made with ❤ by Ambrosial. 26/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -852,7 +852,7 @@
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 content: [],
                 currentTab: 'movies',
-                language: 'en',
+                language: localStorage.getItem('selectedLanguage') || 'en',
                 searchQuery: '',
                 currentPage: 1,
                 showWatchLater: false,
@@ -873,7 +873,6 @@
                 minRating: '',
                 filteredContent: [],
                 mobileMenu: false,
-                selectedLanguage: '',
                 sortBy: 'popularity.desc',
                 yearRange: '',
 
@@ -997,7 +996,7 @@
                 async fetchContent() {
                     const baseUrl = 'https://api.themoviedb.org/3';
                     const endpoint = this.currentTab === 'movies' ? 'movie/popular' : 'tv/popular';
-                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&language=${this.language}-${this.language.toUpperCase()}&page=${this.currentPage}`;
+                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&language=${this.language}&page=${this.currentPage}`;
 
                     try {
                         const response = await fetch(url);
@@ -1177,6 +1176,12 @@
             if (randomItem) {
                 window.location.href = `watch.html?id=${randomItem.id}&type=${this.currentTab === 'movies' ? 'movie' : 'tv'}`;
             }
+        },
+
+        changeLanguage(newLanguage) {
+            this.language = newLanguage;
+            localStorage.setItem('selectedLanguage', newLanguage);
+            this.fetchContent();
         }
     }
 }
