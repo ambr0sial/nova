@@ -884,7 +884,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 22/02/25
+                Made with ❤ by Ambrosial. 24/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -1122,6 +1122,11 @@
                         const response = await fetch(url);
                         const data = await response.json();
                         this.content = data;
+                        
+                        const imagesUrl = `${baseUrl}/${this.contentType}/${this.contentId}/images?api_key=${this.apiKey}`;
+                        const imagesResponse = await fetch(imagesUrl);
+                        const imagesData = await imagesResponse.json();
+                        this.content.images = imagesData;
                         
                         const containsKeywords = (text, keywords) => {
                             if (!text) return false;
