@@ -24,102 +24,32 @@
             },
         }
     </script>
-    <style>
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background: linear-gradient(to right, #a78bfa, #4c1d95);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .nav-link:hover {
-            color: #a78bfa;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .glass-effect {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .match-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .match-card::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            background: linear-gradient(
-                35deg,
-                rgba(168, 85, 247, 0.4),
-                rgba(168, 85, 247, 0),
-                rgba(139, 92, 246, 0.4)
-            );
-            border-radius: 0.5rem;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .match-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        .match-card:hover::after {
-            opacity: 1;
-        }
-
-        .live-indicator {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-    </style>
+    <link rel="stylesheet" href="/styles/livesports.css">
 </head>
 <body class="bg-gray-900 text-white min-h-screen" x-data="sportsApp()">
     <div x-show="localStorage.getItem('showParticles') !== 'false'" id="particles-js" class="fixed inset-0 pointer-events-none z-[-1]"></div>
+
+    <!-- particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <!-- navigation -->
     <nav class="fixed w-full z-50 glass-effect">
         <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4 md:space-x-8">
-                    <div class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
+                    <div class="flex items-center space-x-3" onclick="location.href = '/'" style="cursor: pointer;">
+                        <img src="/logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
                         <span class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
                     </div>
                     <div class="hidden md:flex space-x-6">
-                        <a href="index.html" class="nav-link">Home</a>
+                        <a href="/" class="nav-link">Home</a>
                         <a href="https://github.com/ambr0sial/nova" target="_blank" class="nav-link">GitHub</a>
                         <a href="https://ko-fi.com/ambrosial" target="_blank" class="nav-link">Ko-Fi</a>
                         <a href="https://discord.gg/s9kUZw7CqP" target="_blank" class="nav-link">Discord</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="settings.html" class="text-gray-400 hover:text-purple-400 transition-colors duration-300" title="Settings">
+                    <a href="/pages/settings/" class="text-gray-400 hover:text-purple-400 transition-colors duration-300" title="Settings">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -144,9 +74,9 @@
                 x-transition:leave-end="opacity-0 transform -translate-y-2"
                 class="md:hidden mt-4 pb-4">
                 <div class="flex flex-col space-y-4">
-                    <a href="index.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Movies & Shows</a>
-                    <a href="livesports.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
-                    <a href="settings.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors flex items-center space-x-2">
+                    <a href="/" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Movies & Shows</a>
+                    <a href="/pages/livesports/" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
+                    <a href="/pages/settings/" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors flex items-center space-x-2">
                         <span>Settings</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -225,7 +155,7 @@
                         <div class="relative">
                             <template x-if="match.poster">
                                 <div class="absolute inset-0 bg-cover bg-center opacity-20"
-                                     :style="'background-image: url(https://streamed.su' + match.poster + )'">
+                                     :style="'background-image: url(https://streamed.su' + match.poster )'">
                                 </div>
                             </template>
                         </div>
@@ -250,27 +180,27 @@
                                     <div class="flex items-center justify-between w-full">
                                         <!-- home team -->
                                         <div class="flex items-center space-x-2">
-                                            <img :src="match.teams.home?.badge ? 'https://streamed.su/api/images/badge/' + match.teams.home.badge + '.webp' : 'logo.png'" 
+                                            <img :src="match.teams.home?.badge ? 'https://streamed.su/api/images/badge/' + match.teams.home.badge + '.webp' : '/logo.png'" 
                                                  :alt="match.teams.home?.name"
                                                  class="w-8 h-8 object-contain"
-                                                 @error="$event.target.src = 'logo.png'">
+                                                 @error="$event.target.src = '/logo.png'">
                                             <span x-text="match.teams.home?.name"></span>
                                         </div>
                                         <span class="text-gray-400">vs</span>
                                         <!-- away team -->
                                         <div class="flex items-center space-x-2">
                                             <span x-text="match.teams.away?.name"></span>
-                                            <img :src="match.teams.away?.badge ? 'https://streamed.su/api/images/badge/' + match.teams.away.badge + '.webp' : 'logo.png'" 
+                                            <img :src="match.teams.away?.badge ? 'https://streamed.su/api/images/badge/' + match.teams.away.badge + '.webp' : '/logo.png'" 
                                                  :alt="match.teams.away?.name"
                                                  class="w-8 h-8 object-contain"
-                                                 @error="$event.target.src = 'logo.png'">
+                                                 @error="$event.target.src = '/logo.png'">
                                         </div>
                                     </div>
                                 </template>
                                 <template x-if="!match.teams">
                                     <div class="text-center w-full">
                                         <template x-if="match.poster">
-                                            <img :src="'https://streamed.su/api/images/poster/' + match.poster + '.webp'"
+                                            <img :src="'https://streamed.su' + match.poster"
                                                  :alt="match.title"
                                                  class="w-32 h-32 object-contain mx-auto mb-2"
                                                  @error="$event.target.style.display = 'none'">
@@ -350,219 +280,8 @@
         </div>
     </div>
 
-    <script>
-        function sportsApp() {
-            return {
-                sports: [],
-                matches: [],
-                filteredMatches: [],
-                selectedSport: '',
-                matchType: 'live',
-                showPopular: false,
-                mobileMenu: false,
-                showModal: false,
-                selectedMatch: null,
-                selectedStream: null,
-                availableStreams: [],
-
-                async init() {
-                    await this.loadSports();
-                    await this.loadMatches();
-                },
-
-                async loadSports() {
-                    try {
-                        const response = await fetch('https://streamed.su/api/sports');
-                        this.sports = await response.json();
-                    } catch (error) {
-                        console.error('Error loading sports:', error);
-                        this.sports = [];
-                    }
-                },
-
-                async loadMatches() {
-                    let endpoint = '';
-                    switch (this.matchType) {
-                        case 'live':
-                            endpoint = this.showPopular ? '/api/matches/live/popular' : '/api/matches/live';
-                            break;
-                        case 'today':
-                            endpoint = this.showPopular ? '/api/matches/all-today/popular' : '/api/matches/all-today';
-                            break;
-                        case 'all':
-                            endpoint = this.showPopular ? '/api/matches/all/popular' : '/api/matches/all';
-                            break;
-                    }
-
-                    try {
-                        const response = await fetch(`https://streamed.su${endpoint}`);
-                        this.matches = await response.json();
-                        this.filterMatches();
-                    } catch (error) {
-                        console.error('Error loading matches:', error);
-                        this.matches = [];
-                        this.filterMatches();
-                    }
-                },
-
-                filterMatches() {
-                    this.filteredMatches = this.selectedSport
-                        ? this.matches.filter(match => match.category === this.selectedSport)
-                        : this.matches;
-                },
-
-                togglePopular() {
-                    this.showPopular = !this.showPopular;
-                    this.loadMatches();
-                },
-
-                formatDate(timestamp) {
-                    return new Date(timestamp).toLocaleString();
-                },
-
-                closeModal() {
-                    this.showModal = false;
-                    this.selectedStream = null;
-                    this.selectedMatch = null;
-                    this.availableStreams = [];
-                    
-                    const container = document.getElementById('streamContainer');
-                    if (container) {
-                        container.innerHTML = '';
-                    }
-                },
-
-                async openStream(match) {
-                    if (this.showModal) {
-                        this.closeModal();
-                    }
-
-                    this.selectedMatch = match;
-                    this.selectedStream = null;
-                    this.availableStreams = [];
-                    this.showModal = true;
-
-                    for (const source of match.sources) {
-                        try {
-                            const response = await fetch(`https://streamed.su/api/stream/${source.source}/${source.id}`);
-                            const streams = await response.json();
-                            this.availableStreams = [...this.availableStreams, ...streams];
-                        } catch (error) {
-                            console.error(`Error loading stream for ${source.source}:`, error);
-                        }
-                    }
-
-                    if (this.availableStreams.length > 0) {
-                        this.selectStream(this.availableStreams[0]);
-                    }
-                },
-
-                selectStream(stream) {
-                    const container = document.getElementById('streamContainer');
-                    if (container) {
-                        container.innerHTML = '';
-                    }
-                    
-                    this.selectedStream = stream;
-                    
-                    this.$nextTick(() => {
-                    });
-                }
-            }
-        }
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        particlesJS('particles-js', {
-            particles: {
-                number: {
-                    value: 80,
-                    density: {
-                        enable: true,
-                        value_area: 800
-                    }
-                },
-                color: {
-                    value: '#a855f7'
-                },
-                shape: {
-                    type: 'circle'
-                },
-                opacity: {
-                    value: 0.2,
-                    random: true,
-                    animation: {
-                        enable: true,
-                        speed: 1,
-                        opacity_min: 0.1,
-                        sync: false
-                    }
-                },
-                size: {
-                    value: 3,
-                    random: true,
-                    animation: {
-                        enable: true,
-                        speed: 2,
-                        size_min: 0.1,
-                        sync: false
-                    }
-                },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: '#a855f7',
-                    opacity: 0.2,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1,
-                    direction: 'none',
-                    random: true,
-                    straight: false,
-                    out_mode: 'out',
-                    bounce: false,
-                }
-            },
-            interactivity: {
-                detect_on: 'window',
-                events: {
-                    onhover: {
-                        enable: true,
-                        mode: 'grab'
-                    },
-                    onclick: {
-                        enable: true,
-                        mode: 'push'
-                    },
-                    resize: true
-                },
-                modes: {
-                    grab: {
-                        distance: 140,
-                        line_linked: {
-                            opacity: 0.5
-                        }
-                    },
-                    push: {
-                        particles_nb: 4
-                    }
-                }
-            },
-            retina_detect: true
-        });
-
-        window.addEventListener('appearance-changed', () => {
-            const particlesEl = document.getElementById('particles-js');
-            if (localStorage.getItem('showParticles') === 'false') {
-                particlesEl.style.display = 'none';
-            } else {
-                particlesEl.style.display = 'block';
-            }
-        });
-    </script>
+    <script src="/js/livesports.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
 

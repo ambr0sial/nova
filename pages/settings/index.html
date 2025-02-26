@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="sources.js"></script>
+    <script src="/sources.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -25,69 +25,7 @@
             },
         }
     </script>
-    <style>
-        .settings-sidebar {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(148, 163, 184, 0.1);
-        }
-        
-        .settings-content {
-            background: rgba(15, 23, 42, 0.3);
-        }
-
-        .source-option {
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .source-option:hover {
-            background: rgba(148, 163, 184, 0.1);
-        }
-
-        .source-option.selected {
-            border-color: #A855F7;
-            background: rgba(168, 85, 247, 0.1);
-        }
-
-        .source-option.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .glass-effect {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-            padding: 0.5rem 0;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background: linear-gradient(to right, #a78bfa, #4c1d95);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .nav-link:hover {
-            color: #a78bfa;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-    </style>
+    <link href="/styles/settings.css" rel="stylesheet">
 </head>
 <body class="bg-gray-900 text-white min-h-screen font-sans" x-data="{ 
     activeSection: 'default-source', 
@@ -113,6 +51,7 @@
         window.dispatchEvent(new Event('language-changed'));
     }
 }">
+
     <!-- mobile warning -->
     <div x-show="showMobileWarning && !isMobileWarningDismissed" 
          class="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 px-4"
@@ -142,12 +81,12 @@
         <div class="container mx-auto px-6 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4 md:space-x-8">
-                    <div class="flex items-center space-x-3">
-                        <img src="logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
+                    <div class="flex items-center space-x-3" onclick="location.href = '/'" style="cursor: pointer;">
+                        <img src="/logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
                         <span class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
                     </div>
                     <div class="hidden md:flex space-x-6">
-                        <a href="index.html" class="nav-link">Home</a>
+                        <a href="/" class="nav-link">Home</a>
                         <a href="https://github.com/ambr0sial/nova" target="_blank" class="nav-link">GitHub</a>
                         <a href="https://ko-fi.com/ambrosial" target="_blank" class="nav-link">Ko-Fi</a>
                         <a href="https://discord.gg/s9kUZw7CqP" target="_blank" class="nav-link">Discord</a>
@@ -171,8 +110,8 @@
                 x-transition:leave-end="opacity-0 transform -translate-y-2"
                 class="md:hidden mt-4 pb-4">
                 <div class="flex flex-col space-y-4">
-                    <a href="index.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Home</a>
-                    <a href="livesports.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
+                    <a href="/" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Home</a>
+                    <a href="/pages/livesports/" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
                     <a href="https://github.com/ambr0sial/nova" target="_blank" 
                        class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">GitHub</a>
                     <a href="https://ko-fi.com/ambrosial" target="_blank" 
@@ -238,7 +177,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" x-data="{ 
-                        selectedSource: localStorage.getItem('defaultSource') || 'multiembed',
+                        selectedSource: localStorage.getItem('defaultSource') || 'vidsrcsu',
                         setSource(sourceId) {
                             this.selectedSource = sourceId;
                             localStorage.setItem('defaultSource', sourceId);
@@ -334,20 +273,8 @@
         </div>
     </div>
 
-    <script>
-        if (!localStorage.getItem('defaultSource')) {
-            localStorage.setItem('defaultSource', 'embedsu');
-        }
-        if (localStorage.getItem('showParticles') === null) {
-            localStorage.setItem('showParticles', 'true');
-        }
-        if (localStorage.getItem('showUpdateNotice') === null) {
-            localStorage.setItem('showUpdateNotice', 'true');
-        }
-        if (localStorage.getItem('showPopupReminder') === null) {
-            localStorage.setItem('showPopupReminder', 'true');
-        }
-    </script>
+    <script src="/js/settings.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>
 
