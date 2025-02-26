@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white inline-block">
                     Join Now
                 </a>
+                <br>
                 <button id="closePopup" 
                     class="text-gray-500 hover:text-gray-300 focus:outline-none">
                     Dismiss
