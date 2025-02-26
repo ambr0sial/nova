@@ -1,13 +1,22 @@
-
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 @keyframes slide-down {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(0); }
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
 
 .animate-slide-down {
@@ -15,9 +24,15 @@
 }
 
 @keyframes glow {
-    0% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(167, 139, 250, 0.5); }
-    100% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
+    0% {
+        box-shadow: 0 0 5px rgba(167, 139, 250, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(167, 139, 250, 0.3);
+    }
 }
 
 .search-container {
@@ -30,10 +45,10 @@
     position: absolute;
     inset: -2px;
     background: radial-gradient(
-        circle at var(--mouse-x, center) var(--mouse-y, center),
-        rgba(168, 85, 247, 0.5) 0%,
-        rgba(168, 85, 247, 0.2) 25%,
-        transparent 70%
+            circle at var(--mouse-x, center) var(--mouse-y, center),
+            rgba(168, 85, 247, 0.5) 0%,
+            rgba(168, 85, 247, 0.2) 25%,
+            transparent 70%
     );
     border-radius: 9999px;
     opacity: 0;
@@ -64,10 +79,10 @@
     position: absolute;
     inset: -1px;
     background: linear-gradient(
-        35deg,
-        rgba(168, 85, 247, 0.4),
-        rgba(168, 85, 247, 0),
-        rgba(139, 92, 246, 0.4)
+            35deg,
+            rgba(168, 85, 247, 0.4),
+            rgba(168, 85, 247, 0),
+            rgba(139, 92, 246, 0.4)
     );
     border-radius: 0.5rem;
     z-index: -1;
@@ -87,10 +102,10 @@
 .card-hover:hover .card-overlay {
     opacity: 1;
     background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.95) 0%,
-        rgba(0, 0, 0, 0.8) 40%,
-        rgba(0, 0, 0, 0.2) 100%
+            to top,
+            rgba(0, 0, 0, 0.95) 0%,
+            rgba(0, 0, 0, 0.8) 40%,
+            rgba(0, 0, 0, 0.2) 100%
     );
 }
 
@@ -98,10 +113,10 @@
     opacity: 0;
     transition: all 0.4s ease;
     background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.7) 50%,
-        rgba(0, 0, 0, 0.3) 100%
+            to top,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.7) 50%,
+            rgba(0, 0, 0, 0.3) 100%
     );
 }
 
@@ -152,8 +167,14 @@
 }
 
 @keyframes modalFade {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .floating-button {

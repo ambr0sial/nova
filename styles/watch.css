@@ -75,18 +75,25 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.7) 50%,
-        rgba(0, 0, 0, 0.3) 100%
+            to top,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(0, 0, 0, 0.7) 50%,
+            rgba(0, 0, 0, 0.3) 100%
     );
 }
 
 @keyframes textColorAnimation {
-    0% { color: #A855F7; }
-    50% { color: #7C3AED; }
-    100% { color: #A855F7; }
+    0% {
+        color: #A855F7;
+    }
+    50% {
+        color: #7C3AED;
+    }
+    100% {
+        color: #A855F7;
+    }
 }
+
 .animated-text {
     animation: textColorAnimation 2s ease-in-out infinite;
 }
@@ -102,10 +109,10 @@
 
 .search-container::before {
     background: radial-gradient(
-        circle at var(--mouse-x, center) var(--mouse-y, center),
-        rgba(168, 85, 247, 0.5) 0%,
-        rgba(168, 85, 247, 0.2) 25%,
-        transparent 70%
+            circle at var(--mouse-x, center) var(--mouse-y, center),
+            rgba(168, 85, 247, 0.5) 0%,
+            rgba(168, 85, 247, 0.2) 25%,
+            transparent 70%
     );
 }
 

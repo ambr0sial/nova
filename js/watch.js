@@ -45,17 +45,17 @@ function app() {
             const baseUrl = 'https://api.themoviedb.org/3';
             const language = localStorage.getItem('selectedLanguage') || 'en';
             const url = `${baseUrl}/${this.contentType}/${this.contentId}?api_key=${this.apiKey}&language=${language}&append_to_response=credits,similar,videos,reviews,release_dates,keywords,images`;
-            
+
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 this.content = data;
-                
+
                 const imagesUrl = `${baseUrl}/${this.contentType}/${this.contentId}/images?api_key=${this.apiKey}&language=${language}`;
                 const imagesResponse = await fetch(imagesUrl);
                 const imagesData = await imagesResponse.json();
                 this.content.images = imagesData;
-                
+
                 const containsKeywords = (text, keywords) => {
                     if (!text) return false;
                     const lowercaseText = text.toLowerCase();
@@ -65,7 +65,7 @@ function app() {
                 const overview = data.overview?.toLowerCase() || '';
                 const genres = data.genres?.map(g => g.name.toLowerCase()) || [];
                 const keywords = [...(data.keywords?.keywords || []), ...(data.keywords?.results || [])].map(k => k.name.toLowerCase());
-                
+
                 if (data.release_dates?.results) {
                     const usRating = data.release_dates.results.find(r => r.iso_3166_1 === 'US');
                     if (usRating) {
@@ -75,29 +75,29 @@ function app() {
                 }
 
                 const violenceKeywords = ['violence', 'violent', 'gore', 'bloody', 'blood', 'murder', 'kill', 'death', 'torture', 'fight', 'combat', 'war', 'brutal', 'massacre', 'slaughter', 'horror'];
-                this.content.violence = containsKeywords(overview, violenceKeywords) || 
-                                      genres.some(g => ['horror', 'war', 'action'].includes(g)) ||
-                                      keywords.some(k => violenceKeywords.some(vk => k.includes(vk)));
+                this.content.violence = containsKeywords(overview, violenceKeywords) ||
+                    genres.some(g => ['horror', 'war', 'action'].includes(g)) ||
+                    keywords.some(k => violenceKeywords.some(vk => k.includes(vk)));
 
                 const languageKeywords = ['profanity', 'swearing', 'cursing', 'explicit language', 'strong language', 'vulgar'];
                 this.content.profanity = containsKeywords(overview, languageKeywords) ||
-                                       keywords.some(k => languageKeywords.some(lk => k.includes(lk)));
+                    keywords.some(k => languageKeywords.some(lk => k.includes(lk)));
 
                 const substanceKeywords = ['drug', 'alcohol', 'substance', 'addiction', 'smoking', 'drunk', 'intoxicated'];
                 this.content.substances = containsKeywords(overview, substanceKeywords) ||
-                                        keywords.some(k => substanceKeywords.some(sk => k.includes(sk)));
+                    keywords.some(k => substanceKeywords.some(sk => k.includes(sk)));
 
                 const sexualKeywords = ['sexual', 'sex', 'nudity', 'erotic', 'suggestive', 'mature themes'];
                 this.content.suggestive = containsKeywords(overview, sexualKeywords) ||
-                                        keywords.some(k => sexualKeywords.some(sk => k.includes(sk)));
+                    keywords.some(k => sexualKeywords.some(sk => k.includes(sk)));
 
                 const flashingKeywords = ['strobe', 'flashing', 'epilepsy', 'seizure', 'photosensitive'];
                 this.content.flashing = containsKeywords(overview, flashingKeywords) ||
-                                      keywords.some(k => flashingKeywords.some(fk => k.includes(fk)));
+                    keywords.some(k => flashingKeywords.some(fk => k.includes(fk)));
 
                 if (!this.content.adult) {
-                    this.content.adult = genres.includes('thriller') && 
-                                       (this.content.violence || this.content.suggestive || this.content.substances);
+                    this.content.adult = genres.includes('thriller') &&
+                        (this.content.violence || this.content.suggestive || this.content.substances);
                 }
 
                 if (this.isShow) {
@@ -179,7 +179,7 @@ function app() {
 
             const currentSource = this.availableSources[currentIndex];
             const isFrench = currentSource.isFrench;
-            
+
             let nextIndex = (currentIndex + 1) % this.availableSources.length;
             while (nextIndex !== currentIndex) {
                 if (this.availableSources[nextIndex].isFrench === isFrench) {
@@ -209,8 +209,8 @@ function app() {
             if (!source) return '';
 
             const params = this.isShow
-                ? { id: this.contentId, season: this.selectedSeason, episode: this.selectedEpisode }
-                : { id: this.contentId };
+                ? {id: this.contentId, season: this.selectedSeason, episode: this.selectedEpisode}
+                : {id: this.contentId};
 
             const newUrl = this.getSourceUrl(
                 this.selectedSource,
@@ -290,7 +290,7 @@ function app() {
 
             try {
                 const corsProxy = 'https://api.allorigins.win/raw?url=';
-                
+
                 let searchQuery = contentTitle;
                 if (releaseYear) {
                     searchQuery += ` ${releaseYear}`;
@@ -298,22 +298,22 @@ function app() {
                 if (this.isShow) {
                     searchQuery += ` S${String(this.selectedTorrentSeason).padStart(2, '0')}`;
                 }
-                
+
                 const targetUrl = `https://cloudtorrents.com/search?query=${encodeURIComponent(searchQuery)}&ordering=-se`;
                 console.log('Fetching torrents from:', targetUrl);
-                
+
                 const response = await fetch(corsProxy + encodeURIComponent(targetUrl));
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const html = await response.text();
-                
+
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                
+
                 const rows = doc.querySelectorAll('tbody tr');
                 console.log('Found rows:', rows.length);
-                
+
                 const qualityTypeMap = new Map();
 
                 for (const row of rows) {
@@ -321,20 +321,20 @@ function app() {
                     if (!titleElement) continue;
 
                     const title = titleElement.textContent.trim();
-                    
+
                     if (!this.verifyTorrentTitle(title, contentTitle, releaseYear)) continue;
 
                     const magnetElement = row.querySelector('a[href^="magnet:"]');
                     if (!magnetElement) continue;
 
                     const magnetLink = magnetElement.href;
-                    
+
                     let quality = 'N/A';
                     const qualityMatch = title.match(/\b(720p|1080p|2160p|4K)\b/i);
                     if (qualityMatch) {
                         quality = qualityMatch[1].toUpperCase();
                     }
-                    
+
                     let type = 'N/A';
                     const typeMatch = title.match(/\b(BluRay|WEBDL|WEB-DL|WEBRip|HDRip|BRRip|DVDRip)\b/i);
                     if (typeMatch) {
@@ -354,7 +354,7 @@ function app() {
                     };
 
                     const key = `${quality}-${type}`;
-                    
+
                     if (!qualityTypeMap.has(key) || qualityTypeMap.get(key).seeders < seeders) {
                         qualityTypeMap.set(key, torrent);
                     }
@@ -362,7 +362,7 @@ function app() {
 
                 const torrents = Array.from(qualityTypeMap.values());
                 torrents.sort((a, b) => {
-                    const qualityOrder = { '4K': 4, '2160P': 3, '1080P': 2, '720P': 1, 'N/A': 0 };
+                    const qualityOrder = {'4K': 4, '2160P': 3, '1080P': 2, '720P': 1, 'N/A': 0};
                     const qualityDiff = (qualityOrder[b.quality] || 0) - (qualityOrder[a.quality] || 0);
                     if (qualityDiff !== 0) return qualityDiff;
                     return b.seeders - a.seeders;
@@ -381,22 +381,22 @@ function app() {
         verifyTorrentTitle(torrentTitle, contentTitle, releaseYear) {
             const cleanTorrentTitle = torrentTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
             const cleanContentTitle = contentTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
-            
+
             if (!cleanTorrentTitle.includes(cleanContentTitle)) {
                 return false;
             }
-            
+
             if (releaseYear && !torrentTitle.includes(releaseYear)) {
                 return false;
             }
-            
+
             if (this.isShow) {
                 const seasonPattern = new RegExp(`S${String(this.selectedTorrentSeason).padStart(2, '0')}`, 'i');
                 if (!seasonPattern.test(torrentTitle)) {
                     return false;
                 }
             }
-            
+
             return true;
         }
     }

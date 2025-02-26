@@ -42,10 +42,10 @@
     position: absolute;
     inset: -1px;
     background: linear-gradient(
-        35deg,
-        rgba(168, 85, 247, 0.4),
-        rgba(168, 85, 247, 0),
-        rgba(139, 92, 246, 0.4)
+            35deg,
+            rgba(168, 85, 247, 0.4),
+            rgba(168, 85, 247, 0),
+            rgba(139, 92, 246, 0.4)
     );
     border-radius: 0.5rem;
     z-index: -1;
@@ -67,7 +67,13 @@
 }
 
 @keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }

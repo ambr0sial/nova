@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
     const discordPopupSeen = localStorage.getItem('discordPopupSeen');
 
@@ -263,7 +262,7 @@ function app() {
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
-                    this.seasons = Array.from({ length: data.number_of_seasons }, (_, i) => i + 1);
+                    this.seasons = Array.from({length: data.number_of_seasons}, (_, i) => i + 1);
                     this.updateEpisodes();
                 } catch (error) {
                     console.error('Error fetching seasons:', error);
@@ -288,8 +287,8 @@ function app() {
             if (!source) return '';
 
             const params = this.currentTab === 'shows'
-                ? { id: this.selectedContent.id, season: this.selectedSeason, episode: this.selectedEpisode }
-                : { id: this.selectedContent.id };
+                ? {id: this.selectedContent.id, season: this.selectedSeason, episode: this.selectedEpisode}
+                : {id: this.selectedContent.id};
 
             this.currentVideoUrl = this.getSourceUrl(
                 this.selectedSource,
@@ -303,7 +302,7 @@ function app() {
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                this.episodes = Array.from({ length: data.episodes.length }, (_, i) => i + 1);
+                this.episodes = Array.from({length: data.episodes.length}, (_, i) => i + 1);
                 this.selectedEpisode = 1;
             } catch (error) {
                 console.error('Error fetching episodes:', error);

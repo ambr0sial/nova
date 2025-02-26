@@ -72,7 +72,7 @@ function sportsApp() {
             this.selectedStream = null;
             this.selectedMatch = null;
             this.availableStreams = [];
-            
+
             const container = document.getElementById('streamContainer');
             if (container) {
                 container.innerHTML = '';
@@ -109,9 +109,9 @@ function sportsApp() {
             if (container) {
                 container.innerHTML = '';
             }
-            
+
             this.selectedStream = stream;
-            
+
             this.$nextTick(() => {
             });
         }
