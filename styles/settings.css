@@ -1,0 +1,62 @@
+
+.settings-sidebar {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.settings-content {
+    background: rgba(15, 23, 42, 0.3);
+}
+
+.source-option {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.source-option:hover {
+    background: rgba(148, 163, 184, 0.1);
+}
+
+.source-option.selected {
+    border-color: #A855F7;
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.source-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.glass-effect {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+    position: relative;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: linear-gradient(to right, #a78bfa, #4c1d95);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover {
+    color: #a78bfa;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
