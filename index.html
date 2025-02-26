@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova</title>
+    <meta content="Nova" property="og:title"/>
+    <meta name="keywords" content="free movies, free streaming, watch movies online, free tv shows, streaming service, watch movies free, online streaming, novastream, free movies online, free series online">
+    <meta content="Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone." property="og:description"/>
+    <meta content="https://novastream.top" property="og:url"/>
+    <meta content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png" property="og:image"/>
+    <meta content="#A17FC0" data-react-helmet="true" name="theme-color"/>
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:url" content="https://novastream.top">
+    <meta property="twitter:title" content="Nova - Watch Movies & TV Shows">
+    <meta property="twitter:description" content="Click, watch, enjoy. Nova breaks down the paywall, ensuring that quality content is accessible to everyone.">
+    <meta property="twitter:image" content="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png">
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/ambr0sial/nova/main/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="sources.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes slide-down {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(0); }
+        }
+
+        .animate-slide-down {
+            animation: slide-down 0.5s ease-out;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(167, 139, 250, 0.5); }
+            100% { box-shadow: 0 0 5px rgba(167, 139, 250, 0.3); }
+        }
+
+        .search-container {
+            position: relative;
+            width: 256px;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: radial-gradient(
+                circle at var(--mouse-x, center) var(--mouse-y, center),
+                rgba(168, 85, 247, 0.5) 0%,
+                rgba(168, 85, 247, 0.2) 25%,
+                transparent 70%
+            );
+            border-radius: 9999px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .search-container:hover::before,
+        .search-container:focus-within::before {
+            opacity: 1;
+        }
+
+        .search-input {
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            padding-right: 5rem !important;
+        }
+
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .card-hover::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(
+                35deg,
+                rgba(168, 85, 247, 0.4),
+                rgba(168, 85, 247, 0),
+                rgba(139, 92, 246, 0.4)
+            );
+            border-radius: 0.5rem;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-hover:hover::after {
+            opacity: 1;
+        }
+
+        .card-hover:hover .card-overlay {
+            opacity: 1;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.95) 0%,
+                rgba(0, 0, 0, 0.8) 40%,
+                rgba(0, 0, 0, 0.2) 100%
+            );
+        }
+
+        .card-overlay {
+            opacity: 0;
+            transition: all 0.4s ease;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.9) 0%,
+                rgba(0, 0, 0, 0.7) 50%,
+                rgba(0, 0, 0, 0.3) 100%
+            );
+        }
+
+        .card-hover:hover img {
+            filter: blur(2px) brightness(0.9);
+            transition: all 0.4s ease;
+        }
+
+        .card-hover img {
+            transition: all 0.4s ease;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(to right, #a78bfa, #4c1d95);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: #a78bfa;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .glass-effect {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-animation {
+            animation: modalFade 0.3s ease-out;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .floating-button {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+            transform: scale(1.02);
+            background: rgba(31, 41, 55, 0.9);
+        }
+
+        .search-input:focus + div {
+            opacity: 0.7;
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .search-input + div {
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            z-index: 2;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .scroll-top-button {
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top-button.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #githubButton img, #kofiButton img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen" x-data="app()" 
+      @keydown.meta.k.prevent="$refs.searchInput.focus()"
+      @keydown.ctrl.k.prevent="$refs.searchInput.focus()">
+    <div x-data="{ showPopup: localStorage.getItem('showPopupReminder') !== 'false' }" x-show="showPopup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+        <div class="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h2 class="text-lg font-bold mb-2">Important Notice</h2>
+            <p class="mb-4">Please bookmark <a href="https://nova-domains.github.io" target="_blank" class="text-purple-400 underline">nova-domains.github.io</a> in case the domain you're using stops working. This website lists all Nova domains and indicates whether each one is working or not.</p>
+            <p class="mb-4">You can disable this popup in <a href="settings.html" class="text-purple-400 underline">Settings > Appearance</a>.</p>
+            <button @click="showPopup = false" class="bg-purple-600 text-white w-full px-4 py-2 rounded hover:bg-purple-700 transition">Got it!</button>
+        </div>
+    </div>
+    <div x-show="localStorage.getItem('showParticles') !== 'false'" id="particles-js" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- navigation -->
+    <nav class="fixed w-full z-50 glass-effect">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4 md:space-x-8">
+                    <div class="flex items-center space-x-3">
+                        <img src="logo.png" alt="Nova Logo" class="h-8 w-8 md:h-10 md:w-10">
+                        <span class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800">Nova</span>
+                    </div>
+                    <!-- mobile search bar -->
+                    <div class="md:hidden relative">
+                        <input type="text" 
+                               x-model="searchQuery" 
+                               @keyup.debounce.300ms="searchContent()"
+                               placeholder="Search..." 
+                               class="w-32 bg-gray-800 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'" 
+                                class="nav-link">
+                            <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
+                        </button>
+                        <a href="livesports.html" class="nav-link">Live Sports</a>
+                        <button @click="showWatchLater = true" class="nav-link flex items-center space-x-2">
+                            <span>Watch Later</span>
+                            <span x-show="watchLaterCount > 0" 
+                                  class="bg-purple-600 text-white text-xs flex items-center justify-center rounded-full w-6 h-6" 
+                                  x-text="watchLaterCount"></span>
+                        </button>
+                        <a href="https://github.com/ambr0sial/nova" target="_blank" class="nav-link flex items-center">
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://ko-fi.com/ambrosial" target="_blank" class="nav-link flex items-center">
+                            <span>Ko-Fi</span>
+                        </a>
+                        <a href="https://discord.gg/s9kUZw7CqP" target="_blank" class="nav-link flex items-center">
+                            <span>Discord</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="search-container hidden md:block">
+                            <input type="text" 
+                                   x-ref="searchInput"
+                                   x-model="searchQuery" 
+                                   @keyup.debounce.300ms="searchContent()"
+                                   placeholder="Search..." 
+                                   class="search-input bg-gray-800 rounded-full px-6 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 w-64">
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1 text-gray-400 pointer-events-none select-none">
+                                <span class="text-xs bg-gray-700 rounded px-1.5 py-0.5">⌘</span>
+                                <span class="text-xs bg-gray-700 rounded px-1.5 py-0.5">K</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="settings.html" class="text-gray-400 hover:text-purple-400 transition-colors duration-300" title="Settings">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </a>
+                    <!-- mobile menu button -->
+                    <button @click="mobileMenu = !mobileMenu" class="md:hidden text-gray-300 hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- mobile menu -->
+            <div x-show="mobileMenu" 
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 transform -translate-y-2"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 transform translate-y-0"
+                x-transition:leave-end="opacity-0 transform -translate-y-2"
+                class="md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-4">
+                    <button @click="currentTab = currentTab === 'movies' ? 'shows' : 'movies'; mobileMenu = false" 
+                            class="text-left px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
+                        <span x-text="currentTab === 'movies' ? 'Switch to TV Shows' : 'Switch to Movies'"></span>
+                    </button>
+                    <a href="livesports.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Live Sports</a>
+                    <button @click="showWatchLater = true; mobileMenu = false" 
+                            class="flex items-center justify-between px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">
+                        <span>Watch Later</span>
+                        <span x-show="watchLaterCount > 0" 
+                              class="bg-purple-600 text-white text-xs flex items-center justify-center rounded-full w-6 h-6" 
+                              x-text="watchLaterCount"></span>
+                    </button>
+                    <a href="settings.html" class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors flex items-center space-x-2">
+                        <span>Settings</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </a>
+                    <a href="https://github.com/ambr0sial/nova" target="_blank" 
+                       class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">GitHub</a>
+                    <a href="https://ko-fi.com/ambrosial" target="_blank" 
+                       class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Ko-Fi</a>
+                    <a href="https://discord.gg/s9kUZw7CqP" target="_blank" 
+                       class="px-4 py-2 hover:bg-gray-800 rounded-lg transition-colors">Discord</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- update message -->
+    <div x-data="{ show: true }"
+         x-show="show && localStorage.getItem('showUpdateNotice') !== 'false'" 
+         class="fixed top-[3.5rem] md:top-16 left-0 right-0 z-40 animate-slide-down"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="transform -translate-y-full"
+         x-transition:enter-end="transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="transform translate-y-0"
+         x-transition:leave-end="transform -translate-y-full">
+        <div class="bg-gray-900 border-b border-purple-500/20">
+            <div class="container mx-auto px-6 py-2 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <!-- <span class="text-purple-400">🎉</span> -->
+                    <p class="text-sm">
+                        <span class="font-semibold text-purple-400">Update (26/02/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added content information language switcher in settings (EN/FR)</span>
+                    </p>
+                </div>
+                <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- hero section -->
+    <div class="pt-24 pb-12 px-6">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+                <h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-violet-800" 
+                    x-text="currentTab === 'movies' ? 'Popular Movies' : 'Popular TV Shows'"></h2>
+            </div>
+            
+            <!-- filters -->
+            <div class="mb-8 space-y-4">
+                <div class="flex flex-wrap gap-4 items-center">
+                    <!-- genre filter -->
+                    <div class="relative">
+                        <select x-model="selectedGenre"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="">All Genres</option>
+                            <template x-for="genre in genres" :key="genre.id">
+                                <option :value="genre.id" x-text="genre.name"></option>
+                            </template>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- rating range -->
+                    <div class="relative">
+                        <select x-model="minRating"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="">Any Rating</option>
+                            <option value="8">8+ ⭐</option>
+                            <option value="7">7+ ⭐</option>
+                            <option value="6">6+ ⭐</option>
+                            <option value="5">5+ ⭐</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- year range -->
+                    <div class="relative">
+                        <select x-model="yearRange"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="">Any Year</option>
+                            <option value="2020,2024">2020s</option>
+                            <option value="2010,2019">2010s</option>
+                            <option value="2000,2009">2000s</option>
+                            <option value="1990,1999">1990s</option>
+                            <option value="1980,1989">1980s</option>
+                            <option value="1970,1979">1970s</option>
+                            <option value="1960,1969">1960s</option>
+                            <option value="1950,1959">1950s</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- language filter -->
+                    <div class="relative">
+                        <select x-model="selectedLanguage"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="">All Languages</option>
+                            <option value="en">English</option>
+                            <option value="fr">French</option>
+                            <option value="es">Spanish</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ko">Korean</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- sort order -->
+                    <div class="relative">
+                        <select x-model="sortBy"
+                                @change="applyFilters()"
+                                class="bg-gray-800 text-white rounded-lg px-4 py-2 pr-8 appearance-none hover:bg-gray-700 transition-colors duration-300 focus:ring-2 focus:ring-purple-400 focus:outline-none">
+                            <option value="popularity.desc">Most Popular</option>
+                            <option value="revenue.desc">Highest Revenue</option>
+                            <option value="vote_count.desc">Most Reviewed</option>
+                        </select>
+                        <div class="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- active filters display -->
+                    <div class="flex flex-wrap gap-2">
+                        <template x-if="selectedGenre">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                                <span x-text="getGenreName(selectedGenre)"></span>
+                                <button @click="selectedGenre = ''; applyFilters()" class="hover:text-gray-300">×</button>
+                            </span>
+                        </template>
+                        <template x-if="minRating">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                                <span x-text="minRating + '+ ⭐'"></span>
+                                <button @click="minRating = ''; applyFilters()" class="hover:text-gray-300">×</button>
+                            </span>
+                        </template>
+                        <template x-if="yearRange">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                                <span x-text="getYearRangeName(yearRange)"></span>
+                                <button @click="yearRange = ''; applyFilters()" class="hover:text-gray-300">×</button>
+                            </span>
+                        </template>
+                        <template x-if="selectedLanguage">
+                            <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                                <span x-text="getLanguageName(selectedLanguage)"></span>
+                                <button @click="selectedLanguage = ''; applyFilters()" class="hover:text-gray-300">×</button>
+                            </span>
+                        </template>
+                        <template x-if="hasActiveFilters">
+                            <button @click="clearAllFilters()" 
+                                    class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2 transition-colors duration-300">
+                                <span>Clear All Filters</span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+                <button @click="pickRandom()" 
+                        class="bg-gradient-to-r from-purple-600 to-violet-600 text-white px-4 py-2 rounded-lg hover:brightness-110 transition-all duration-300 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <span>Random Pick</span>
+                </button>
+            </div>
+            
+            <!-- content grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <template x-for="item in filteredContent" :key="item.id">
+                    <div class="relative card-hover">
+                        <a :href="'watch.html?id=' + item.id + '&type=' + (currentTab === 'movies' ? 'movie' : 'tv')"
+                           class="block rounded-lg overflow-hidden bg-gray-800 aspect-[2/3]">
+                            <div class="relative h-full">
+                                <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" 
+                                     :alt="item.title || item.name"
+                                     class="w-full h-full object-cover"
+                                     @error="event => {
+                                            event.target.src = '/logo.png';
+                                            event.target.classList.remove('object-cover');
+                                            event.target.classList.add('object-contain');
+                                        }" />
+                                <div class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
+                                    <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name"></h3>
+                                    <p class="text-gray-400 text-xs md:text-sm mt-1" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
+                                    <p class="text-gray-300 text-xs md:text-sm mt-2 hidden sm:block" x-text="item.overview.substring(0, 100) + '...'"></p>
+                                </div>
+                            </div>
+                        </a>
+                        <button @click.stop="toggleWatchLater(item)"
+                                class="absolute top-2 right-2 p-1.5 md:p-2 bg-gray-900 bg-opacity-75 rounded-full hover:bg-purple-600 transition-all duration-300"
+                                :class="isInWatchLater(item) ? 'text-purple-400' : 'text-white'">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+            <!-- pagination -->
+            <div class="mt-12 flex items-center justify-center space-x-4">
+                <button @click="currentPage > 1 && changePage(currentPage - 1)"
+                        :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-700'"
+                        class="bg-gray-800 px-6 py-3 rounded-lg transition-all duration-300 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Previous</span>
+                </button>
+                
+                <span class="text-gray-400">Page <span class="text-white font-medium" x-text="currentPage"></span></span>
+
+                <button @click="changePage(currentPage + 1)"
+                        class="bg-gray-800 hover:bg-gray-700 px-6 py-3 rounded-lg transition-all duration-300 flex items-center space-x-2">
+                    <span>Next</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- streaming services -->
+    <div class="container mx-auto px-4 md:px-6 py-8 md:py-12">
+        <div class="text-center mb-6 md:mb-8">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-300">Content Available From</h2>
+            <p class="text-sm md:text-base text-gray-400 mt-2">Nova aggregates content from various premium streaming platforms</p>
+        </div>
+        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 items-center justify-items-center opacity-80">
+            <a href="https://netflix.com" target="_blank" class="transform transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" 
+                     alt="Netflix" 
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(229,9,20,0.7)]">
+            </a>
+            <a href="https://www.primevideo.com" target="_blank" class="transform transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg" 
+                     alt="Prime Video" 
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(0,168,225,0.7)]">
+            </a>
+            <a href="https://www.disneyplus.com" target="_blank" class="transform transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" 
+                     alt="Disney+" 
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(113,168,255,0.7)]">
+            </a>
+            <a href="https://www.hulu.com" target="_blank" class="transform transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Hulu_logo_%282018%29.svg" 
+                     alt="Hulu" 
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(28,231,131,0.7)]">
+            </a>
+            <a href="https://www.max.com" target="_blank" class="transform transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" 
+                     alt="HBO Max" 
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(116,80,254,0.7)]">
+            </a>
+            <a href="https://tv.apple.com" target="_blank" class="transform transition-transform hover:scale-105">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg" 
+                     alt="Apple TV+" 
+                     class="h-6 md:h-8 w-auto grayscale hover:grayscale-0 hover:scale-110 hover:brightness-125 transition-all duration-300 transform hover:drop-shadow-[0_0_7px_rgba(0,244,244,0.7)]">
+            </a>
+        </div>
+    </div>
+
+    <footer class="text-gray-400 py-4 md:py-6 mt-8 md:mt-12">
+        <div class="container mx-auto px-4 md:px-6 text-center">
+            <p class="text-xs md:text-sm">
+                Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
+            </p>
+            <p class="mt-2 text-xs">
+                Made with ❤ by Ambrosial. 26/02/25
+            </p>
+            <p class="mt-2 text-xs">
+                <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#a855f7'
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.2,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 1,
+                        opacity_min: 0.1,
+                        sync: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    animation: {
+                        enable: true,
+                        speed: 2,
+                        size_min: 0.1,
+                        sync: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#a855f7',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: 'none',
+                    random: true,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false,
+                }
+            },
+            interactivity: {
+                detect_on: 'window',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 0.5
+                        }
+                    },
+                    push: {
+                        particles_nb: 4
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+
+    <!-- watch later modal -->
+    <div x-show="showWatchLater" 
+         class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-90 flex items-start justify-center"
+         @click.away="showWatchLater = false"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div class="bg-gray-900 rounded-lg w-full max-w-4xl mt-20 modal-animation">
+            <div class="p-6 border-b border-gray-800">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">Watch Later</h2>
+                    <div class="flex items-center space-x-4">
+                        <button @click="showClearConfirm = true" 
+                                x-show="watchLaterItems.length > 0"
+                                class="text-gray-400 hover:text-red-500 flex items-center space-x-2 transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            <span>Clear All</span>
+                        </button>
+                        <button @click="showWatchLater = false" class="text-gray-500 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <div x-show="!watchLaterItems.length" class="text-center text-gray-500 py-8">
+                    No items in your watch later list
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <template x-for="item in watchLaterItems" :key="item.id">
+                        <div class="relative bg-gray-800 rounded-lg overflow-hidden">
+                            <a :href="'watch.html?id=' + item.id + '&type=' + item.type"
+                               class="block">
+                                <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" 
+                                     :alt="item.title || item.name"
+                                     class="w-full h-48 object-cover">
+                                <div class="p-4">
+                                    <h3 class="font-medium" x-text="item.title || item.name"></h3>
+                                    <p class="text-gray-400 text-sm mt-1" x-text="'⭐ ' + (item.vote_average || 'N/A') + '/10'"></p>
+                                </div>
+                            </a>
+                            <button @click="toggleWatchLater(item)"
+                                    class="absolute top-2 right-2 p-2 bg-gray-900 bg-opacity-75 rounded-full hover:bg-purple-600 transition-all duration-300 text-purple-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- clear confirmation modal -->
+    <div x-show="showClearConfirm" 
+         class="fixed inset-0 z-[60] overflow-auto bg-black bg-opacity-90 flex items-center justify-center"
+         @click.away="showClearConfirm = false"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-95">
+        <div class="bg-gray-900 rounded-lg w-full max-w-md p-6 modal-animation">
+            <div class="text-center">
+                <div class="w-16 h-16 rounded-full bg-red-500 bg-opacity-10 mx-auto flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Clear Watch Later List?</h3>
+                <p class="text-gray-400 mb-6">This action cannot be undone. Are you sure you want to remove all items from your watch later list?</p>
+                <div class="flex space-x-3 justify-center">
+                    <button @click="showClearConfirm = false" 
+                            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors duration-300">
+                        Cancel
+                    </button>
+                    <button @click="doClearWatchLater()" 
+                            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-300">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const discordPopupSeen = localStorage.getItem('discordPopupSeen');
+
+            if (!discordPopupSeen) {
+                const popup = document.createElement('div');
+                popup.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
+                popup.innerHTML = `
+                    <div class="bg-gray-800 rounded-lg p-6 text-center space-y-4 max-w-sm">
+                        <h2 class="text-xl font-bold text-purple-400">Nova has a Discord Server!</h2>
+                        <p class="text-gray-300">Join the community for updates and discussions <3</p>
+                        <a href="https://discord.gg/s9kUZw7CqP" target="_blank" 
+                            class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white inline-block">
+                            Join Now
+                        </a>
+                        <button id="closePopup" 
+                            class="text-gray-500 hover:text-gray-300 focus:outline-none">
+                            Dismiss
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(popup);
+
+                document.getElementById('closePopup').addEventListener('click', function() {
+                    popup.style.display = 'none';
+                    localStorage.setItem('discordPopupSeen', 'true');
+                });
+            }
+        });
+
+        function app() {
+            return {
+                apiKey: '1070730380f5fee0d87cf0382670b255',
+                content: [],
+                currentTab: 'movies',
+                language: localStorage.getItem('selectedLanguage') || 'en',
+                searchQuery: '',
+                currentPage: 1,
+                showWatchLater: false,
+                watchLaterItems: [],
+                watchLaterCount: 0,
+                showModal: false,
+                selectedContent: null,
+                currentVideoUrl: '',
+                selectedSeason: 1,
+                selectedEpisode: 1,
+                seasons: [],
+                episodes: [],
+                selectedSource: localStorage.getItem('defaultSource') || 'embedsu',
+                availableSources: availableSources,
+                showClearConfirm: false,
+                genres: [],
+                selectedGenre: '',
+                minRating: '',
+                filteredContent: [],
+                mobileMenu: false,
+                sortBy: 'popularity.desc',
+                yearRange: '',
+
+                async init() {
+                    const savedItems = localStorage.getItem('watchLater');
+                    if (savedItems) {
+                        this.watchLaterItems = JSON.parse(savedItems);
+                        this.watchLaterCount = this.watchLaterItems.length;
+                    }
+
+                    await this.fetchGenres();
+                    await this.fetchContent();
+                    
+                    this.$watch('currentTab', async () => {
+                        this.currentPage = 1;
+                        this.selectedGenre = '';
+                        this.minRating = '';
+                        this.yearRange = '';
+                        await this.fetchGenres();
+                        await this.fetchContent();
+                    });
+                    
+                    this.$watch('language', () => {
+                        this.currentPage = 1;
+                        this.fetchContent();
+                    });
+                },
+
+                async fetchGenres() {
+                    const baseUrl = 'https://api.themoviedb.org/3';
+                    const endpoint = this.currentTab === 'movies' ? 'genre/movie/list' : 'genre/tv/list';
+                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&language=${this.language}`;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.genres = data.genres;
+                    } catch (error) {
+                        console.error('Error fetching genres:', error);
+                    }
+                },
+
+                getGenreName(genreId) {
+                    const genre = this.genres.find(g => g.id === parseInt(genreId));
+                    return genre ? genre.name : '';
+                },
+
+                async applyFilters() {
+                    const baseUrl = 'https://api.themoviedb.org/3/discover';
+                    const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
+                    
+                    let params = new URLSearchParams({
+                        api_key: this.apiKey,
+                        language: `${this.language}-${this.language.toUpperCase()}`,
+                        page: this.currentPage,
+                        sort_by: this.sortBy
+                    });
+
+                    if (this.selectedGenre) {
+                        params.append('with_genres', this.selectedGenre);
+                    }
+
+                    if (this.minRating) {
+                        params.append('vote_average.gte', this.minRating);
+                    }
+
+                    if (this.selectedLanguage) {
+                        params.append('with_original_language', this.selectedLanguage);
+                    }
+
+                    if (this.yearRange) {
+                        const [startYear, endYear] = this.yearRange.split(',');
+                        params.append('primary_release_date.gte', `${startYear}-01-01`);
+                        params.append('primary_release_date.lte', `${endYear}-12-31`);
+                    }
+
+                    const url = `${baseUrl}/${endpoint}?${params.toString()}`;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.content = data.results;
+                        this.filteredContent = this.content;
+                    } catch (error) {
+                        console.error('Error applying filters:', error);
+                    }
+                },
+
+                getLanguageName(code) {
+                    const languages = {
+                        en: 'English',
+                        fr: 'French',
+                        es: 'Spanish',
+                        de: 'German',
+                        it: 'Italian',
+                        ja: 'Japanese',
+                        ko: 'Korean'
+                    };
+                    return languages[code] || code;
+                },
+
+                getYearRangeName(range) {
+                    if (!range) return '';
+                    const [start, end] = range.split(',');
+                    const decade = Math.floor(start / 10) * 10;
+                    return `${decade}s`;
+                },
+
+                get hasActiveFilters() {
+                    return this.selectedGenre || this.minRating || this.yearRange || this.selectedLanguage;
+                },
+
+                clearAllFilters() {
+                    this.selectedGenre = '';
+                    this.minRating = '';
+                    this.yearRange = '';
+                    this.selectedLanguage = '';
+                    this.applyFilters();
+                },
+
+                async fetchContent() {
+                    const baseUrl = 'https://api.themoviedb.org/3';
+                    const endpoint = this.currentTab === 'movies' ? 'movie/popular' : 'tv/popular';
+                    const url = `${baseUrl}/${endpoint}?api_key=${this.apiKey}&language=${this.language}&page=${this.currentPage}`;
+
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        this.content = data.results;
+                        this.applyFilters();
+                    } catch (error) {
+                        console.error('Error fetching content:', error);
+                    }
+                },
+
+                async searchContent() {
+                    if (!this.searchQuery) {
+                        await this.applyFilters();
+                        return;
+                    }
+
+                    const baseUrl = 'https://api.themoviedb.org/3';
+                    const searchQuery = this.searchQuery.trim();
+                    
+                    if (searchQuery.startsWith('@')) {
+                        const personName = searchQuery.substring(1);
+                        if (!personName) {
+                            await this.applyFilters();
+                            return;
+                        }
+
+                        const personUrl = `${baseUrl}/search/person?api_key=${this.apiKey}&query=${encodeURIComponent(personName)}`;
+                        try {
+                            const personResponse = await fetch(personUrl);
+                            const personData = await personResponse.json();
+                            const person = personData.results[0];
+                            
+                            if (person) {
+                                const creditsUrl = `${baseUrl}/person/${person.id}/combined_credits?api_key=${this.apiKey}`;
+                                const creditsResponse = await fetch(creditsUrl);
+                                const creditsData = await creditsResponse.json();
+                                
+                                this.content = creditsData[this.currentTab === 'movies' ? 'cast' : 'crew']
+                                    .filter(item => this.currentTab === 'movies' ? item.media_type === 'movie' : item.media_type === 'tv')
+                                    .slice(0, 20);
+                            } else {
+                                this.content = [];
+                            }
+                        } catch (error) {
+                            console.error('Error searching person:', error);
+                            this.content = [];
+                        }
+                    } else {
+                        const endpoint = this.currentTab === 'movies' ? 'movie' : 'tv';
+                        const url = `${baseUrl}/search/${endpoint}?api_key=${this.apiKey}&query=${encodeURIComponent(searchQuery)}&language=${this.language}-${this.language.toUpperCase()}&page=${this.currentPage}`;
+
+                        try {
+                            const response = await fetch(url);
+                            const data = await response.json();
+                            this.content = data.results;
+                        } catch (error) {
+                            console.error('Error searching content:', error);
+                            this.content = [];
+                        }
+                    }
+                    
+            this.filteredContent = this.content.filter(item => {
+                if (this.selectedGenre && !item.genre_ids?.includes(parseInt(this.selectedGenre))) {
+                    return false;
+                }
+                if (this.minRating && item.vote_average < parseFloat(this.minRating)) {
+                    return false;
+                }
+                if (this.selectedLanguage && item.original_language !== this.selectedLanguage) {
+                    return false;
+                }
+                return true;
+            });
+        },
+
+        async openContent(item) {
+            this.selectedContent = item;
+            this.showModal = true;
+
+            if (this.currentTab === 'shows') {
+                const url = `https://api.themoviedb.org/3/tv/${item.id}?api_key=${this.apiKey}`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    this.seasons = Array.from({length: data.number_of_seasons}, (_, i) => i + 1);
+                    this.updateEpisodes();
+                } catch (error) {
+                    console.error('Error fetching seasons:', error);
+                }
+            }
+            this.updateVideoUrl();
+        },
+
+        getSourceUrl(sourceId, type, params) {
+            const source = this.availableSources.find(s => s.id === sourceId);
+            if (!source) return '';
+
+            let url = source.urls[type];
+            Object.entries(params).forEach(([key, value]) => {
+                url = url.replace(`{${key}}`, value);
+            });
+            return url;
+        },
+
+        updateVideoUrl() {
+            const source = this.availableSources.find(s => s.id === this.selectedSource);
+            if (!source) return '';
+
+            const params = this.currentTab === 'shows'
+                ? { id: this.selectedContent.id, season: this.selectedSeason, episode: this.selectedEpisode }
+                : { id: this.selectedContent.id };
+
+            this.currentVideoUrl = this.getSourceUrl(
+                this.selectedSource,
+                this.currentTab === 'shows' ? 'tv' : 'movie',
+                params
+            );
+        },
+
+        async updateEpisodes() {
+            const url = `https://api.themoviedb.org/3/tv/${this.selectedContent.id}/season/${this.selectedSeason}?api_key=${this.apiKey}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                this.episodes = Array.from({length: data.episodes.length}, (_, i) => i + 1);
+                this.selectedEpisode = 1;
+            } catch (error) {
+                console.error('Error fetching episodes:', error);
+            }
+        },
+
+        loadEpisode() {
+            this.updateVideoUrl();
+        },
+
+        async changePage(page) {
+            this.currentPage = page;
+            if (this.searchQuery) {
+                await this.searchContent();
+            } else {
+                await this.fetchContent();
+            }
+        },
+
+        toggleWatchLater(item) {
+            const index = this.watchLaterItems.findIndex(i => i.id === item.id);
+            if (index === -1) {
+                this.watchLaterItems.push({
+                    ...item,
+                    type: this.currentTab === 'movies' ? 'movie' : 'tv'
+                });
+            } else {
+                this.watchLaterItems.splice(index, 1);
+            }
+            this.watchLaterCount = this.watchLaterItems.length;
+            localStorage.setItem('watchLater', JSON.stringify(this.watchLaterItems));
+        },
+
+        isInWatchLater(item) {
+            return this.watchLaterItems.some(i => i.id === item.id);
+        },
+
+        clearWatchLater() {
+            this.showClearConfirm = true;
+        },
+
+        doClearWatchLater() {
+            this.watchLaterItems = [];
+            this.watchLaterCount = 0;
+            localStorage.setItem('watchLater', JSON.stringify([]));
+            this.showClearConfirm = false;
+        },
+
+        pickRandom() {
+            const randomItem = this.filteredContent[Math.floor(Math.random() * this.filteredContent.length)];
+            if (randomItem) {
+                window.location.href = `watch.html?id=${randomItem.id}&type=${this.currentTab === 'movies' ? 'movie' : 'tv'}`;
+            }
+        },
+
+        changeLanguage(newLanguage) {
+            this.language = newLanguage;
+            localStorage.setItem('selectedLanguage', newLanguage);
+            this.fetchContent();
+        }
+    }
+}
+</script>
+<button 
+    @click="window.scrollTo({top: 0})" 
+    @scroll.window="showScrollTop = window.pageYOffset > 500"
+    x-data="{ showScrollTop: false }"
+    x-show="showScrollTop"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform translate-y-10"
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 transform translate-y-0"
+    x-transition:leave-end="opacity-0 transform translate-y-10"
+    class="fixed bottom-8 right-8 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-4 shadow-lg cursor-pointer transition-all duration-300 hover:scale-110 z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+</button>
+<div id="donationBanner" class="fixed bottom-4 left-4 right-4 md:bottom-2 md:right-auto md:left-2 bg-purple-600 text-white text-sm md:text-base p-2 md:p-3 rounded-lg shadow-lg flex items-center justify-between space-x-2 md:space-x-4 z-50">
+    <span>Enjoying Nova? Support me on <a href="https://ko-fi.com/ambrosial" target="_blank" class="underline hover:text-purple-300 transition-all">Ko-Fi</a> <3</span>
+    <button id="closeBanner" class="text-white hover:text-gray-300 transition-all">
+        &times;
+    </button>
+</div>
+<script>
+    const closeBannerButton = document.getElementById('closeBanner');
+    if (closeBannerButton) {
+        closeBannerButton.addEventListener('click', function() {
+            const banner = document.getElementById('donationBanner');
+            if (banner) {
+                banner.style.display = 'none';
+            }
+        });
+    }
+</script>
+<script>
+    document.querySelector('.search-container input').addEventListener('mousemove', (e) => {
+        const container = e.target.parentElement;
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) * 100) / rect.width;
+        const y = ((e.clientY - rect.top) * 100) / rect.height;
+        container.style.setProperty('--mouse-x', x + '%');
+        container.style.setProperty('--mouse-y', y + '%');
+    });
+</script>
+<script>
+    window.addEventListener('appearance-changed', () => {
+        const particlesEl = document.getElementById('particles-js');
+        if (localStorage.getItem('showParticles') === 'false') {
+            particlesEl.style.display = 'none';
+        } else {
+            particlesEl.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>
+
+<!--
+ _   _                 
+| \ | | _____   ____ _ 
+|  \| |/ _ \ \ / / _` |
+| |\  | (_) \ V / (_| |
+|_| \_|\___/ \_/ \__,_|
+-->
