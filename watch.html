@@ -885,7 +885,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 27/02/25
+                Made with ❤ by Ambrosial. 28/02/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -1280,16 +1280,11 @@
 
                 updateVideoUrl() {
                     const source = this.availableSources.find(s => s.id === this.selectedSource);
-                    if (!source) return '';
+                    if (!source) return;
 
                     const params = this.isShow
                         ? { id: this.contentId, season: this.selectedSeason, episode: this.selectedEpisode }
                         : { id: this.contentId };
-
-                    const playerContainer = document.getElementById('player-container');
-                    if (playerContainer) {
-                        playerContainer.innerHTML = '';
-                    }
 
                     if (source.isApiResponse) {
                         const apiUrl = this.getSourceUrl(
@@ -1298,8 +1293,21 @@
                             params
                         );
                         
-                        fetch(apiUrl)
-                            .then(response => response.json())
+                        const corsProxy = 'https://api.allorigins.win/raw?url=';
+                        const proxyUrl = corsProxy + encodeURIComponent(apiUrl);
+                        
+                        const playerContainer = document.getElementById('player-container');
+                        if (playerContainer) {
+                            playerContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center bg-gray-900"><div class="text-white">Chargement de la vidéo...</div></div>';
+                        }
+                        
+                        fetch(proxyUrl)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not okay');
+                                }
+                                return response.json();
+                            })
                             .then(data => {
                                 if (data.type === 'success' && data.data && data.data.items && data.data.items.length > 0) {
                                     const firstSource = data.data.items[0];
@@ -1308,35 +1316,84 @@
                                         this.currentVideoUrl = firstSource.url;
                                         
                                         this.$nextTick(() => {
-                                            const playerContainer = document.getElementById('player-container');
+                                            const video = document.createElement('video');
+                                            video.className = 'absolute top-0 left-0 w-full h-full';
+                                            video.controls = true;
+                                            video.autoplay = true;
+                                            video.preload = 'auto';
+                                            
+                                            video.onerror = () => {
+                                                console.error('Video error:', video.error);
+                                                if (playerContainer) {
+                                                    playerContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center bg-gray-900"><div class="text-white">Erreur lors du chargement de la vidéo. Veuillez essayer une autre source.</div></div>';
+                                                }
+                                            };
+                                            
+                                            if (firstSource.type === 'hls') {
+                                                if (Hls.isSupported()) {
+                                                    const hls = new Hls({
+                                                        debug: false,
+                                                        enableWorker: true
+                                                    });
+                                                    
+                                                    hls.on(Hls.Events.ERROR, (event, data) => {
+                                                        console.error('HLS error:', data);
+                                                        if (data.fatal) {
+                                                            switch (data.type) {
+                                                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                                                    hls.startLoad();
+                                                                    break;
+                                                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                                                    hls.recoverMediaError();
+                                                                    break;
+                                                                default:
+                                                                    this.initVideo();
+                                                                    break;
+                                                            }
+                                                        }
+                                                    });
+                                                    
+                                                    hls.loadSource(firstSource.url);
+                                                    hls.attachMedia(video);
+                                                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                                                        video.play().catch(e => console.error('Play error:', e));
+                                                    });
+                                                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                                                    video.src = firstSource.url;
+                                                } else {
+                                                    console.error('HLS not supported');
+                                                    if (playerContainer) {
+                                                        playerContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center bg-gray-900"><div class="text-white">Your browser does not support HLS playback. Please try another source.</div></div>';
+                                                    }
+                                                    return;
+                                                }
+                                            } else {
+                                                video.src = firstSource.url;
+                                            }
+                                            
                                             if (playerContainer) {
                                                 playerContainer.innerHTML = '';
-                                                
-                                                const videoElement = document.createElement('video');
-                                                videoElement.className = 'absolute top-0 left-0 w-full h-full';
-                                                videoElement.controls = true;
-                                                videoElement.autoplay = true;
-                                                
-                                                if (firstSource.type === 'hls') {
-                                                    if (Hls.isSupported()) {
-                                                        const hls = new Hls();
-                                                        hls.loadSource(firstSource.url);
-                                                        hls.attachMedia(videoElement);
-                                                    } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                                                        videoElement.src = firstSource.url;
-                                                    }
-                                                } else {
-                                                    videoElement.src = firstSource.url;
-                                                }
-                                                
-                                                playerContainer.appendChild(videoElement);
+                                                playerContainer.appendChild(video);
                                             }
                                         });
+                                    } else {
+                                        console.error('Unsupported source type:', firstSource.type);
+                                        if (playerContainer) {
+                                            playerContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center bg-gray-900"><div class="text-white">Unsupported video format. Please try another source.</div></div>';
+                                        }
+                                    }
+                                } else {
+                                    console.error('Invalid API response:', data);
+                                    if (playerContainer) {
+                                        playerContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center bg-gray-900"><div class="text-white">No video sources found. Please try another source.</div></div>';
                                     }
                                 }
                             })
                             .catch(error => {
                                 console.error('Error fetching API response:', error);
+                                if (playerContainer) {
+                                    playerContainer.innerHTML = '<div class="absolute inset-0 flex items-center justify-center bg-gray-900"><div class="text-white">Error loading video source. Please try another source.</div></div>';
+                                }
                             });
                     } else {
                         const newUrl = this.getSourceUrl(
@@ -1351,6 +1408,7 @@
                             this.$nextTick(() => {
                                 const playerContainer = document.getElementById('player-container');
                                 if (playerContainer) {
+                                    playerContainer.innerHTML = '';
                                     const iframe = document.createElement('iframe');
                                     iframe.src = this.currentVideoUrl;
                                     iframe.className = 'absolute top-0 left-0 w-full h-full';
@@ -1364,10 +1422,6 @@
                                     playerContainer.appendChild(iframe);
                                 }
                             });
-                            
-                            if (!source.isApiResponse) {
-                                this.checkProviderStatus();
-                            }
                         }
                     }
                 },
