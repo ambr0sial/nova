@@ -388,8 +388,8 @@
                 <div class="flex items-center space-x-2">
                     <!-- <span class="text-purple-400">🎉</span> -->
                     <p class="text-sm">
-                        <span class="font-semibold text-purple-400">Update (01/03/25)</span>
-                        <span class="text-gray-300 text-xs sm:text-sm"> Fixed language filter not working</span>
+                        <span class="font-semibold text-purple-400">Update (02/03/25)</span>
+                        <span class="text-gray-300 text-xs sm:text-sm"> Added context menu to cards</span>
                     </p>
                 </div>
                 <button @click="show = false" class="text-gray-400 hover:text-white transition-colors">×</button>
@@ -548,7 +548,13 @@
             <!-- content grid -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <template x-for="item in filteredContent" :key="item.id">
-                    <div class="relative card-hover">
+                    <div class="relative card-hover" @contextmenu.prevent="
+                        $store.contextMenu = {
+                            show: true,
+                            x: $event.clientX,
+                            y: $event.clientY,
+                            item: item
+                        }">
                         <a :href="'watch.html?id=' + item.id + '&type=' + (currentTab === 'movies' ? 'movie' : 'tv')"
                            class="block rounded-lg overflow-hidden bg-gray-800 aspect-[2/3]">
                             <div class="relative h-full">
@@ -648,7 +654,7 @@
                 Nova doesn't store files, but provides links to external services. Legal issues should be discussed with file providers and hosts. The files provided by video providers are not covered by Nova.
             </p>
             <p class="mt-2 text-xs">
-                Made with ❤ by Ambrosial. 01/03/25
+                Made with ❤ by Ambrosial. 02/03/25
             </p>
             <p class="mt-2 text-xs">
                 <a href="mailto:contact.novastream@gmail.com" class="text-purple-400 hover:text-purple-300 transition-colors">contact.novastream@gmail.com</a>
@@ -834,6 +840,123 @@
         </div>
     </div>
 
+    <!-- context menu -->
+    <div x-data="contextMenuHandler()" 
+        x-show="$store.contextMenu.show"
+        @click.away="$store.contextMenu.show = false"
+        @keydown.escape.window="$store.contextMenu.show = false"
+        :style="`position: fixed; left: ${$store.contextMenu.x}px; top: ${$store.contextMenu.y}px`"
+        class="bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 w-56 py-2 animate-fade-in"
+        x-cloak>
+        
+        <div class="px-4 py-2 border-b border-gray-700">
+            <h3 class="text-sm font-medium text-gray-300" x-text="$store.contextMenu.item?.title || $store.contextMenu.item?.name"></h3>
+        </div>
+
+        <a :href="'https://www.themoviedb.org/' + (currentTab === 'movies' ? 'movie' : 'tv') + '/' + $store.contextMenu.item?.id"
+           target="_blank"
+           class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            View on TMDB
+        </a>
+
+        <button @click="copyToClipboard($store.contextMenu.item?.title || $store.contextMenu.item?.name)"
+                class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Copy Title
+        </button>
+
+        <button @click="copyToClipboard($store.contextMenu.item?.id)"
+                class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Copy TMDB ID
+        </button>
+
+        <button @click="copyToClipboard($store.contextMenu.item?.overview)"
+                class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+            Copy Overview
+        </button>
+
+        <div class="border-t border-gray-700 my-2"></div>
+
+        <button @click="toggleWatchLater($store.contextMenu.item); $store.contextMenu.show = false"
+                class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+            <span x-text="isInWatchLater($store.contextMenu.item) ? 'Remove from Watch Later' : 'Add to Watch Later'"></span>
+        </button>
+    </div>
+
+    <!-- toast notification -->
+    <div x-data="toastHandler()" 
+        x-show="show"
+        @show-toast.window="showToast($event.detail.message)"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform translate-y-8"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform translate-y-8"
+        class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-xl z-[100] flex items-center gap-2"
+        style="pointer-events: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <span x-text="message" class="text-sm"></span>
+    </div>
+
+    <script>
+    function toastHandler() {
+        return {
+            message: '',
+            show: false,
+            showToast(msg) {
+                this.message = msg;
+                this.show = true;
+                setTimeout(() => {
+                    this.show = false;
+                }, 3000);
+            }
+        }
+    }
+
+    function contextMenuHandler() {
+        return {
+            copyToClipboard(text) {
+                if (!text) return;
+                navigator.clipboard.writeText(text).then(() => {
+                    window.dispatchEvent(new CustomEvent('show-toast', { 
+                        detail: { message: 'Copied to clipboard!' }
+                    }));
+                }).catch(() => {
+                    window.dispatchEvent(new CustomEvent('show-toast', { 
+                        detail: { message: 'Failed to copy to clipboard' }
+                    }));
+                });
+            }
+        }
+    }
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('contextMenu', {
+            show: false,
+            x: 0,
+            y: 0,
+            item: null
+        });
+    });
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const discordPopupSeen = localStorage.getItem('discordPopupSeen');
@@ -862,6 +985,15 @@
                     localStorage.setItem('discordPopupSeen', 'true');
                 });
             }
+        });
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('contextMenu', {
+                show: false,
+                x: 0,
+                y: 0,
+                item: null
+            });
         });
 
         function app() {
