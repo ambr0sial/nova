@@ -197,5 +197,14 @@ const availableSources = [
             movie: 'https://api.cinepulse.fr/watch/sources?tmdbId={id}&type=movie',
             tv: 'https://api.cinepulse.fr/watch/sources?tmdbId={id}&type=tv&season={season}&episode={episode}'
         }
+    },
+    {
+        id: 'vidify',
+        name: 'Vidify',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidify.top/embed/movie/{id}',
+            tv: 'https://vidify.top/embed/tv/{id}/{season}/{episode}'
+        }
     }
 ];
