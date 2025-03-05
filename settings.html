@@ -317,6 +317,22 @@
                             </button>
                         </div>
 
+                        <!-- donation banner toggle -->
+                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                            <div class="space-y-1">
+                                <h3 class="font-medium">Donation Banner</h3>
+                                <p class="text-sm text-slate-400">Toggle the donation banner at the bottom of the homepage</p>
+                            </div>
+                            <button 
+                                @click="showDonationBanner = !showDonationBanner; localStorage.setItem('showDonationBanner', showDonationBanner)"
+                                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300"
+                                :class="showDonationBanner ? 'bg-purple-600' : 'bg-gray-600'"
+                                x-data="{ showDonationBanner: localStorage.getItem('showDonationBanner') !== 'false' }">
+                                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300"
+                                      :class="showDonationBanner ? 'translate-x-6' : 'translate-x-1'"></span>
+                            </button>
+                        </div>
+
                         <!-- content language dropdown -->
                         <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
                             <div class="space-y-1">
@@ -346,6 +362,9 @@
         }
         if (localStorage.getItem('showPopupReminder') === null) {
             localStorage.setItem('showPopupReminder', 'true');
+        }
+        if (localStorage.getItem('showDonationBanner') === null) {
+            localStorage.setItem('showDonationBanner', 'true');
         }
     </script>
 </body>
