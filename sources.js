@@ -189,16 +189,6 @@ const availableSources = [
         }
     },
     {
-        id: 'cinepulse',
-        name: 'CinePulse (4K)',
-        isFrench: true,
-        isApiResponse: true,
-        urls: {
-            movie: 'https://api.cinepulse.fr/watch/sources?tmdbId={id}&type=movie',
-            tv: 'https://api.cinepulse.fr/watch/sources?tmdbId={id}&type=tv&season={season}&episode={episode}'
-        }
-    },
-    {
         id: 'vidify',
         name: 'Vidify',
         isFrench: false,
