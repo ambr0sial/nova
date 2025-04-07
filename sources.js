@@ -196,5 +196,14 @@ const availableSources = [
             movie: 'https://vidify.top/embed/movie/{id}',
             tv: 'https://vidify.top/embed/tv/{id}/{season}/{episode}'
         }
+    },
+    {
+        id: 'vidora',
+        name: 'Vidora',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidora.su/movie/{id}',
+            tv: 'https://vidora.su/tv/{id}/{season}/{episode}'
+        }
     }
 ];
