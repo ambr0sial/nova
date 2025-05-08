@@ -261,6 +261,26 @@
 
     <!-- content -->
     <div class="pt-16">
+        <script>
+            // blocked movies (le fix en carton)
+            const blockedMovieIds = [
+                "106862", "15774", "570341", "160242", "363343", "464515", "272668", 
+                "216969", "307609", "33081", "132744", "160243", "8079", "170991", 
+                "566319", "520517", "441906", "872906", "598859", "421097", "14134", 
+                "15419", "107800", "160255", "277432", "15772", "503577", "376371", 
+                "304246", "413543", "45002", "801526", "370665", "205022", "21210", 
+                "138934", "114436", "581361", "102353", "16345", "96112", "4252", 
+                "4435", "205077", "304157", "474084", "14478", "421701", "960876"
+            ];
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            const contentType = urlParams.get('type');
+
+            if (contentType === 'movie' && blockedMovieIds.includes(movieId)) {
+                window.location.href = '/';
+            }
+        </script>
         <!-- backdrop -->
         <div class="relative h-[30vh] sm:h-[40vh] md:h-[60vh]" x-show="content">
             <div class="absolute inset-0 bg-cover bg-center" :style="'background-image: url(https://image.tmdb.org/t/p/original' + content?.backdrop_path + ')'"></div>
