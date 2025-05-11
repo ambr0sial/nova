@@ -9,6 +9,69 @@ const availableSources = [
         }
     },
     {
+        id: 'streamflix',
+        name: 'StreamFlix',
+        isFrench: false,
+        urls: {
+            movie: 'https://watch.streamflix.one/movie/{id}}/watch?server=1',
+            tv: 'https://watch.streamflix.one/tv/{id}}/watch?server=1&season={season}}&episode={episode}}'
+        }
+    },
+    {
+        id: 'nebula',
+        name: 'NebulaFlix',
+        isFrench: false,
+        urls: {
+            movie: 'https://nebulaflix.stream/movie?mt={id}&server=1',
+            tv: 'https://nebulaflix.stream/show?st={id}&season={season}&episode={episode}&server=1'
+        }
+    },
+    {
+        id: 'vidjoy',
+        name: 'VidJoy',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidjoy.pro/embed/movie/{id}',
+            tv: 'https://vidjoy.pro/embed/tv/{id}}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidzee',
+        name: 'VidZee',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidzee.wtf/movie/movie.php?id={id}',
+            tv: 'https://vidzee.wtf/tv/tv.php?id={id}&season={season}&episode={episode}'
+        }
+    },
+    {
+        id: 'spenflix',
+        name: 'Spenflix',
+        isFrench: false,
+        urls: {
+            movie: 'https://spencerdevs.xyz/movie/{id}',
+            tv: 'https://spencerdevs.xyz/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'betaspenflix',
+        name: 'Beta Spenflix',
+        isFrench: false,
+        urls: {
+            movie: 'https://beta.spencerdevs.xyz/movie/{id}',
+            tv: 'https://beta.spencerdevs.xyz/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidora',
+        name: 'Vidora',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidora.su/movie/{id}',
+            tv: 'https://vidora.su/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
         id: 'multiembed',
         name: 'MultiEmbed',
         isFrench: false,
@@ -90,15 +153,6 @@ const availableSources = [
         }
     },
     {
-        id: 'vidsrcsu',
-        name: 'VidSrcSU',
-        isFrench: false,
-        urls: {
-            movie: 'https://vidsrc.su/embed/movie/{id}',
-            tv: 'https://vidsrc.su/embed/tv/{id}/{season}/{episode}'
-        }
-    },
-    {
         id: 'vidsrcxyz',
         name: 'VidSrcXYZ',
         isFrench: false,
@@ -162,15 +216,6 @@ const availableSources = [
         }
     },
     {
-        id: 'flicky',
-        name: 'Flicky',
-        isFrench: false,
-        urls: {
-            movie: 'https://flicky.host/embed/movie/?id={id}',
-            tv: 'https://flicky.host/embed/tv/?id={id}/{season}/{episode}'
-        }
-    },
-    {
         id: 'autoembed',
         name: 'AutoEmbed',
         isFrench: false,
@@ -206,13 +251,4 @@ const availableSources = [
             tv: 'https://vidify.top/embed/tv/{id}/{season}/{episode}'
         }
     },
-    {
-        id: 'vidora',
-        name: 'Vidora',
-        isFrench: false,
-        urls: {
-            movie: 'https://vidora.su/movie/{id}',
-            tv: 'https://vidora.su/tv/{id}/{season}/{episode}'
-        }
-    }
 ];
