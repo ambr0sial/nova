@@ -18,15 +18,6 @@ const availableSources = [
         }
     },
     {
-        id: 'frembed',
-        name: 'Frembed',
-        isFrench: true,
-        urls: {
-            movie: 'https://frembed.cc/api/film.php?id={id}',
-            tv: 'https://frembed.cc/api/serie.php?id={id}&sa={season}&epi={episode}'
-        }
-    },
-    {
         id: 'moviesapi',
         name: 'MoviesAPI',
         isFrench: false,
@@ -63,8 +54,8 @@ const availableSources = [
         }
     },
     {
-        id: 'vidsrcto',
-        name: 'VidSrcTO',
+        id: 'vidsrcXyz',
+        name: 'VidSrcXyz',
         isFrench: false,
         urls: {
             movie: 'https://vidsrc.xyz/embed/movie/{id}',
@@ -171,12 +162,93 @@ const availableSources = [
         }
     },
     {
+        id: 'flicky',
+        name: 'Flicky',
+        isFrench: false,
+        urls: {
+            movie: 'https://flicky.host/embed/movie/?id={id}',
+            tv: 'https://flicky.host/embed/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'rive',
+        name: 'RiveStream',
+        isFrench: false,
+        urls: {
+            movie: 'https://rivestream.org/embed?type=movie&id={id}',
+            tv: 'https://rivestream.org/embed?type=tv&id={id}&season={season}&episode={episode}'
+        }
+    },
+    {
         id: 'vidora',
         name: 'Vidora',
         isFrench: false,
         urls: {
             movie: 'https://vidora.su/movie/{id}',
             tv: 'https://vidora.su/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidsrccc',
+        name: 'VidSrcCC',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=false',
+            tv: 'https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=false'
+        }
+    },
+    {
+        id: 'streamflix',
+        name: 'StreamFlix',
+        isFrench: false,
+        urls: {
+            movie: 'https://watch.streamflix.one/movie/{id}}/watch?server=1',
+            tv: 'https://watch.streamflix.one/tv/{id}}/watch?server=1&season={season}}&episode={episode}}'
+        }
+    },
+    {
+        id: 'nebula',
+        name: 'NebulaFlix',
+        isFrench: false,
+        urls: {
+            movie: 'https://nebulaflix.stream/movie?mt={id}&server=1',
+            tv: 'https://nebulaflix.stream/show?st={id}&season={season}&episode={episode}&server=1'
+        }
+    },
+    {
+        id: 'vidjoy',
+        name: 'VidJoy',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidjoy.pro/embed/movie/{id}',
+            tv: 'https://vidjoy.pro/embed/tv/{id}}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'vidzee',
+        name: 'VidZee',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidzee.wtf/movie/movie.php?id={id}',
+            tv: 'https://vidzee.wtf/tv/tv.php?id={id}&season={season}&episode={episode}'
+        }
+    },
+    {
+        id: 'spenflix',
+        name: 'Spenflix',
+        isFrench: false,
+        urls: {
+            movie: 'https://spencerdevs.xyz/movie/{id}',
+            tv: 'https://spencerdevs.xyz/tv/{id}/{season}/{episode}'
+        }
+    },
+    {
+        id: 'frembed',
+        name: 'Frembed',
+        isFrench: true,
+        urls: {
+            movie: 'https://frembed.cc/api/film.php?id={id}',
+            tv: 'https://frembed.cc/api/serie.php?id={id}&sa={season}&epi={episode}'
         }
     }
 ];
