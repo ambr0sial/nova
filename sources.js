@@ -135,15 +135,6 @@ const availableSources = [
         }
     },
     {
-        id: 'flicky',
-        name: 'Flicky',
-        isFrench: false,
-        urls: {
-            movie: 'https://flicky.host/embed/movie/?id={id}',
-            tv: 'https://flicky.host/embed/tv/?id={id}/{season}/{episode}'
-        }
-    },
-    {
         id: 'autoembed',
         name: 'AutoEmbed',
         isFrench: false,
