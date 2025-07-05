@@ -49,8 +49,8 @@ const availableSources = [
         name: 'Hexa',
         isFrench: false,
         urls: {
-            movie: 'https://api.hexa.watch/movie/{id}',
-            tv: 'https://api.hexa.watch/tv/{id}/{season}/{episode}'
+            movie: 'https://hexa.watch/movie/{id}',
+            tv: 'https://hexa.watch/tv/{id}/{season}/{episode}'
         }
     },
     {
@@ -63,21 +63,12 @@ const availableSources = [
         }
     },
     {
-        id: 'vidsrccc',
-        name: 'VidSrcCC',
-        isFrench: false,
-        urls: {
-            movie: 'https://vidsrc.cc/v2/embed/movie/{id}?autoPlay=false',
-            tv: 'https://vidsrc.cc/v2/embed/tv/{id}/{season}/{episode}?autoPlay=false'
-        }
-    },
-    {
         id: 'vidsrcto',
         name: 'VidSrcTO',
         isFrench: false,
         urls: {
-            movie: 'https://vidsrc.to/embed/movie/{id}',
-            tv: 'https://vidsrc.to/embed/tv/{id}/{season}/{episode}'
+            movie: 'https://vidsrc.xyz/embed/movie/{id}',
+            tv: 'https://vidsrc.xyz/embed/tv/{id}/{season}/{episode}'
         }
     },
     {
@@ -99,15 +90,6 @@ const availableSources = [
         }
     },
     {
-        id: 'vidsrcxyz',
-        name: 'VidSrcXYZ',
-        isFrench: false,
-        urls: {
-            movie: 'https://vidsrc.xyz/embed/movie/{id}',
-            tv: 'https://vidsrc.xyz/embed/tv/{id}/{season}-{episode}'
-        }
-    },
-    {
         id: 'vidsrcvip',
         name: 'VidSrcVIP',
         isFrench: false,
@@ -123,15 +105,6 @@ const availableSources = [
         urls: {
             movie: 'https://www.2embed.cc/embed/{id}',
             tv: 'https://www.2embed.cc/embedtv/{id}&s={season}&e={episode}'
-        }
-    },
-    {
-        id: 'primewire',
-        name: 'PrimeWire',
-        isFrench: false,
-        urls: {
-            movie: 'https://www.primewire.tf/embed/movie?tmdb={id}',
-            tv: 'https://www.primewire.tf/embed/tv?tmdb={id}&season={season}&episode={episode}'
         }
     },
     {
@@ -157,8 +130,8 @@ const availableSources = [
         name: 'SmashyStream',
         isFrench: false,
         urls: {
-            movie: 'https://embed.smashystream.com/playere.php?tmdb={id}',
-            tv: 'https://embed.smashystream.com/playere.php?tmdb={id}&season={season}&episode={episode}'
+            movie: 'https://player.smashy.stream/movie/{id}',
+            tv: 'https://player.smashy.stream/tv/{id}?s={season}&e={episode}'
         }
     },
     {
