@@ -40,8 +40,8 @@ const availableSources = [
         name: 'Hexa',
         isFrench: false,
         urls: {
-            movie: 'https://hexa.watch/movie/{id}',
-            tv: 'https://hexa.watch/tv/{id}/{season}/{episode}'
+            movie: 'https://hexa.watch/watch/movie/{id}',
+            tv: 'https://hexa.watch/watch/tv/{id}/{season}/{episode}'
         }
     },
     {
