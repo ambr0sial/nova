@@ -145,7 +145,7 @@ const availableSources = [
     },
     {
         id: 'vidfast',
-        name: 'VidFast',
+        name: 'VidFast (4K)',
         isFrench: false,
         urls: {
             movie: 'https://vidfast.pro/movie/{id}',
@@ -229,8 +229,8 @@ const availableSources = [
         name: 'VidZee',
         isFrench: false,
         urls: {
-            movie: 'https://vidzee.wtf/movie/movie.php?id={id}',
-            tv: 'https://vidzee.wtf/tv/tv.php?id={id}&season={season}&episode={episode}'
+            movie: 'https://player.vidzee.wtf/embed/movie/{id}', // @ambr0sial: there is a 4K endpoint for movies only. in case you want to implement that sometime: https://player.vidzee.wtf/embed/movie/4k/{id}
+            tv: 'https://player.vidzee.wtf/embed/tv/{id}/{season}/{episode}'
         }
     },
     {
