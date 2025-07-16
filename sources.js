@@ -250,5 +250,14 @@ const availableSources = [
             movie: 'https://frembed.cc/api/film.php?id={id}',
             tv: 'https://frembed.cc/api/serie.php?id={id}&sa={season}&epi={episode}'
         }
+    },
+        {
+        id: 'uembed',
+        name: 'UEmbed (premium)',
+        isFrench: false,
+        urls: {
+            movie: 'https://uembed.site/?id={id}&apikey=thisisforsurenotapremiumkey_right?',
+            tv: 'https://uembed.site/?id={id}&season={season}&episode={episode}&apikey=thisisforsurenotapremiumkey_right?'
+        }
     }
 ];
