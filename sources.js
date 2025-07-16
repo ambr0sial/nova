@@ -4,8 +4,8 @@ const availableSources = [
         name: 'P-Stream',
         isFrench: false,
         urls: {
-            movie: 'https://iframe.pstream.org/embed/tmdb-movie-{id}',
-            tv: 'https://iframe.pstream.org/embed/tmdb-tv-{id}/{season}/{episode}'
+            movie: 'https://iframe.pstream.mov/media/tmdb-movie-{id}',
+            tv: 'https://iframe.pstream.mov/media/tmdb-tv-{id}/{season}/{episode}'
         }
     },
     {
