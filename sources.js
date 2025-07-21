@@ -234,15 +234,6 @@ const availableSources = [
     },
   },
   {
-    id: "frembed",
-    name: "Frembed",
-    isFrench: true,
-    urls: {
-      movie: "https://frembed.cc/api/film.php?id={id}",
-      tv: "https://frembed.cc/api/serie.php?id={id}&sa={season}&epi={episode}",
-    },
-  },
-  {
     id: "uembed",
     name: "UEmbed (premium)",
     isFrench: false,
