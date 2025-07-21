@@ -325,31 +325,12 @@ const availableSources = [
     },
   },
   {
-    id: "onemovie",
-    name: "OneMovie",
-    isFrench: false,
-    urls: {
-      movie: "https://111movies.com/movie/{id}",
-      tv: "https://111movies.com/tv/{id}/{season}/{episode}",
-    },
-  },
-  {
     id: "turbovid",
     name: "TurboVid",
     isFrench: false,
     urls: {
       movie: "https://turbovid.eu/api/req/movie/{id}",
       tv: "https://turbovid.eu/api/req/tv/{id}/{season}/{episode}",
-    },
-  },
-  {
-    id: "smashy",
-    name: "Smashy",
-    isFrench: false,
-    urls: {
-      movie:
-        "https://embed.smashystream.com/playere.php?tmdb={id}&btPosition=10",
-      tv: "https://embed.smashystream.com/playere.php?tmdb={id}&season={season}&episode={episode}&btPosition=10",
     },
   },
   {
@@ -477,14 +458,5 @@ const availableSources = [
       movie: "https://anyembed.xyz/movie/{id}",
       tv: "https://anyembed.xyz/tv/{id}/{season}/{episode}",
     },
-  },
-  {
-    id: "ythd",
-    name: "YTHD",
-    isFrench: false,
-    urls: {
-      movie: "https://ythd.org/embed/{id}",
-      tv: "https://ythd.org/embed/{id}",
-    },
-  },
+  }
 ];
