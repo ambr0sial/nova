@@ -266,7 +266,7 @@ const availableSources = [
     name: "Player 4U",
     isFrench: false,
     urls: {
-      movie: "https://vidapi.xyz/embed/movie?tmdb={id}",
+      movie: "https://vidapi.xyz/embed/movie/{id}",
       tv: "https://vidapi.xyz/embed/tv/{id}&s={season}&e={episode}",
     },
   },
