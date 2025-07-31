@@ -247,8 +247,8 @@ const availableSources = [
         name: 'Frembed',
         isFrench: true,
         urls: {
-            movie: 'https://frembed.cc/api/film.php?id={id}',
-            tv: 'https://frembed.cc/api/serie.php?id={id}&sa={season}&epi={episode}'
+            movie: 'https://frembed.icu/api/film.php?id={id}',
+            tv: 'https://frembed.icu/api/serie.php?id={id}&sa={season}&epi={episode}'
         }
     },
         {
