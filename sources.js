@@ -458,23 +458,5 @@ const availableSources = [
       movie: "https://anyembed.xyz/movie/{id}",
       tv: "https://anyembed.xyz/tv/{id}/{season}/{episode}",
     },
-  },
-  {
-    id: 'frembed',
-    name: 'Frembed',
-    isFrench: true,
-    urls: {
-      movie: 'https://frembed.icu/api/film.php?id={id}',
-      tv: 'https://frembed.icu/api/serie.php?id={id}&sa={season}&epi={episode}'
-    }
-  },
-  {
-    id: 'uembed',
-    name: 'UEmbed (premium)',
-    isFrench: false,
-    urls: {
-      movie: 'https://uembed.site/?id={id}&apikey=thisisforsurenotapremiumkey_right?',
-      tv: 'https://uembed.site/?id={id}&season={season}&episode={episode}&apikey=thisisforsurenotapremiumkey_right?'
-    }
   }
 ];
