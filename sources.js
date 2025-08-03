@@ -458,6 +458,8 @@ const availableSources = [
       movie: "https://anyembed.xyz/movie/{id}",
       tv: "https://anyembed.xyz/tv/{id}/{season}/{episode}",
     },
+  },
+  {
     id: 'frembed',
     name: 'Frembed',
     isFrench: true,
