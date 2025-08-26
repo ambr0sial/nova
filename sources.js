@@ -1,5 +1,14 @@
 const availableSources = [
     {
+        id: 'mapple',
+        name: 'MappleTv',
+        isFrench: false,
+        urls: {
+            movie: 'https://mappletv.uk/watch/movie/{id}',
+            tv: 'https://mappletv.uk/watch/tv/{id}-{season}-{episode}'
+        }
+    },
+    {
         id: 'pstream',
         name: 'P-Stream',
         isFrench: false,
