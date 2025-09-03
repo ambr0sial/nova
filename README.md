@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This repository is archived because I have a lot of other projects on the side and I can't keep up with Nova right now. This is not fully abandoned!
+
 <div align="center">
   
   ![Nova](logo.png)
