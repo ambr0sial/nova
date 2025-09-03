@@ -260,13 +260,22 @@ const availableSources = [
             tv: 'https://frembed.icu/api/serie.php?id={id}&sa={season}&epi={episode}'
         }
     },
-        {
+    {
         id: 'uembed',
         name: 'UEmbed (premium)',
         isFrench: false,
         urls: {
             movie: 'https://uembed.site/?id={id}&apikey=thisisforsurenotapremiumkey_right?',
             tv: 'https://uembed.site/?id={id}&season={season}&episode={episode}&apikey=thisisforsurenotapremiumkey_right?'
+        }
+    },
+    {
+        id: 'vidsrccx',
+        name: 'VidSrcCX',
+        isFrench: false,
+        urls: {
+            movie: 'https://vidsrc.cx/embed/movie/{id}',
+            tv: 'https://vidsrc.cx/embed/tv/{id}/{season}/{episode}'
         }
     }
 ];
